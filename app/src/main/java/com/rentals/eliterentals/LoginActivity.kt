@@ -1,5 +1,8 @@
 package com.rentals.eliterentals
 
+import android.content.Intent
+import androidx.biometric.BiometricManager
+import androidx.core.content.ContextCompat
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -9,6 +12,8 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import android.widget.EditText
+import androidx.biometric.BiometricPrompt
+
 
 class LoginActivity : AppCompatActivity() {
 
@@ -48,16 +53,36 @@ class LoginActivity : AppCompatActivity() {
 
                             Toast.makeText(this@LoginActivity, "Welcome ${loginResponse.user.firstName}", Toast.LENGTH_LONG).show()
 
+                            val role = loginResponse.user.role?.trim()
 
-
-                            // TODO: Save token and navigate to dashboard
+                            when (role) {
+                                "Tenant" -> {
+                                    val intent = Intent(
+                                        this@LoginActivity,
+                                        TenantDashboardActivity::class.java
+                                    )
+                                    intent.putExtra("token", loginResponse.token)
+                                    startActivity(intent)
+                                    finish()
+                                }
+                                "Caretaker" -> {
+                                    val intent = Intent(this@LoginActivity, CaretakerTrackMaintenanceActivity::class.java)
+                                    intent.putExtra("token", loginResponse.token)
+                                    startActivity(intent)
+                                    finish()
+                                }
+                                else -> {
+                                    Toast.makeText(this@LoginActivity, "Unknown role: $role", Toast.LENGTH_SHORT).show()
+                                }
+                            }
                         } else {
                             Toast.makeText(this@LoginActivity, "Empty response from server", Toast.LENGTH_SHORT).show()
                         }
                     } else {
                         Toast.makeText(this@LoginActivity, "Invalid credentials", Toast.LENGTH_SHORT).show()
                     }
-                } 
+                }
+
 
                 override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
                     Toast.makeText(this@LoginActivity, "Network error: ${t.message}", Toast.LENGTH_LONG).show()
@@ -70,7 +95,39 @@ class LoginActivity : AppCompatActivity() {
         }
 
         btnFingerprint.setOnClickListener {
-            Toast.makeText(this, "Fingerprint login not implemented yet", Toast.LENGTH_SHORT).show()
+            val executor = ContextCompat.getMainExecutor(this)
+
+            val biometricPrompt = BiometricPrompt(this, executor,
+                object : BiometricPrompt.AuthenticationCallback() {
+                    override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
+                        super.onAuthenticationSucceeded(result)
+                        Toast.makeText(this@LoginActivity, "Biometric login successful", Toast.LENGTH_SHORT).show()
+
+                        val intent = Intent(this@LoginActivity, TenantDashboardActivity::class.java)
+                        startActivity(intent)
+                        finish()
+                    }
+
+                    override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
+                        super.onAuthenticationError(errorCode, errString)
+                        Toast.makeText(this@LoginActivity, "Auth error: $errString", Toast.LENGTH_SHORT).show()
+                    }
+
+                    override fun onAuthenticationFailed() {
+                        super.onAuthenticationFailed()
+                        Toast.makeText(this@LoginActivity, "Authentication failed", Toast.LENGTH_SHORT).show()
+                    }
+                })
+
+            val promptInfo = BiometricPrompt.PromptInfo.Builder()
+                .setTitle("Biometric Login")
+                .setSubtitle("Use fingerprint or face to login")
+                .setNegativeButtonText("Cancel")
+                .build()
+
+            biometricPrompt.authenticate(promptInfo)
         }
+
+
     }
 }

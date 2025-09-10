@@ -4,7 +4,6 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
 
-
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -26,9 +25,17 @@
             </intent-filter>
         </activity>
 
-        <!-- MainActivity can be used after login -->
+        <!-- Tenant dashboard -->
+        <activity android:name=".TenantDashboardActivity" />
+
+        <!-- Caretaker maintenance tracking -->
+        <activity android:name=".CaretakerTrackMaintenanceActivity" />
+
+        <activity android:name=".ReportMaintenanceActivity" />
+
+
+        <!-- Optional: MainActivity if needed elsewhere -->
         <activity android:name=".MainActivity" />
     </application>
-
 
 </manifest>
