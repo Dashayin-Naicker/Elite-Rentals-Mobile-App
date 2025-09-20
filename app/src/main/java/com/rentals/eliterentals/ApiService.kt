@@ -7,4 +7,8 @@ import retrofit2.Call
 interface ApiService {
     @POST("api/Users/login")
     fun login(@Body request: LoginRequest): Call<LoginResponse>
+
+    @POST("api/Users/sso")
+    fun ssoLogin(@Body request: SsoLoginRequest): Call<LoginResponse>
+
 }

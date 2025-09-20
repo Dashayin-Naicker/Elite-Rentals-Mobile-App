@@ -25,7 +25,7 @@ object RetrofitClient {
         chain.proceed(request)
     }
 
-    // ✅ Trust all SSL certificates (for dev only)
+    // Trust all SSL certificates (for dev only)
     private val trustAllCerts = arrayOf<TrustManager>(object : X509TrustManager {
         override fun checkClientTrusted(chain: Array<out X509Certificate>?, authType: String?) {}
         override fun checkServerTrusted(chain: Array<out X509Certificate>?, authType: String?) {}
