@@ -2,4 +2,10 @@
     <string name="app_name">EliteRentals</string>
     <string name="server_client_id">166696853938-86rhhlf1b06ilmlpi9tpha1tj50nq5et.apps.googleusercontent.com</string>
 
+    <string-array name="property_status">
+        <item>Available</item>
+        <item>Occupied</item>
+        <item>Unavailable</item>
+    </string-array>
+
 </resources>

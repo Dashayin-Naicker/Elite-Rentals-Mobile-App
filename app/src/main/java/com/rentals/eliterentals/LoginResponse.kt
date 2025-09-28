@@ -10,6 +10,7 @@ data class UserInfo(
     val firstName: String,
     val lastName: String,
     val email: String,
-    val role: String
+    val role: String,
+    val managerId: Int?
 )
 

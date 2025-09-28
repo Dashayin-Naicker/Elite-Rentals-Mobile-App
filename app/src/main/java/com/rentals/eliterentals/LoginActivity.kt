@@ -40,7 +40,7 @@ class LoginActivity : AppCompatActivity() {
         btnGoogle = findViewById(R.id.btnGoogle)
         btnFingerprint = findViewById(R.id.btnFingerprint)
 
-        // ✅ Configure Google Sign-In
+        // Configure Google Sign-In
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.server_client_id)) // your WEB client ID
             .requestEmail()
@@ -172,6 +172,16 @@ class LoginActivity : AppCompatActivity() {
     private fun handleLoginSuccess(loginResponse: LoginResponse) {
         Log.d("LoginResponse", "Token: ${loginResponse.token}")
         Log.d("LoginResponse", "User email: ${loginResponse.user.email}")
+        Log.d("LoginResponse", "Manager ID: ${loginResponse.user.managerId}")
+
+
+        val prefs = getSharedPreferences("app", MODE_PRIVATE).edit()
+        prefs.putString("jwt", loginResponse.token)
+        loginResponse.user.managerId?.let {
+            prefs.putInt("managerId", it)
+        }
+        prefs.apply()
+
 
         Toast.makeText(this@LoginActivity, "Welcome ${loginResponse.user.firstName}", Toast.LENGTH_LONG).show()
 
@@ -185,6 +195,12 @@ class LoginActivity : AppCompatActivity() {
             }
             "Caretaker" -> {
                 val intent = Intent(this@LoginActivity, CaretakerTrackMaintenanceActivity::class.java)
+                intent.putExtra("token", loginResponse.token)
+                startActivity(intent)
+                finish()
+            }
+            "PropertyManager" -> {
+                val intent = Intent(this@LoginActivity, MainPmActivity::class.java)
                 intent.putExtra("token", loginResponse.token)
                 startActivity(intent)
                 finish()

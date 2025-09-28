@@ -1,0 +1,18 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_dashboard"
+        android:title="Dashboard"
+        android:icon="@drawable/ic_chat"/>
+    <item
+        android:id="@+id/nav_properties"
+        android:title="Properties"
+        android:icon="@drawable/ic_location"/>
+    <item
+        android:id="@+id/nav_tenants"
+        android:title="Tenants"
+        android:icon="@drawable/ic_person"/>
+    <item
+        android:id="@+id/nav_leases"
+        android:title="Leases"
+        android:icon="@drawable/invoice"/>
+</menu>

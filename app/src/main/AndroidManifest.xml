@@ -32,6 +32,10 @@
         <activity android:name=".CaretakerTrackMaintenanceActivity" />
 
         <activity android:name=".ReportMaintenanceActivity" />
+        <activity android:name=".MainPmActivity" />
+        <activity android:name=".AddEditPropertyActivity" />
+        <activity android:name=".AssignLeaseActivity" />
+
 
 
         <!-- Optional: MainActivity if needed elsewhere -->

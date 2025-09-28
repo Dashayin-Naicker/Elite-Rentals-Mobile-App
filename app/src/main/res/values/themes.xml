@@ -6,4 +6,11 @@
     </style>
 
     <style name="Theme.EliteRentals" parent="Base.Theme.EliteRentals" />
+
+    <style name="EliteButton" parent="Widget.MaterialComponents.Button">
+        <item name="android:backgroundTint">#2E86C1</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="cornerRadius">12dp</item>
+    </style>
+
 </resources>

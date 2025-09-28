@@ -43,11 +43,16 @@ object RetrofitClient {
         .addInterceptor(loggingInterceptor)
         .build()
 
+    val gson = com.google.gson.GsonBuilder()
+        .setLenient() // <-- allows incomplete/malformed JSON
+        .create()
+
+
     val instance: ApiService by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
             .client(client)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
             .create(ApiService::class.java)
     }
