@@ -8,6 +8,7 @@ import retrofit2.Response
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.PATCH
 import retrofit2.http.PUT
 import retrofit2.http.Path
 
@@ -30,6 +31,12 @@ interface ApiService {
         @Path("id") id: Int,
         @Body update: UserUpdateDto
     ): Response<UserDto>
+
+    @PATCH("api/Users/{id}/status")
+    suspend fun toggleUserStatus(
+        @Header("Authorization") bearer: String,
+        @Path("id") id: Int
+    ): Response<ResponseBody>
 
     @GET("api/Property")
     suspend fun getAllProperties(
@@ -60,8 +67,15 @@ interface ApiService {
     @POST("api/Lease")
     suspend fun createLease(
         @Header("Authorization") bearer: String,
-        @Body lease: CreateLeaseRequest
+        @Body lease: CreateLeaseRequest  // JSON body
     ): Response<LeaseDto>
+
+    @GET("api/Lease")
+    suspend fun getAllLeases(
+        @Header("Authorization") bearer: String
+    ): Response<List<LeaseDto>>
+
+
 
 
 }

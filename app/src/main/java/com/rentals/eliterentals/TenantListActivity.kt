@@ -1,18 +1,19 @@
 package com.rentals.eliterentals
 
+import android.content.Intent
 import android.os.Bundle
-import androidx.recyclerview.widget.RecyclerView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.launch
-import android.widget.Toast
+import android.widget.Button
 
 class TenantListActivity : AppCompatActivity() {
     private lateinit var rv: RecyclerView
     private lateinit var adapter: TenantAdapter
     private val api = RetrofitClient.instance
-
     private var jwt = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,12 +22,18 @@ class TenantListActivity : AppCompatActivity() {
 
         rv = findViewById(R.id.rvTenants)
         rv.layoutManager = LinearLayoutManager(this)
-        adapter = TenantAdapter(mutableListOf(), ::onApproveClicked)
+
+        adapter = TenantAdapter(mutableListOf(), ::onApproveClicked, ::onToggleClicked)
         rv.adapter = adapter
 
         jwt = getSharedPreferences("app", MODE_PRIVATE).getString("jwt", "") ?: ""
-
         fetchTenants()
+
+        val btnAddTenant = findViewById<Button>(R.id.btnAddTenant)
+        btnAddTenant.setOnClickListener {
+            val intent = Intent(this, RegisterTenantActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     private fun fetchTenants() {
@@ -35,6 +42,8 @@ class TenantListActivity : AppCompatActivity() {
             if (res.isSuccessful) {
                 val tenants = res.body()?.filter { it.role == "Tenant" } ?: emptyList()
                 adapter.submit(tenants)
+            } else {
+                Toast.makeText(this@TenantListActivity, "Failed to load tenants", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -48,4 +57,20 @@ class TenantListActivity : AppCompatActivity() {
             }
         }
     }
+
+    private fun onToggleClicked(user: UserDto) {
+        lifecycleScope.launch {
+            val res = api.toggleUserStatus("Bearer $jwt", user.userId)
+            if (res.isSuccessful) {
+                Toast.makeText(this@TenantListActivity, "Toggled ${user.email}", Toast.LENGTH_SHORT).show()
+                fetchTenants()
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        fetchTenants()
+    }
+
 }

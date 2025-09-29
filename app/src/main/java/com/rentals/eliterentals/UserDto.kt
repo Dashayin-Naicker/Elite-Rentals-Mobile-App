@@ -6,6 +6,6 @@ data class UserDto(
     val lastName: String?,
     val email: String?,
     val role: String?,
-    val isActive: Boolean?,
+    val isActive: Boolean,
     val tenantApproval: String?
 )

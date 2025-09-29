@@ -30,7 +30,12 @@ class TenantsFragment : Fragment() {
         val recycler = view.findViewById<RecyclerView>(R.id.rvTenants)
         recycler.layoutManager = LinearLayoutManager(requireContext())
 
-        adapter = TenantAdapter(mutableListOf()) { approveTenant(it) }
+        adapter = TenantAdapter(
+            mutableListOf(),
+            onApprove = { approveTenant(it) },
+            onToggle = { toggleTenant(it) }
+        )
+
         recycler.adapter = adapter
 
         loadTenants()
@@ -56,5 +61,17 @@ class TenantsFragment : Fragment() {
             }
         }
     }
+
+    private fun toggleTenant(u: UserDto) {
+        lifecycleScope.launch {
+            val res = api.toggleUserStatus("Bearer $jwt", u.userId)
+            if (res.isSuccessful) {
+                val msg = if (u.isActive) "Disabled ${u.email}" else "Enabled ${u.email}"
+                Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
+                loadTenants()
+            }
+        }
+    }
+
 
 }

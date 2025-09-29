@@ -1,22 +1,21 @@
 package com.rentals.eliterentals
 
 import android.os.Bundle
-import android.widget.ArrayAdapter
-import android.widget.EditText
-import android.widget.Spinner
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
-import android.widget.Button
+
 class AssignLeaseActivity : AppCompatActivity() {
+
     private lateinit var tenantSpinner: Spinner
     private lateinit var propSpinner: Spinner
     private lateinit var startEt: EditText
     private lateinit var endEt: EditText
     private lateinit var depositEt: EditText
-    private val api = RetrofitClient.instance
+    private lateinit var btnAssign: Button
 
+    private val api = RetrofitClient.instance
     private var jwt = ""
     private var tenants = listOf<UserDto>()
     private var props = listOf<PropertyDto>()
@@ -30,64 +29,92 @@ class AssignLeaseActivity : AppCompatActivity() {
         startEt = findViewById(R.id.startEt)
         endEt = findViewById(R.id.endEt)
         depositEt = findViewById(R.id.depositEt)
-        val btnAssign = findViewById<Button>(R.id.btnAssign)
+        btnAssign = findViewById(R.id.btnAssign)
 
-        jwt = getSharedPreferences("app", MODE_PRIVATE).getString("jwt", "") ?: ""
+        // Retrieve JWT
+        jwt = getSharedPreferences("app", MODE_PRIVATE)
+            .getString("jwt", "") ?: ""
+
+        // Load tenants and properties
         fetchData()
 
+        // Assign lease button
         btnAssign.setOnClickListener {
-            val tenantId = tenants[tenantSpinner.selectedItemPosition].userId
-            val propId = props[propSpinner.selectedItemPosition].propertyId
-            val req = CreateLeaseRequest(
-                propertyId = propId,
-                tenantId = tenantId,
-                startDate = startEt.text.toString(),
-                endDate = endEt.text.toString(),
-                deposit = depositEt.text.toString().toDouble()
-            )
-
-            lifecycleScope.launch {
-                val res = api.createLease("Bearer $jwt", req)
-                if (res.isSuccessful) {
-                    Toast.makeText(this@AssignLeaseActivity, "Lease created!", Toast.LENGTH_SHORT).show()
-                }
-            }
+            assignLease()
         }
     }
 
     private fun fetchData() {
         lifecycleScope.launch {
             try {
-                val u = api.getAllUsers("Bearer $jwt")
-                val p = api.getAllProperties("Bearer $jwt") // Pass the JWT here!
+                val tenantsRes = api.getAllUsers("Bearer $jwt")
+                val propsRes = api.getAllProperties("Bearer $jwt")
 
-                if (u.isSuccessful) {
-                    tenants = u.body()?.filter { it.role == "Tenant" && it.tenantApproval == "Approved" } ?: emptyList()
+                if (tenantsRes.isSuccessful) {
+                    tenants = tenantsRes.body()?.filter { it.role == "Tenant" && it.tenantApproval == "Approved" } ?: emptyList()
                     tenantSpinner.adapter = ArrayAdapter(
                         this@AssignLeaseActivity,
-                        android.R.layout.simple_spinner_item,
+                        android.R.layout.simple_spinner_dropdown_item,
                         tenants.map { "${it.firstName} ${it.lastName}" }
                     )
+                } else {
+                    Toast.makeText(this@AssignLeaseActivity, "Failed to load tenants", Toast.LENGTH_SHORT).show()
                 }
 
-                if (p.isSuccessful) {
-                    props = p.body() ?: emptyList()
+                if (propsRes.isSuccessful) {
+                    props = propsRes.body() ?: emptyList()
                     propSpinner.adapter = ArrayAdapter(
                         this@AssignLeaseActivity,
-                        android.R.layout.simple_spinner_item,
-                        props.map {
-                            val addr = it.address ?: ""              // handle null
-                            if (addr.isNotEmpty()) addr else it.title ?: "Property ${it.propertyId}"
-                        }
+                        android.R.layout.simple_spinner_dropdown_item,
+                        props.map { it.address ?: it.title ?: "Property ${it.propertyId}" }
                     )
-                }
- else {
+                } else {
                     Toast.makeText(this@AssignLeaseActivity, "Failed to load properties", Toast.LENGTH_SHORT).show()
                 }
+
             } catch (e: Exception) {
                 Toast.makeText(this@AssignLeaseActivity, "Error: ${e.message}", Toast.LENGTH_LONG).show()
             }
         }
     }
 
+    private fun assignLease() {
+        if (tenantSpinner.selectedItemPosition == -1 || propSpinner.selectedItemPosition == -1) {
+            Toast.makeText(this, "Select tenant and property", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val tenantId = tenants[tenantSpinner.selectedItemPosition].userId
+        val propId = props[propSpinner.selectedItemPosition].propertyId
+
+        val startDate = startEt.text.toString()
+        val endDate = endEt.text.toString()
+        val deposit = depositEt.text.toString().toDoubleOrNull()
+
+        if (startDate.isBlank() || endDate.isBlank() || deposit == null) {
+            Toast.makeText(this, "Fill all fields correctly", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val leaseRequest = CreateLeaseRequest(
+            propertyId = propId,
+            tenantId = tenantId,
+            startDate = startDate,
+            endDate = endDate,
+            deposit = deposit
+        )
+
+        lifecycleScope.launch {
+            try {
+                val response = api.createLease("Bearer $jwt", leaseRequest)
+                if (response.isSuccessful) {
+                    Toast.makeText(this@AssignLeaseActivity, "Lease assigned successfully!", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(this@AssignLeaseActivity, "Error: ${response.code()}", Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: Exception) {
+                Toast.makeText(this@AssignLeaseActivity, "Network error: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
 }

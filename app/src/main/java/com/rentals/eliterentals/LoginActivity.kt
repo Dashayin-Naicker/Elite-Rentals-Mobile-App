@@ -177,10 +177,13 @@ class LoginActivity : AppCompatActivity() {
 
         val prefs = getSharedPreferences("app", MODE_PRIVATE).edit()
         prefs.putString("jwt", loginResponse.token)
+        prefs.putInt("userId", loginResponse.user.userId) // Save tenant/user ID
+        prefs.putString("tenantName", loginResponse.user.firstName + " " + loginResponse.user.lastName) // Save name
         loginResponse.user.managerId?.let {
             prefs.putInt("managerId", it)
         }
         prefs.apply()
+
 
 
         Toast.makeText(this@LoginActivity, "Welcome ${loginResponse.user.firstName}", Toast.LENGTH_LONG).show()
