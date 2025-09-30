@@ -25,6 +25,7 @@ class TenantDashboardActivity : AppCompatActivity() {
         val rentAmountTv = findViewById<TextView>(R.id.tvRentAmount)
         val tenantNameTv = findViewById<TextView>(R.id.tvTenantName)
         val rentDueDaysTv = findViewById<TextView>(R.id.tvRentDueDays)
+        val leaseEndDaysTv = findViewById<TextView>(R.id.tvLeaseEndDays)
 
         // Load JWT and tenantId
         val prefs = getSharedPreferences("app", MODE_PRIVATE)
@@ -42,31 +43,35 @@ class TenantDashboardActivity : AppCompatActivity() {
                     val lease = leases.firstOrNull()
 
                     if (lease != null) {
-                        // Dates
                         val startDate = formatDate(lease.startDate)
                         val endDate = formatDate(lease.endDate)
                         leaseInfoTv.text = "Lease: $startDate → $endDate"
 
-                        // Rent status & amount
                         rentStatusTv.text = "Rent Status: ${lease.status}"
                         val rent = lease.property?.rentAmount?.toInt() ?: 0
                         rentAmountTv.text = "R$rent"
 
-                        // Days left until lease end
-                        val daysLeft = calculateDaysLeft(lease.endDate)
-                        rentDueDaysTv.text = "Rent Due in $daysLeft Days"
+                        // Days until rent due (end of month)
+                        val rentDueDays = calculateDaysUntilMonthEnd()
+                        rentDueDaysTv.text = "Rent Due in $rentDueDays Days"
+
+                        // Days until lease ends
+                        val leaseEndDays = calculateDaysLeft(lease.endDate)
+                        leaseEndDaysTv.text = "Lease Ends in $leaseEndDays Days"
 
                     } else {
                         leaseInfoTv.text = "No active lease"
                         rentStatusTv.text = "Rent Status: N/A"
                         rentAmountTv.text = "R0"
                         rentDueDaysTv.text = "No rent due"
+                        leaseEndDaysTv.text = "Lease Ends: N/A"
                     }
                 } else {
                     leaseInfoTv.text = "Error loading lease"
                     rentStatusTv.text = "N/A"
                     rentAmountTv.text = "R0"
                     rentDueDaysTv.text = "N/A"
+                    leaseEndDaysTv.text = "N/A"
                 }
             } catch (e: Exception) {
                 Log.e("TenantDashboard", "Failed to load lease", e)
@@ -74,8 +79,15 @@ class TenantDashboardActivity : AppCompatActivity() {
                 rentStatusTv.text = "N/A"
                 rentAmountTv.text = "R0"
                 rentDueDaysTv.text = "N/A"
+                leaseEndDaysTv.text = "N/A"
             }
         }
+    }
+
+    private fun calculateDaysUntilMonthEnd(): Int {
+        val today = LocalDate.now()
+        val lastDay = today.withDayOfMonth(today.lengthOfMonth())
+        return ChronoUnit.DAYS.between(today, lastDay).toInt().coerceAtLeast(0)
     }
 
     private fun calculateDaysLeft(endDate: String): Int {

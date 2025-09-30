@@ -1,6 +1,8 @@
 package com.rentals.eliterentals
 
+import android.content.Intent
 import android.os.Bundle
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -31,6 +33,11 @@ class MainPmActivity : AppCompatActivity() {
                 }
                 R.id.nav_tenants -> {
                     loadFragment(TenantsFragment())
+                    true
+                }
+                R.id.nav_add_tenants -> {
+                    val intent = Intent(this, RegisterTenantActivity::class.java)
+                    startActivity(intent)
                     true
                 }
                 R.id.nav_leases -> {

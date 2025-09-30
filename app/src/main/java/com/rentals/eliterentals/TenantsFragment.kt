@@ -52,26 +52,45 @@ class TenantsFragment : Fragment() {
     }
 
     private fun approveTenant(u: UserDto) {
-        val update = UserUpdateDto("Approved")
+        val fullUser = User(
+            userId = u.userId,
+            firstName = u.firstName ?: "",
+            lastName = u.lastName ?: "",
+            email = u.email ?: "",
+            role = u.role ?: "Tenant",
+            tenantApproval = "Approved",
+            isActive = u.isActive
+        )
+
         lifecycleScope.launch {
-            val res = api.updateUser("Bearer $jwt", u.userId, update)
+            val res = api.updateUser("Bearer $jwt", u.userId, fullUser)
             if (res.isSuccessful) {
                 Toast.makeText(requireContext(), "Tenant Approved", Toast.LENGTH_SHORT).show()
                 loadTenants()
+            } else {
+                Toast.makeText(requireContext(), "Failed to approve tenant", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
+
     private fun toggleTenant(u: UserDto) {
         lifecycleScope.launch {
-            val res = api.toggleUserStatus("Bearer $jwt", u.userId)
-            if (res.isSuccessful) {
-                val msg = if (u.isActive) "Disabled ${u.email}" else "Enabled ${u.email}"
-                Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
-                loadTenants()
+            try {
+                val res = api.toggleUserStatus("Bearer $jwt", u.userId)
+                if (res.isSuccessful) {
+                    val msg = if (u.isActive) "Disabled ${u.email}" else "Enabled ${u.email}"
+                    Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
+                    loadTenants()
+                } else {
+                    Toast.makeText(requireContext(), "Failed to toggle status: ${res.code()}", Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: Exception) {
+                Toast.makeText(requireContext(), "Error: ${e.localizedMessage}", Toast.LENGTH_LONG).show()
             }
         }
     }
+
 
 
 }

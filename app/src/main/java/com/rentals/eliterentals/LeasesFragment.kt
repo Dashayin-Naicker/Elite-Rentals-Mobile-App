@@ -35,12 +35,20 @@ class LeasesFragment : Fragment() {
         val btnAssign = view.findViewById<Button>(R.id.btnAssignLease)
 
         lifecycleScope.launch {
-            val usersRes = api.getAllUsers("Bearer $jwt")
-            val propsRes = api.getAllProperties("Bearer $jwt") // <- pass bearer here
+            try {
+                val usersRes = try { api.getAllUsers("Bearer $jwt") } catch (e: Exception) { null }
+                val propsRes = try { api.getAllProperties("Bearer $jwt") } catch (e: Exception) { null }
+                val leasesRes = try { api.getAllLeases("Bearer $jwt") } catch (e: Exception) { null }
 
-            if (usersRes.isSuccessful && propsRes.isSuccessful) {
-                val tenants = usersRes.body()?.filter { it.role == "Tenant" && it.tenantApproval == "Approved" } ?: emptyList()
-                val properties = propsRes.body()?.filter { it.status == "Available" } ?: emptyList()
+                val leasedTenantIds = leasesRes?.body()
+                    ?.mapNotNull { it.tenantId }
+                    ?.toSet() ?: emptySet()
+
+                val tenants = usersRes?.body()
+                    ?.filter { it.role == "Tenant" && it.tenantApproval == "Approved" && it.userId !in leasedTenantIds }
+                    ?: emptyList()
+
+                val properties = propsRes?.body()?.filter { it.status == "Available" } ?: emptyList()
 
                 spTenant.adapter = ArrayAdapter(
                     requireContext(), android.R.layout.simple_spinner_dropdown_item,
@@ -50,9 +58,11 @@ class LeasesFragment : Fragment() {
                 spProperty.adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item,
                     properties.map { it.address })
                 spProperty.tag = properties
+
+            } catch (e: Exception) {
+                Toast.makeText(requireContext(), "Error loading data: ${e.message}", Toast.LENGTH_LONG).show()
             }
         }
-
 
         btnAssign.setOnClickListener {
             val tenants = spTenant.tag as List<UserDto>
@@ -70,14 +80,28 @@ class LeasesFragment : Fragment() {
             )
 
             lifecycleScope.launch {
-                val res = api.createLease("Bearer $jwt", leaseReq)
-                if (res.isSuccessful) {
-                    Toast.makeText(requireContext(), "Lease Assigned!", Toast.LENGTH_SHORT).show()
-                } else {
-                    Toast.makeText(requireContext(), "Error: ${res.code()}", Toast.LENGTH_SHORT).show()
+                try {
+                    val res = api.createLease("Bearer $jwt", leaseReq)
+                    if (res.isSuccessful) {
+                        Toast.makeText(requireContext(), "Lease Assigned!", Toast.LENGTH_SHORT).show()
+
+                        val statusUpdate = PropertyStatusDto("Occupied")
+                        val statusRes = api.updatePropertyStatus("Bearer $jwt", selectedProperty.propertyId, statusUpdate)
+
+                        if (statusRes.isSuccessful) {
+                            Toast.makeText(requireContext(), "Property marked as Occupied", Toast.LENGTH_SHORT).show()
+                        } else {
+                            Toast.makeText(requireContext(), "Failed to update property status", Toast.LENGTH_SHORT).show()
+                        }
+
+                    } else {
+                        Toast.makeText(requireContext(), "Error: ${res.code()}", Toast.LENGTH_SHORT).show()
+                    }
+                } catch (e: Exception) {
+                    Toast.makeText(requireContext(), "Network error: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
             }
         }
-
     }
+
 }

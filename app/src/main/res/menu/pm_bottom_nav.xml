@@ -1,18 +1,19 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/nav_dashboard"
-        android:title="Dashboard"
-        android:icon="@drawable/ic_chat"/>
+        android:title="Dashboard" />
     <item
         android:id="@+id/nav_properties"
-        android:title="Properties"
-        android:icon="@drawable/ic_location"/>
+        android:title="Properties" />
     <item
         android:id="@+id/nav_tenants"
-        android:title="Tenants"
-        android:icon="@drawable/ic_person"/>
+        android:title="Tenants" />
+
+    <item
+        android:id="@+id/nav_add_tenants"
+        android:title="Add Tenant" />
+
     <item
         android:id="@+id/nav_leases"
-        android:title="Leases"
-        android:icon="@drawable/invoice"/>
+        android:title="Leases" />
 </menu>

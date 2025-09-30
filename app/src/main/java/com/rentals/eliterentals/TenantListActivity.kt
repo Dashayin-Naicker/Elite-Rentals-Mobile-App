@@ -9,6 +9,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.launch
 import android.widget.Button
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.repeatOnLifecycle
 
 class TenantListActivity : AppCompatActivity() {
     private lateinit var rv: RecyclerView
@@ -29,11 +31,6 @@ class TenantListActivity : AppCompatActivity() {
         jwt = getSharedPreferences("app", MODE_PRIVATE).getString("jwt", "") ?: ""
         fetchTenants()
 
-        val btnAddTenant = findViewById<Button>(R.id.btnAddTenant)
-        btnAddTenant.setOnClickListener {
-            val intent = Intent(this, RegisterTenantActivity::class.java)
-            startActivity(intent)
-        }
     }
 
     private fun fetchTenants() {
@@ -49,24 +46,63 @@ class TenantListActivity : AppCompatActivity() {
     }
 
     private fun onApproveClicked(user: UserDto) {
+        val fullUser = User(
+            userId = user.userId,
+            firstName = user.firstName ?: "",
+            lastName = user.lastName ?: "",
+            email = user.email ?: "",
+            role = user.role ?: "Tenant",
+            tenantApproval = "Approved",
+            isActive = user.isActive
+        )
+
         lifecycleScope.launch {
-            val res = api.updateUser("Bearer $jwt", user.userId, UserUpdateDto("Approved"))
-            if (res.isSuccessful) {
-                Toast.makeText(this@TenantListActivity, "Approved ${user.email}", Toast.LENGTH_SHORT).show()
-                fetchTenants()
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                val res = api.updateUser("Bearer $jwt", user.userId, fullUser)
+                if (res.isSuccessful) {
+                    Toast.makeText(
+                        this@TenantListActivity,
+                        "Approved ${user.email}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    fetchTenants()
+                } else {
+                    Toast.makeText(this@TenantListActivity, "Failed to approve", Toast.LENGTH_SHORT)
+                        .show()
+                }
             }
         }
     }
 
+
     private fun onToggleClicked(user: UserDto) {
         lifecycleScope.launch {
-            val res = api.toggleUserStatus("Bearer $jwt", user.userId)
-            if (res.isSuccessful) {
-                Toast.makeText(this@TenantListActivity, "Toggled ${user.email}", Toast.LENGTH_SHORT).show()
-                fetchTenants()
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                try {
+                    val res = api.toggleUserStatus("Bearer $jwt", user.userId)
+                    if (res.isSuccessful) {
+                        val msg =
+                            if (user.isActive) "Disabled ${user.email}" else "Enabled ${user.email}"
+                        Toast.makeText(this@TenantListActivity, msg, Toast.LENGTH_SHORT).show()
+                        fetchTenants()
+                    } else {
+                        Toast.makeText(
+                            this@TenantListActivity,
+                            "Failed to toggle status: ${res.code()}",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                } catch (e: Exception) {
+                    Toast.makeText(
+                        this@TenantListActivity,
+                        "Error: ${e.localizedMessage}",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
             }
         }
     }
+
 
     override fun onResume() {
         super.onResume()

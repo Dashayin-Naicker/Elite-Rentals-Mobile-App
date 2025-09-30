@@ -49,6 +49,7 @@ dependencies {
     implementation("androidx.biometric:biometric:1.2.0-alpha04")
     implementation("com.google.android.gms:play-services-auth:21.1.0")
     implementation("com.github.bumptech.glide:glide:4.15.1")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

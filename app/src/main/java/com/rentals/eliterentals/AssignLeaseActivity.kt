@@ -3,7 +3,9 @@ package com.rentals.eliterentals
 import android.os.Bundle
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import kotlinx.coroutines.launch
 
 class AssignLeaseActivity : AppCompatActivity() {
@@ -46,37 +48,42 @@ class AssignLeaseActivity : AppCompatActivity() {
 
     private fun fetchData() {
         lifecycleScope.launch {
-            try {
-                val tenantsRes = api.getAllUsers("Bearer $jwt")
-                val propsRes = api.getAllProperties("Bearer $jwt")
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                try {
+                    val tenantsRes = try { api.getAllUsers("Bearer $jwt") } catch (e: Exception) { null }
+                    val propsRes = try { api.getAllProperties("Bearer $jwt") } catch (e: Exception) { null }
+                    val leasesRes = try { api.getAllLeases("Bearer $jwt") } catch (e: Exception) { null }
 
-                if (tenantsRes.isSuccessful) {
-                    tenants = tenantsRes.body()?.filter { it.role == "Tenant" && it.tenantApproval == "Approved" } ?: emptyList()
+                    val leasedTenantIds = leasesRes?.body()
+                        ?.mapNotNull { it.tenantId }
+                        ?.toSet() ?: emptySet()
+
+                    tenants = tenantsRes?.body()
+                        ?.filter { it.role == "Tenant" && it.tenantApproval == "Approved" && it.userId !in leasedTenantIds }
+                        ?: emptyList()
+
                     tenantSpinner.adapter = ArrayAdapter(
                         this@AssignLeaseActivity,
                         android.R.layout.simple_spinner_dropdown_item,
                         tenants.map { "${it.firstName} ${it.lastName}" }
                     )
-                } else {
-                    Toast.makeText(this@AssignLeaseActivity, "Failed to load tenants", Toast.LENGTH_SHORT).show()
-                }
 
-                if (propsRes.isSuccessful) {
-                    props = propsRes.body() ?: emptyList()
+                    props = propsRes?.body()?.filter { it.status == "Available" } ?: emptyList()
                     propSpinner.adapter = ArrayAdapter(
                         this@AssignLeaseActivity,
                         android.R.layout.simple_spinner_dropdown_item,
                         props.map { it.address ?: it.title ?: "Property ${it.propertyId}" }
                     )
-                } else {
-                    Toast.makeText(this@AssignLeaseActivity, "Failed to load properties", Toast.LENGTH_SHORT).show()
-                }
 
-            } catch (e: Exception) {
-                Toast.makeText(this@AssignLeaseActivity, "Error: ${e.message}", Toast.LENGTH_LONG).show()
+                } catch (e: Exception) {
+                    Toast.makeText(this@AssignLeaseActivity, "Error loading data: ${e.message}", Toast.LENGTH_LONG).show()
+                }
             }
         }
     }
+
+
+
 
     private fun assignLease() {
         if (tenantSpinner.selectedItemPosition == -1 || propSpinner.selectedItemPosition == -1) {
@@ -105,16 +112,32 @@ class AssignLeaseActivity : AppCompatActivity() {
         )
 
         lifecycleScope.launch {
-            try {
-                val response = api.createLease("Bearer $jwt", leaseRequest)
-                if (response.isSuccessful) {
-                    Toast.makeText(this@AssignLeaseActivity, "Lease assigned successfully!", Toast.LENGTH_SHORT).show()
-                } else {
-                    Toast.makeText(this@AssignLeaseActivity, "Error: ${response.code()}", Toast.LENGTH_SHORT).show()
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                try {
+                    val response = api.createLease("Bearer $jwt", leaseRequest)
+                    if (response.isSuccessful) {
+                        Toast.makeText(this@AssignLeaseActivity, "Lease assigned successfully!", Toast.LENGTH_SHORT).show()
+
+                        // Update property status to "Occupied"
+                        val statusUpdate = PropertyStatusDto("Occupied")
+                        val statusRes = api.updatePropertyStatus("Bearer $jwt", propId, statusUpdate)
+
+                        if (statusRes.isSuccessful) {
+                            Toast.makeText(this@AssignLeaseActivity, "Property marked as Occupied", Toast.LENGTH_SHORT).show()
+                        } else {
+                            Toast.makeText(this@AssignLeaseActivity, "Failed to update property status", Toast.LENGTH_SHORT).show()
+                        }
+
+                        finish()
+
+                    } else {
+                        Toast.makeText(this@AssignLeaseActivity, "Error: ${response.code()}", Toast.LENGTH_SHORT).show()
+                    }
+                } catch (e: Exception) {
+                    Toast.makeText(this@AssignLeaseActivity, "Network error: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
-            } catch (e: Exception) {
-                Toast.makeText(this@AssignLeaseActivity, "Network error: ${e.message}", Toast.LENGTH_SHORT).show()
             }
         }
+
     }
 }

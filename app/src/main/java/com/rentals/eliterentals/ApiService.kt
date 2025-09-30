@@ -27,10 +27,11 @@ interface ApiService {
 
     @PUT("api/Users/{id}")
     suspend fun updateUser(
-        @Header("Authorization") bearer: String,
-        @Path("id") id: Int,
-        @Body update: UserUpdateDto
-    ): Response<UserDto>
+        @Header("Authorization") token: String,
+        @Path("id") userId: Int,
+        @Body user: User
+    ): Response<User>
+
 
     @PATCH("api/Users/{id}/status")
     suspend fun toggleUserStatus(
@@ -56,6 +57,14 @@ interface ApiService {
         @Path("id") id: Int,
         @Body property: PropertyDto
     ): Response<PropertyDto>
+
+    @PUT("api/Property/{id}/status")
+    suspend fun updatePropertyStatus(
+        @Header("Authorization") bearer: String,
+        @Path("id") propertyId: Int,
+        @Body statusDto: PropertyStatusDto
+    ): Response<Unit>
+
 
     @DELETE("api/Property/{id}")
     suspend fun deleteProperty(

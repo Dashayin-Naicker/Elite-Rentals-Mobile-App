@@ -13,10 +13,10 @@ object RetrofitClient {
     private const val BASE_URL = "http://10.0.2.2:5263/"
 
 
-
     private val loggingInterceptor = HttpLoggingInterceptor().apply {
-        level = HttpLoggingInterceptor.Level.BODY
+        level = HttpLoggingInterceptor.Level.BASIC // or HEADERS
     }
+
 
     private val connectionInterceptor = Interceptor { chain ->
         val request = chain.request().newBuilder()
@@ -24,6 +24,16 @@ object RetrofitClient {
             .build()
         chain.proceed(request)
     }
+
+    private val errorInterceptor = Interceptor { chain ->
+        try {
+            chain.proceed(chain.request())
+        } catch (e: Exception) {
+            e.printStackTrace() // or use Log.e("NetworkError", e.localizedMessage)
+            throw e // rethrow to let Retrofit handle it
+        }
+    }
+
 
     // Trust all SSL certificates (for dev only)
     private val trustAllCerts = arrayOf<TrustManager>(object : X509TrustManager {
@@ -40,6 +50,7 @@ object RetrofitClient {
         .sslSocketFactory(sslContext.socketFactory, trustAllCerts[0] as X509TrustManager)
         .hostnameVerifier { _, _ -> true }
         .addInterceptor(connectionInterceptor)
+        .addInterceptor(errorInterceptor)
         .addInterceptor(loggingInterceptor)
         .build()
 

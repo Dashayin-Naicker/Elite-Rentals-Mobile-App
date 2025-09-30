@@ -5,7 +5,9 @@ import androidx.appcompat.app.AppCompatActivity
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import kotlinx.coroutines.launch
 
 class RegisterTenantActivity : AppCompatActivity() {
@@ -38,31 +40,33 @@ class RegisterTenantActivity : AppCompatActivity() {
 
             // Use coroutine to call API
             lifecycleScope.launch {
-                try {
-                    val response = RetrofitClient.instance.registerUser(request)
-                    if (response.isSuccessful && response.body() != null) {
+                repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    try {
+                        val response = RetrofitClient.instance.registerUser(request)
+                        if (response.isSuccessful && response.body() != null) {
+                            Toast.makeText(
+                                this@RegisterTenantActivity,
+                                "Tenant Registered Successfully!",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            finish() // Close activity after successful registration
+                        } else {
+                            // Display error message from API if available
+                            val code = response.code()
+                            val message = response.errorBody()?.string()
+                            Toast.makeText(
+                                this@RegisterTenantActivity,
+                                "Failed: $code\n$message",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                    } catch (e: Exception) {
                         Toast.makeText(
                             this@RegisterTenantActivity,
-                            "Tenant Registered Successfully!",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        finish() // Close activity after successful registration
-                    } else {
-                        // Display error message from API if available
-                        val code = response.code()
-                        val message = response.errorBody()?.string()
-                        Toast.makeText(
-                            this@RegisterTenantActivity,
-                            "Failed: $code\n$message",
+                            "Error: ${e.localizedMessage}",
                             Toast.LENGTH_LONG
                         ).show()
                     }
-                } catch (e: Exception) {
-                    Toast.makeText(
-                        this@RegisterTenantActivity,
-                        "Error: ${e.localizedMessage}",
-                        Toast.LENGTH_LONG
-                    ).show()
                 }
             }
         }
