@@ -44,25 +44,36 @@ class LeasesFragment : Fragment() {
                     ?.mapNotNull { it.tenantId }
                     ?.toSet() ?: emptySet()
 
+                // Filter out nulls here
                 val tenants = usersRes?.body()
+                    ?.filterNotNull()
                     ?.filter { it.role == "Tenant" && it.tenantApproval == "Approved" && it.userId !in leasedTenantIds }
                     ?: emptyList()
 
-                val properties = propsRes?.body()?.filter { it.status == "Available" } ?: emptyList()
+                val properties = propsRes?.body()
+                    ?.filterNotNull()
+                    ?.filter { it.status == "Available" }
+                    ?: emptyList()
 
                 spTenant.adapter = ArrayAdapter(
-                    requireContext(), android.R.layout.simple_spinner_dropdown_item,
-                    tenants.map { "${it.firstName} ${it.lastName}" })
+                    requireContext(),
+                    android.R.layout.simple_spinner_dropdown_item,
+                    tenants.map { "${it.firstName ?: ""} ${it.lastName ?: ""}" } // safe access
+                )
                 spTenant.tag = tenants
 
-                spProperty.adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item,
-                    properties.map { it.address })
+                spProperty.adapter = ArrayAdapter(
+                    requireContext(),
+                    android.R.layout.simple_spinner_dropdown_item,
+                    properties.map { it.address ?: it.title ?: "Property ${it.propertyId}" } // safe access
+                )
                 spProperty.tag = properties
 
             } catch (e: Exception) {
                 Toast.makeText(requireContext(), "Error loading data: ${e.message}", Toast.LENGTH_LONG).show()
             }
         }
+
 
         btnAssign.setOnClickListener {
             val tenants = spTenant.tag as List<UserDto>

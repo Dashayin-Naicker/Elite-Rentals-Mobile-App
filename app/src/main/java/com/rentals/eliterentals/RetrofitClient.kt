@@ -10,11 +10,14 @@ import java.security.cert.X509Certificate
 import javax.net.ssl.*
 
 object RetrofitClient {
-    private const val BASE_URL = "http://10.0.2.2:5263/"
+    //private const val BASE_URL = "http://10.0.2.2:5263/"
+
+    private const val BASE_URL = "https://eliterentalsapi-czckh7fadmgbgtgf.southafricanorth-01.azurewebsites.net/"
+
 
 
     private val loggingInterceptor = HttpLoggingInterceptor().apply {
-        level = HttpLoggingInterceptor.Level.BASIC // or HEADERS
+        level = HttpLoggingInterceptor.Level.BODY
     }
 
 
@@ -27,10 +30,17 @@ object RetrofitClient {
 
     private val errorInterceptor = Interceptor { chain ->
         try {
-            chain.proceed(chain.request())
+            val response = chain.proceed(chain.request())
+            // Wrap empty responses to avoid EOFException
+            if (response.body == null || response.code == 204) {
+                return@Interceptor response.newBuilder()
+                    .body(okhttp3.ResponseBody.create(null, ""))
+                    .build()
+            }
+            response
         } catch (e: Exception) {
-            e.printStackTrace() // or use Log.e("NetworkError", e.localizedMessage)
-            throw e // rethrow to let Retrofit handle it
+            e.printStackTrace()
+            throw e
         }
     }
 

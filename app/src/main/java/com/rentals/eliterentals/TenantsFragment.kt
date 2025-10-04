@@ -43,15 +43,23 @@ class TenantsFragment : Fragment() {
 
     private fun loadTenants() {
         lifecycleScope.launch {
-            val res = api.getAllUsers("Bearer $jwt")
-            if (res.isSuccessful) {
-                val tenants = res.body()?.filter { it.role == "Tenant" } ?: emptyList()
-                adapter.submit(tenants)
+            try {
+                val res = api.getAllUsers("Bearer $jwt")
+                if (res.isSuccessful) {
+                    // Filter out nulls before passing to adapter
+                    val tenants = res.body()?.filterNotNull()?.filter { it.role == "Tenant" } ?: emptyList()
+                    adapter.submit(tenants)
+                } else {
+                    Toast.makeText(requireContext(), "Failed to load tenants: ${res.code()}", Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: Exception) {
+                Toast.makeText(requireContext(), "Network error: ${e.localizedMessage}", Toast.LENGTH_LONG).show()
             }
         }
     }
 
-    private fun approveTenant(u: UserDto) {
+    private fun approveTenant(u: UserDto?) {
+        u ?: return  // Safely ignore if null
         val fullUser = User(
             userId = u.userId,
             firstName = u.firstName ?: "",
@@ -63,18 +71,22 @@ class TenantsFragment : Fragment() {
         )
 
         lifecycleScope.launch {
-            val res = api.updateUser("Bearer $jwt", u.userId, fullUser)
-            if (res.isSuccessful) {
-                Toast.makeText(requireContext(), "Tenant Approved", Toast.LENGTH_SHORT).show()
-                loadTenants()
-            } else {
-                Toast.makeText(requireContext(), "Failed to approve tenant", Toast.LENGTH_SHORT).show()
+            try {
+                val res = api.updateUser("Bearer $jwt", u.userId, fullUser)
+                if (res.isSuccessful) {
+                    Toast.makeText(requireContext(), "Tenant Approved", Toast.LENGTH_SHORT).show()
+                    loadTenants()
+                } else {
+                    Toast.makeText(requireContext(), "Failed to approve tenant", Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: Exception) {
+                Toast.makeText(requireContext(), "Error: ${e.localizedMessage}", Toast.LENGTH_LONG).show()
             }
         }
     }
 
-
-    private fun toggleTenant(u: UserDto) {
+    private fun toggleTenant(u: UserDto?) {
+        u ?: return  // Safely ignore if null
         lifecycleScope.launch {
             try {
                 val res = api.toggleUserStatus("Bearer $jwt", u.userId)
@@ -90,6 +102,7 @@ class TenantsFragment : Fragment() {
             }
         }
     }
+
 
 
 

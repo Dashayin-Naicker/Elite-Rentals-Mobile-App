@@ -58,17 +58,19 @@ class AssignLeaseActivity : AppCompatActivity() {
                         ?.mapNotNull { it.tenantId }
                         ?.toSet() ?: emptySet()
 
+                    // Filter nulls here
                     tenants = tenantsRes?.body()
+                        ?.filterNotNull()
                         ?.filter { it.role == "Tenant" && it.tenantApproval == "Approved" && it.userId !in leasedTenantIds }
                         ?: emptyList()
 
                     tenantSpinner.adapter = ArrayAdapter(
                         this@AssignLeaseActivity,
                         android.R.layout.simple_spinner_dropdown_item,
-                        tenants.map { "${it.firstName} ${it.lastName}" }
+                        tenants.map { "${it.firstName ?: ""} ${it.lastName ?: ""}" }
                     )
 
-                    props = propsRes?.body()?.filter { it.status == "Available" } ?: emptyList()
+                    props = propsRes?.body()?.filterNotNull()?.filter { it.status == "Available" } ?: emptyList()
                     propSpinner.adapter = ArrayAdapter(
                         this@AssignLeaseActivity,
                         android.R.layout.simple_spinner_dropdown_item,
@@ -81,6 +83,7 @@ class AssignLeaseActivity : AppCompatActivity() {
             }
         }
     }
+
 
 
 

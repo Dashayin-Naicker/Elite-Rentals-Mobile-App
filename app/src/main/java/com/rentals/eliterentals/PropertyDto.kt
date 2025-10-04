@@ -31,7 +31,8 @@ data class PropertyDto(
     val status: String? = null
 ) : Parcelable {
     val imageUrl: String
-        get() = "http://10.0.2.2:5263/api/Property/$propertyId/image"
+        get() = "https://eliterentalsapi-czckh7fadmgbgtgf.southafricanorth-01.azurewebsites.net/api/Property/$propertyId/image"
+
 
 }
 

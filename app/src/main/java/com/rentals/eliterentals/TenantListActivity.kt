@@ -30,20 +30,33 @@ class TenantListActivity : AppCompatActivity() {
 
         jwt = getSharedPreferences("app", MODE_PRIVATE).getString("jwt", "") ?: ""
         fetchTenants()
-
     }
 
     private fun fetchTenants() {
         lifecycleScope.launch {
-            val res = api.getAllUsers("Bearer $jwt")
-            if (res.isSuccessful) {
-                val tenants = res.body()?.filter { it.role == "Tenant" } ?: emptyList()
-                adapter.submit(tenants)
-            } else {
-                Toast.makeText(this@TenantListActivity, "Failed to load tenants", Toast.LENGTH_SHORT).show()
+            try {
+                val res = api.getAllUsers("Bearer $jwt")
+                if (res.isSuccessful) {
+                    // Filter nulls and only tenants
+                    val tenants = res.body()?.filterNotNull()?.filter { it.role == "Tenant" } ?: emptyList()
+                    adapter.submit(tenants)
+                } else {
+                    Toast.makeText(
+                        this@TenantListActivity,
+                        "Failed to load tenants: ${res.code()}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            } catch (e: Exception) {
+                Toast.makeText(
+                    this@TenantListActivity,
+                    "Network error: ${e.localizedMessage}",
+                    Toast.LENGTH_LONG
+                ).show()
             }
         }
     }
+
 
     private fun onApproveClicked(user: UserDto) {
         val fullUser = User(
@@ -57,56 +70,40 @@ class TenantListActivity : AppCompatActivity() {
         )
 
         lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
+            try {
                 val res = api.updateUser("Bearer $jwt", user.userId, fullUser)
                 if (res.isSuccessful) {
-                    Toast.makeText(
-                        this@TenantListActivity,
-                        "Approved ${user.email}",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    Toast.makeText(this@TenantListActivity, "Approved ${user.email}", Toast.LENGTH_SHORT).show()
                     fetchTenants()
                 } else {
-                    Toast.makeText(this@TenantListActivity, "Failed to approve", Toast.LENGTH_SHORT)
-                        .show()
+                    Toast.makeText(this@TenantListActivity, "Failed to approve", Toast.LENGTH_SHORT).show()
                 }
+            } catch (e: Exception) {
+                Toast.makeText(this@TenantListActivity, "Error: ${e.localizedMessage}", Toast.LENGTH_LONG).show()
             }
         }
     }
-
 
     private fun onToggleClicked(user: UserDto) {
         lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                try {
-                    val res = api.toggleUserStatus("Bearer $jwt", user.userId)
-                    if (res.isSuccessful) {
-                        val msg =
-                            if (user.isActive) "Disabled ${user.email}" else "Enabled ${user.email}"
-                        Toast.makeText(this@TenantListActivity, msg, Toast.LENGTH_SHORT).show()
-                        fetchTenants()
-                    } else {
-                        Toast.makeText(
-                            this@TenantListActivity,
-                            "Failed to toggle status: ${res.code()}",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                } catch (e: Exception) {
-                    Toast.makeText(
-                        this@TenantListActivity,
-                        "Error: ${e.localizedMessage}",
-                        Toast.LENGTH_LONG
-                    ).show()
+            try {
+                val res = api.toggleUserStatus("Bearer $jwt", user.userId)
+                if (res.isSuccessful) {
+                    val msg = if (user.isActive) "Disabled ${user.email}" else "Enabled ${user.email}"
+                    Toast.makeText(this@TenantListActivity, msg, Toast.LENGTH_SHORT).show()
+                    fetchTenants()
+                } else {
+                    Toast.makeText(this@TenantListActivity, "Failed to toggle status: ${res.code()}", Toast.LENGTH_SHORT).show()
                 }
+            } catch (e: Exception) {
+                Toast.makeText(this@TenantListActivity, "Error: ${e.localizedMessage}", Toast.LENGTH_LONG).show()
             }
         }
     }
-
 
     override fun onResume() {
         super.onResume()
         fetchTenants()
     }
-
 }
+

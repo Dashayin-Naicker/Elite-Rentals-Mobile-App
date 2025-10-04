@@ -8,6 +8,7 @@ import android.os.Looper
 import android.util.Log
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.rentals.eliterentals.utils.FileUtils
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -15,6 +16,11 @@ import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 import java.io.IOException
 import java.math.BigDecimal
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.launch
+
 
 class AddEditPropertyActivity : AppCompatActivity() {
 
@@ -170,96 +176,94 @@ class AddEditPropertyActivity : AppCompatActivity() {
     }
 
     private fun uploadPropertyWithImage(property: Property, imageFile: File) {
-        val builder = MultipartBody.Builder().setType(MultipartBody.FORM)
-            .addFormDataPart("title", property.title)
-            .addFormDataPart("description", property.description)
-            .addFormDataPart("address", property.address)
-            .addFormDataPart("city", property.city)
-            .addFormDataPart("province", property.province)
-            .addFormDataPart("country", property.country)
-            .addFormDataPart("rentAmount", property.rentAmount.toPlainString())
-            .addFormDataPart("numOfBedrooms", property.numOfBedrooms.toString())
-            .addFormDataPart("numOfBathrooms", property.numOfBathrooms.toString())
-            .addFormDataPart("parkingType", property.parkingType)
-            .addFormDataPart("numOfParkingSpots", property.numOfParkingSpots.toString())
-            .addFormDataPart("petFriendly", property.petFriendly.toString())
-            .addFormDataPart("status", property.status)
+        lifecycleScope.launch {
+            try {
+                val builder = MultipartBody.Builder().setType(MultipartBody.FORM)
+                    .addFormDataPart("title", property.title)
+                    .addFormDataPart("description", property.description)
+                    .addFormDataPart("address", property.address)
+                    .addFormDataPart("city", property.city)
+                    .addFormDataPart("province", property.province)
+                    .addFormDataPart("country", property.country)
+                    .addFormDataPart("rentAmount", property.rentAmount.toPlainString())
+                    .addFormDataPart("numOfBedrooms", property.numOfBedrooms.toString())
+                    .addFormDataPart("numOfBathrooms", property.numOfBathrooms.toString())
+                    .addFormDataPart("parkingType", property.parkingType)
+                    .addFormDataPart("numOfParkingSpots", property.numOfParkingSpots.toString())
+                    .addFormDataPart("petFriendly", property.petFriendly.toString())
+                    .addFormDataPart("status", property.status)
 
-        val imageRequestBody = imageFile.asRequestBody("image/jpeg".toMediaTypeOrNull())
-        builder.addFormDataPart("image", imageFile.name, imageRequestBody)
+                val imageRequestBody = imageFile.asRequestBody("image/jpeg".toMediaTypeOrNull())
+                builder.addFormDataPart("image", imageFile.name, imageRequestBody)
 
-        val request = Request.Builder()
-            .url("http://10.0.2.2:5263/api/Property")
-            .header("Authorization", "Bearer $jwt")
-            .post(builder.build())
-            .build()
+                val request = Request.Builder()
+                    .url("https://eliterentalsapi-czckh7fadmgbgtgf.southafricanorth-01.azurewebsites.net/api/Property")
+                    .header("Authorization", "Bearer $jwt")
+                    .post(builder.build())
+                    .build()
 
-        client.newCall(request).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                Handler(Looper.getMainLooper()).post {
-                    Toast.makeText(this@AddEditPropertyActivity, "Upload failed: ${e.message}", Toast.LENGTH_LONG).show()
+                val response = withContext(Dispatchers.IO) { client.newCall(request).execute() }
+
+                if (response.isSuccessful) {
+                    Toast.makeText(this@AddEditPropertyActivity, "Property saved successfully!", Toast.LENGTH_SHORT).show()
+                    finish()
+                } else {
+                    Toast.makeText(this@AddEditPropertyActivity, "Error ${response.code}", Toast.LENGTH_LONG).show()
                 }
-            }
 
-            override fun onResponse(call: Call, response: Response) {
-                Handler(Looper.getMainLooper()).post {
-                    if (response.isSuccessful) {
-                        Toast.makeText(this@AddEditPropertyActivity, "Property saved successfully!", Toast.LENGTH_SHORT).show()
-                        finish()
-                    } else {
-                        Log.e("PropertyUpload", "Error ${response.code}")
-                        Toast.makeText(this@AddEditPropertyActivity, "Error ${response.code}", Toast.LENGTH_LONG).show()
-                    }
-                }
+            } catch (e: IOException) {
+                Toast.makeText(this@AddEditPropertyActivity, "Upload failed: ${e.message}", Toast.LENGTH_LONG).show()
+            } catch (e: CancellationException) {
+                // Request was cancelled because Activity was destroyed; do nothing
             }
-        })
+        }
     }
 
     private fun updateProperty(propertyId: Int, property: Property) {
-        val builder = MultipartBody.Builder().setType(MultipartBody.FORM)
-            .addFormDataPart("title", property.title)
-            .addFormDataPart("description", property.description)
-            .addFormDataPart("address", property.address)
-            .addFormDataPart("city", property.city)
-            .addFormDataPart("province", property.province)
-            .addFormDataPart("country", property.country)
-            .addFormDataPart("rentAmount", property.rentAmount.toPlainString())
-            .addFormDataPart("numOfBedrooms", property.numOfBedrooms.toString())
-            .addFormDataPart("numOfBathrooms", property.numOfBathrooms.toString())
-            .addFormDataPart("parkingType", property.parkingType)
-            .addFormDataPart("numOfParkingSpots", property.numOfParkingSpots.toString())
-            .addFormDataPart("petFriendly", property.petFriendly.toString())
-            .addFormDataPart("status", property.status)
+        lifecycleScope.launch {
+            try {
+                val builder = MultipartBody.Builder().setType(MultipartBody.FORM)
+                    .addFormDataPart("title", property.title)
+                    .addFormDataPart("description", property.description)
+                    .addFormDataPart("address", property.address)
+                    .addFormDataPart("city", property.city)
+                    .addFormDataPart("province", property.province)
+                    .addFormDataPart("country", property.country)
+                    .addFormDataPart("rentAmount", property.rentAmount.toPlainString())
+                    .addFormDataPart("numOfBedrooms", property.numOfBedrooms.toString())
+                    .addFormDataPart("numOfBathrooms", property.numOfBathrooms.toString())
+                    .addFormDataPart("parkingType", property.parkingType)
+                    .addFormDataPart("numOfParkingSpots", property.numOfParkingSpots.toString())
+                    .addFormDataPart("petFriendly", property.petFriendly.toString())
+                    .addFormDataPart("status", property.status)
 
-        selectedImageFile?.let {
-            val imageRequestBody = it.asRequestBody("image/jpeg".toMediaTypeOrNull())
-            builder.addFormDataPart("image", it.name, imageRequestBody)
+                selectedImageFile?.let {
+                    val imageRequestBody = it.asRequestBody("image/jpeg".toMediaTypeOrNull())
+                    builder.addFormDataPart("image", it.name, imageRequestBody)
+                }
+
+                val request = Request.Builder()
+                    .url("https://eliterentalsapi-czckh7fadmgbgtgf.southafricanorth-01.azurewebsites.net/api/Property/$propertyId")
+                    .header("Authorization", "Bearer $jwt")
+                    .put(builder.build())
+                    .build()
+
+                val response = withContext(Dispatchers.IO) { client.newCall(request).execute() }
+
+                if (response.isSuccessful) {
+                    Toast.makeText(this@AddEditPropertyActivity, "Property updated successfully!", Toast.LENGTH_SHORT).show()
+                    finish()
+                } else {
+                    Toast.makeText(this@AddEditPropertyActivity, "Error ${response.code}", Toast.LENGTH_LONG).show()
+                }
+
+            } catch (e: IOException) {
+                Toast.makeText(this@AddEditPropertyActivity, "Update failed: ${e.message}", Toast.LENGTH_LONG).show()
+            } catch (e: CancellationException) {
+                // Activity destroyed, ignore
+            }
         }
-
-        val request = Request.Builder()
-            .url("http://10.0.2.2:5263/api/Property/$propertyId")
-            .header("Authorization", "Bearer $jwt")
-            .put(builder.build())
-            .build()
-
-        client.newCall(request).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                Handler(Looper.getMainLooper()).post {
-                    Toast.makeText(this@AddEditPropertyActivity, "Update failed: ${e.message}", Toast.LENGTH_LONG).show()
-                }
-            }
-
-            override fun onResponse(call: Call, response: Response) {
-                Handler(Looper.getMainLooper()).post {
-                    if (response.isSuccessful) {
-                        Toast.makeText(this@AddEditPropertyActivity, "Property updated successfully!", Toast.LENGTH_SHORT).show()
-                        finish()
-                    } else {
-                        Log.e("PropertyUpdate", "Error ${response.code}")
-                        Toast.makeText(this@AddEditPropertyActivity, "Error ${response.code}", Toast.LENGTH_LONG).show()
-                    }
-                }
-            }
-        })
     }
+
+
 }
