@@ -11,16 +11,26 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
+import android.widget.LinearLayout
+import com.rentals.eliterentals.SettingsActivity
 
-class TenantDashboardActivity : AppCompatActivity() {
+class TenantDashboardActivity : BaseActivity() {
 
     private val api = RetrofitClient.instance
     private var jwt = ""
     private var tenantId = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        ThemeUtils.applyTheme(ThemeUtils.getSavedTheme(this))
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_tenant_dashboard)
+
+        val settingsNav = findViewById<LinearLayout>(R.id.navSettings)
+        settingsNav.setOnClickListener {
+            val intent = Intent(this, SettingsActivity::class.java)
+            startActivity(intent)
+        }
+
 
         // UI elements
         val uploadProofCard = findViewById<CardView>(R.id.cardUploadProof)

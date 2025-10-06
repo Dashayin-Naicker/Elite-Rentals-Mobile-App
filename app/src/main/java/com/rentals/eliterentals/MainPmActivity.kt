@@ -44,6 +44,7 @@ class MainPmActivity : AppCompatActivity() {
                     loadFragment(LeasesFragment())
                     true
                 }
+
                 else -> false
             }
         }

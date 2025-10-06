@@ -122,4 +122,12 @@ interface ApiService {
         @Path("id") paymentId: Int,
         @Body dto: PaymentStatusDto
     ): Response<Unit>
+
+    @PATCH("api/users/{id}/password")
+    fun changePassword(
+        @Path("id") id: Int,
+        @Body dto: ChangePasswordRequest
+    ): Call<ApiResponse>
+
+
 }
