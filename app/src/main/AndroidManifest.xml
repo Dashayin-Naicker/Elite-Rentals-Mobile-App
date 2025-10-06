@@ -36,6 +36,7 @@
         <activity android:name=".AddEditPropertyActivity" />
         <activity android:name=".AssignLeaseActivity" />
         <activity android:name=".RegisterTenantActivity" />
+        <activity android:name=".UploadProofActivity" />
 
 
 

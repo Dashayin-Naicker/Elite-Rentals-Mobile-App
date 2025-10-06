@@ -1,9 +1,11 @@
 package com.rentals.eliterentals
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -20,6 +22,8 @@ class TenantDashboardActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_tenant_dashboard)
 
+        // UI elements
+        val uploadProofCard = findViewById<CardView>(R.id.cardUploadProof)
         val leaseInfoTv = findViewById<TextView>(R.id.tvLeaseInfo)
         val rentStatusTv = findViewById<TextView>(R.id.tvRentStatus)
         val rentAmountTv = findViewById<TextView>(R.id.tvRentAmount)
@@ -34,7 +38,13 @@ class TenantDashboardActivity : AppCompatActivity() {
         val tenantName = prefs.getString("tenantName", "Tenant")
         tenantNameTv.text = "Hi, $tenantName!"
 
-        // Fetch leases
+        // Navigate to UploadProofActivity
+        uploadProofCard.setOnClickListener {
+            val intent = Intent(this, UploadProofActivity::class.java)
+            startActivity(intent)
+        }
+
+        // Fetch leases safely
         lifecycleScope.launch {
             try {
                 val res = api.getAllLeases("Bearer $jwt")
@@ -43,45 +53,77 @@ class TenantDashboardActivity : AppCompatActivity() {
                     val lease = leases.firstOrNull()
 
                     if (lease != null) {
-                        val startDate = formatDate(lease.startDate)
-                        val endDate = formatDate(lease.endDate)
-                        leaseInfoTv.text = "Lease: $startDate → $endDate"
-
-                        rentStatusTv.text = "Rent Status: ${lease.status}"
-                        val rent = lease.property?.rentAmount?.toInt() ?: 0
-                        rentAmountTv.text = "R$rent"
-
-                        // Days until rent due (end of month)
-                        val rentDueDays = calculateDaysUntilMonthEnd()
-                        rentDueDaysTv.text = "Rent Due in $rentDueDays Days"
-
-                        // Days until lease ends
-                        val leaseEndDays = calculateDaysLeft(lease.endDate)
-                        leaseEndDaysTv.text = "Lease Ends in $leaseEndDays Days"
-
+                        populateLeaseInfo(
+                            leaseInfoTv, rentStatusTv, rentAmountTv,
+                            rentDueDaysTv, leaseEndDaysTv, lease
+                        )
                     } else {
-                        leaseInfoTv.text = "No active lease"
-                        rentStatusTv.text = "Rent Status: N/A"
-                        rentAmountTv.text = "R0"
-                        rentDueDaysTv.text = "No rent due"
-                        leaseEndDaysTv.text = "Lease Ends: N/A"
+                        showNoLease(leaseInfoTv, rentStatusTv, rentAmountTv, rentDueDaysTv, leaseEndDaysTv)
                     }
                 } else {
-                    leaseInfoTv.text = "Error loading lease"
-                    rentStatusTv.text = "N/A"
-                    rentAmountTv.text = "R0"
-                    rentDueDaysTv.text = "N/A"
-                    leaseEndDaysTv.text = "N/A"
+                    val rawError = res.errorBody()?.string()
+                    Log.e("TenantDashboard", "API Error: ${res.code()} $rawError")
+                    showError(leaseInfoTv, rentStatusTv, rentAmountTv, rentDueDaysTv, leaseEndDaysTv)
                 }
+            } catch (e: java.io.EOFException) {
+                Log.e("TenantDashboard", "EOFException: API response empty", e)
+                showError(leaseInfoTv, rentStatusTv, rentAmountTv, rentDueDaysTv, leaseEndDaysTv)
             } catch (e: Exception) {
                 Log.e("TenantDashboard", "Failed to load lease", e)
-                leaseInfoTv.text = "Error loading lease"
-                rentStatusTv.text = "N/A"
-                rentAmountTv.text = "R0"
-                rentDueDaysTv.text = "N/A"
-                leaseEndDaysTv.text = "N/A"
+                showError(leaseInfoTv, rentStatusTv, rentAmountTv, rentDueDaysTv, leaseEndDaysTv)
             }
         }
+    }
+
+    private fun populateLeaseInfo(
+        leaseInfoTv: TextView,
+        rentStatusTv: TextView,
+        rentAmountTv: TextView,
+        rentDueDaysTv: TextView,
+        leaseEndDaysTv: TextView,
+        lease: LeaseDto
+    ) {
+        val startDate = formatDate(lease.startDate)
+        val endDate = formatDate(lease.endDate)
+        leaseInfoTv.text = "Lease: $startDate → $endDate"
+
+        rentStatusTv.text = "Rent Status: ${lease.status}"
+        val rent = lease.property?.rentAmount?.toInt() ?: 0
+        rentAmountTv.text = "R$rent"
+
+        val rentDueDays = calculateDaysUntilMonthEnd()
+        rentDueDaysTv.text = "Rent Due in $rentDueDays Days"
+
+        val leaseEndDays = calculateDaysLeft(lease.endDate)
+        leaseEndDaysTv.text = "Lease Ends in $leaseEndDays Days"
+    }
+
+    private fun showNoLease(
+        leaseInfoTv: TextView,
+        rentStatusTv: TextView,
+        rentAmountTv: TextView,
+        rentDueDaysTv: TextView,
+        leaseEndDaysTv: TextView
+    ) {
+        leaseInfoTv.text = "No active lease"
+        rentStatusTv.text = "Rent Status: N/A"
+        rentAmountTv.text = "R0"
+        rentDueDaysTv.text = "No rent due"
+        leaseEndDaysTv.text = "Lease Ends: N/A"
+    }
+
+    private fun showError(
+        leaseInfoTv: TextView,
+        rentStatusTv: TextView,
+        rentAmountTv: TextView,
+        rentDueDaysTv: TextView,
+        leaseEndDaysTv: TextView
+    ) {
+        leaseInfoTv.text = "Error loading lease"
+        rentStatusTv.text = "N/A"
+        rentAmountTv.text = "R0"
+        rentDueDaysTv.text = "N/A"
+        leaseEndDaysTv.text = "N/A"
     }
 
     private fun calculateDaysUntilMonthEnd(): Int {

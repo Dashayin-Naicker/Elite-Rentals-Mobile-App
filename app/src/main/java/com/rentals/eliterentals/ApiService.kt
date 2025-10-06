@@ -1,5 +1,7 @@
 package com.rentals.eliterentals
 
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Response
@@ -74,5 +76,50 @@ interface ApiService {
     suspend fun getAllLeases(
         @Header("Authorization") bearer: String
     ): Response<List<LeaseDto>>
+    // 🔹 Submit payment with proof file
+    @Multipart
+    @POST("api/Payment")
+    suspend fun createPayment(
+        @Header("Authorization") bearer: String,
+        @Part("TenantId") tenantId: RequestBody,
+        @Part("Amount") amount: RequestBody,
+        @Part("Date") date: RequestBody,
+        @Part proof: MultipartBody.Part? = null
+    ): Response<PaymentDto>
 
+
+    // 🔹 Get all payments (Admin/Manager)
+    @GET("api/Payment")
+    suspend fun getAllPayments(
+        @Header("Authorization") bearer: String
+    ): Response<List<PaymentDto>>
+
+    // 🔹 Get all payments for a specific tenant
+    @GET("api/Payment/tenant/{tenantId}")
+    suspend fun getTenantPayments(
+        @Header("Authorization") bearer: String,
+        @Path("tenantId") tenantId: Int
+    ): Response<List<PaymentDto>>
+
+    // 🔹 Get a single payment
+    @GET("api/Payment/{id}")
+    suspend fun getPaymentById(
+        @Header("Authorization") bearer: String,
+        @Path("id") paymentId: Int
+    ): Response<PaymentDto>
+
+    // 🔹 Download proof of payment
+    @GET("api/Payment/{id}/proof")
+    suspend fun downloadProof(
+        @Header("Authorization") bearer: String,
+        @Path("id") paymentId: Int
+    ): Response<ResponseBody>
+
+    // 🔹 Update payment status (Admin/Manager)
+    @PUT("api/Payment/{id}/status")
+    suspend fun updatePaymentStatus(
+        @Header("Authorization") bearer: String,
+        @Path("id") paymentId: Int,
+        @Body dto: PaymentStatusDto
+    ): Response<Unit>
 }
