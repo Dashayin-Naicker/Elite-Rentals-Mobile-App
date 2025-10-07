@@ -1,7 +1,6 @@
 package com.rentals.eliterentals
 
 import android.content.Context
-import android.content.res.Resources
 import androidx.appcompat.app.AppCompatDelegate
 
 object ThemeUtils {
@@ -16,14 +15,16 @@ object ThemeUtils {
     }
 
     fun saveTheme(context: Context, theme: String) {
-        context.getSharedPreferences("settings", Context.MODE_PRIVATE)
+        // Use "app" to match SettingsActivity, not "settings"
+        context.getSharedPreferences("app", Context.MODE_PRIVATE)
             .edit()
             .putString("theme", theme)
             .apply()
     }
 
     fun getSavedTheme(context: Context): String {
-        return context.getSharedPreferences("settings", Context.MODE_PRIVATE)
+        // Use "app" to match SettingsActivity, not "settings"
+        return context.getSharedPreferences("app", Context.MODE_PRIVATE)
             .getString("theme", "light") ?: "light"
     }
 }

@@ -32,7 +32,8 @@ class SettingsActivity : BaseActivity() {
     private lateinit var role: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        ThemeUtils.applyTheme(ThemeUtils.getSavedTheme(this))
+        // REMOVE THIS LINE - BaseActivity already handles theme application
+        // ThemeUtils.applyTheme(ThemeUtils.getSavedTheme(this))
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
 
@@ -53,7 +54,10 @@ class SettingsActivity : BaseActivity() {
 
         // Load saved settings
         switchBiometric.isChecked = biometricPrefs.getBoolean("enabled", false)
-        when (prefs.getString("theme", "light")) {
+
+        // Get the current theme from SharedPreferences directly
+        val currentTheme = prefs.getString("theme", "light") ?: "light"
+        when (currentTheme) {
             "light" -> radioGroupTheme.check(R.id.radioLight)
             "dark" -> radioGroupTheme.check(R.id.radioDark)
             "high_contrast" -> radioGroupTheme.check(R.id.radioHighContrast)
@@ -111,7 +115,10 @@ class SettingsActivity : BaseActivity() {
                 else -> "light"
             }
 
-            ThemeUtils.saveTheme(this, selectedTheme)
+            // Save theme to SharedPreferences
+            prefs.edit().putString("theme", selectedTheme).apply()
+
+            // Apply the theme
             ThemeUtils.applyTheme(selectedTheme)
 
             // Show a brief progress indicator
@@ -126,12 +133,23 @@ class SettingsActivity : BaseActivity() {
 
             dialog.show()
 
-            // Delay recreation slightly to allow UI to settle
+            // Use a safer approach for delayed recreation
             Handler(Looper.getMainLooper()).postDelayed({
-                dialog.dismiss()
-                recreate()
+                // Check if the activity is still valid before dismissing and recreating
+                if (!isFinishing && !isDestroyed) {
+                    try {
+                        if (dialog.isShowing) {
+                            dialog.dismiss()
+                        }
+                    } catch (e: IllegalArgumentException) {
+                        // Ignore if the dialog window is already gone
+                        e.printStackTrace()
+                    }
+                    recreate()
+                }
             }, 300)
         }
+
         // Logout
         btnLogout.setOnClickListener {
             prefs.edit().clear().apply()
@@ -140,6 +158,7 @@ class SettingsActivity : BaseActivity() {
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
         }
+
         // Bottom navigation functionality
         findViewById<LinearLayout>(R.id.navDashboard).setOnClickListener {
             startActivity(Intent(this, TenantDashboardActivity::class.java))
@@ -160,7 +179,6 @@ class SettingsActivity : BaseActivity() {
             startActivity(Intent(this, SettingsActivity::class.java))
             finish()
         }
-
     }
 
     private fun buildSecureRetrofit(token: String): Retrofit {
