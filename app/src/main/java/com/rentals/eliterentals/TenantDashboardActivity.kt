@@ -60,6 +60,11 @@ class TenantDashboardActivity : BaseActivity() {
             startActivity(intent)
         }
 
+        findViewById<LinearLayout>(R.id.navTrackMaintenance).setOnClickListener {
+            val intent = Intent(this, TrackMaintenanceActivity::class.java)
+            startActivity(intent)
+        }
+
         // Fetch leases safely
         lifecycleScope.launch {
             try {

@@ -342,12 +342,17 @@
                 android:textColor="?android:textColorPrimary" />
         </LinearLayout>
 
+        <!-- Track Maintenance -->
         <LinearLayout
+            android:id="@+id/navTrackMaintenance"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackground">
 
             <ImageView
                 android:layout_width="28dp"
@@ -357,7 +362,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Maintenance"
+                android:text="Track Maintenance"
                 android:textSize="12sp"
                 android:textColor="?android:textColorPrimary" />
         </LinearLayout>

@@ -38,6 +38,7 @@
         <activity android:name=".RegisterTenantActivity" />
         <activity android:name=".UploadProofActivity" />
         <activity android:name=".SettingsActivity" />
+        <activity android:name=".TrackMaintenanceActivity" />
 
 
 

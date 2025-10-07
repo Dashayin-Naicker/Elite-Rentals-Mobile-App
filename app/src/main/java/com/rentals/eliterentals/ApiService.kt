@@ -141,6 +141,14 @@ interface ApiService {
         @Part proof: MultipartBody.Part? = null
     ): Response<Void>
 
+    @GET("api/Maintenance/my-requests")
+    suspend fun getMyRequests(
+        @Header("Authorization") token: String
+    ): Response<List<Maintenance>>
+
+
+
+
 
 
 }
