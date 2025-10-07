@@ -61,7 +61,7 @@ class TenantDashboardActivity : BaseActivity() {
         }
 
         findViewById<LinearLayout>(R.id.navTrackMaintenance).setOnClickListener {
-            val intent = Intent(this, TrackMaintenanceActivity::class.java)
+            val intent = Intent(this, ReportMaintenanceActivity::class.java)
             startActivity(intent)
         }
 
@@ -96,6 +96,12 @@ class TenantDashboardActivity : BaseActivity() {
                 showError(leaseInfoTv, rentStatusTv, rentAmountTv, rentDueDaysTv, leaseEndDaysTv)
             }
         }
+        val trackMaintenanceCard = findViewById<CardView>(R.id.cardTrackMaintenance)
+        trackMaintenanceCard.setOnClickListener {
+            val intent = Intent(this, TrackMaintenanceActivity::class.java)
+            startActivity(intent)
+        }
+
     }
 
     private fun populateLeaseInfo(

@@ -37,8 +37,9 @@ class ReportMaintenanceActivity : AppCompatActivity() {
         etDescription = findViewById(R.id.etDescription)
         btnSubmit = findViewById(R.id.btnSubmit)
         uploadLayout = findViewById(R.id.uploadContainer)
-        ivUpload = findViewById(R.id.ivBack)
+        ivUpload = findViewById(R.id.ivUpload)
 
+        // Top back button
         findViewById<ImageView>(R.id.ivBack).setOnClickListener { finish() }
 
         // Populate spinners
@@ -61,8 +62,20 @@ class ReportMaintenanceActivity : AppCompatActivity() {
         }
 
         // Submit maintenance request
-        btnSubmit.setOnClickListener {
-            submitMaintenance()
+        btnSubmit.setOnClickListener { submitMaintenance() }
+
+        // Bottom navigation clicks
+        findViewById<LinearLayout>(R.id.navDashboard).setOnClickListener {
+            startActivity(Intent(this, TenantDashboardActivity::class.java))
+        }
+        findViewById<LinearLayout>(R.id.navMaintenance).setOnClickListener {
+            // Current page, do nothing or scroll to top
+        }
+        findViewById<LinearLayout>(R.id.navPayments).setOnClickListener {
+            startActivity(Intent(this, UploadProofActivity::class.java))
+        }
+        findViewById<LinearLayout>(R.id.navSettings).setOnClickListener {
+            startActivity(Intent(this, SettingsActivity::class.java))
         }
     }
 
@@ -70,7 +83,7 @@ class ReportMaintenanceActivity : AppCompatActivity() {
         val prefs = getSharedPreferences("app", MODE_PRIVATE)
         val jwt = prefs.getString("jwt", null)
         val tenantId = prefs.getInt("userId", -1)
-        val propertyId = prefs.getInt("propertyId", -1) // You can set this earlier when tenant logs in
+        val propertyId = prefs.getInt("propertyId", -1)
 
         val category = spinnerCategory.selectedItem.toString()
         val urgency = spinnerUrgency.selectedItem.toString()
@@ -116,17 +129,13 @@ class ReportMaintenanceActivity : AppCompatActivity() {
                     proofPart
                 )
 
-
                 if (response.isSuccessful) {
                     Toast.makeText(this@ReportMaintenanceActivity, "Maintenance request submitted successfully", Toast.LENGTH_LONG).show()
-
-                    // Navigate back to tenant dashboard
                     val intent = Intent(this@ReportMaintenanceActivity, TenantDashboardActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
                     startActivity(intent)
                     finish()
-                }
-                else {
+                } else {
                     Toast.makeText(this@ReportMaintenanceActivity, "Failed to submit request", Toast.LENGTH_LONG).show()
                 }
             } catch (e: Exception) {
@@ -140,7 +149,8 @@ class ReportMaintenanceActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_IMAGE_PICK && resultCode == Activity.RESULT_OK) {
             selectedUri = data?.data
-            if (selectedUri != null) {
+            selectedUri?.let {
+                ivUpload.setImageURI(it)  // display selected photo
                 Toast.makeText(this, "Photo selected", Toast.LENGTH_SHORT).show()
             }
         }

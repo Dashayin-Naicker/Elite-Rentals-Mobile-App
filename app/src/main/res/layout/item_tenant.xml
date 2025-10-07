@@ -20,7 +20,8 @@
             android:layout_height="wrap_content"
             android:text="Tenant Name"
             android:textStyle="bold"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:textColor="?android:textColorPrimary" />
 
         <!-- Tenant Email -->
         <TextView
@@ -28,7 +29,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="tenant@email.com"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:textColor="?android:textColorSecondary" />
 
         <!-- Status -->
         <TextView
@@ -37,7 +39,7 @@
             android:layout_height="wrap_content"
             android:text="Approval: Pending | Active: false"
             android:textSize="13sp"
-            android:textColor="#666" />
+            android:textColor="#666666" />
 
         <!-- Buttons Row -->
         <LinearLayout
@@ -45,20 +47,30 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="end"
-            android:layout_marginTop="8dp">
+            android:layout_marginTop="12dp">
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnApprove"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Approve" />
+                android:text="Approve"
+                android:textColor="@android:color/white"
+                app:backgroundTint="#2979FF"
+                app:cornerRadius="8dp"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="8dp" />
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnToggle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Enable"
-                android:layout_marginStart="12dp" />
+                android:textColor="@android:color/white"
+                app:backgroundTint="#4CAF50"
+                app:cornerRadius="8dp"
+                android:layout_marginStart="12dp"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="8dp" />
         </LinearLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

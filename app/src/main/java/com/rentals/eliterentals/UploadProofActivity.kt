@@ -74,6 +74,26 @@ class UploadProofActivity : AppCompatActivity() {
 
             datePicker.show()
         }
+        // Bottom navigation functionality
+        findViewById<LinearLayout>(R.id.navDashboard).setOnClickListener {
+            startActivity(Intent(this, TenantDashboardActivity::class.java))
+            finish()
+        }
+
+        findViewById<LinearLayout>(R.id.navMaintenance).setOnClickListener {
+            startActivity(Intent(this, ReportMaintenanceActivity::class.java))
+            finish()
+        }
+
+        findViewById<LinearLayout>(R.id.navPayments).setOnClickListener {
+            // Already on this screen, no action needed
+        }
+
+        findViewById<LinearLayout>(R.id.navSettings).setOnClickListener {
+            startActivity(Intent(this, SettingsActivity::class.java))
+            finish()
+        }
+
     }
 
     private fun openFileChooser() {

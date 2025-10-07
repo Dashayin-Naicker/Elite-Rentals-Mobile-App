@@ -1,7 +1,9 @@
 package com.rentals.eliterentals
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -44,6 +46,9 @@ class TrackMaintenanceActivity : AppCompatActivity() {
 
         // Back button navigation
         findViewById<ImageView>(R.id.ic_back).setOnClickListener { finish() }
+
+        // Bottom navigation
+        setupBottomNav()
     }
 
     private fun fetchMaintenance(rv: RecyclerView) {
@@ -84,4 +89,29 @@ class TrackMaintenanceActivity : AppCompatActivity() {
         }
     }
 
+    private fun setupBottomNav() {
+        // Dashboard
+        findViewById<LinearLayout>(R.id.navDashboard).setOnClickListener {
+            startActivity(Intent(this, TenantDashboardActivity::class.java))
+            finish()
+        }
+
+        // Maintenance (current activity)
+        findViewById<LinearLayout>(R.id.navMaintenance).setOnClickListener {
+            // Already in TrackMaintenanceActivity, maybe scroll to top or show toast
+            Toast.makeText(this, "You are already in Maintenance", Toast.LENGTH_SHORT).show()
+        }
+
+        // Payments
+        findViewById<LinearLayout>(R.id.navPayments).setOnClickListener {
+            startActivity(Intent(this, UploadProofActivity::class.java))
+            finish()
+        }
+
+        // Settings
+        findViewById<LinearLayout>(R.id.navSettings).setOnClickListener {
+            startActivity(Intent(this, SettingsActivity::class.java))
+            finish()
+        }
+    }
 }

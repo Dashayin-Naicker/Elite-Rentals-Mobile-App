@@ -4,30 +4,39 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 
 class DashboardFragment : Fragment() {
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
+        // Inflate your fragment layout (make sure it's named fragment_dashboard.xml)
         val view = inflater.inflate(R.layout.fragment_dashboard, container, false)
 
-        val btnProperties = view.findViewById<Button>(R.id.btnGoProperties)
-        val btnTenants = view.findViewById<Button>(R.id.btnGoTenants)
-        val btnLeases = view.findViewById<Button>(R.id.btnGoLeases)
+        // --- CardView references (instead of Buttons) ---
+        val cardManageProperties = view.findViewById<CardView>(R.id.cardManageProperties)
+        val cardManageTenants = view.findViewById<CardView>(R.id.cardManageTenants)
+        val cardViewLeases = view.findViewById<CardView>(R.id.cardViewLeases)
+        val cardAssignCaretaker = view.findViewById<CardView>(R.id.cardAssignCaretaker)
 
-        btnProperties.setOnClickListener {
+        // --- Navigation handling ---
+        cardManageProperties.setOnClickListener {
             (activity as? MainPmActivity)?.loadFragment(PropertiesFragment())
         }
 
-        btnTenants.setOnClickListener {
+        cardManageTenants.setOnClickListener {
             (activity as? MainPmActivity)?.loadFragment(TenantsFragment())
         }
 
-        btnLeases.setOnClickListener {
+        cardViewLeases.setOnClickListener {
             (activity as? MainPmActivity)?.loadFragment(LeasesFragment())
         }
+
+        //cardAssignCaretaker.setOnClickListener {
+        //    (activity as? MainPmActivity)?.loadFragment(AssignCaretakerFragment())
+        //}
 
         return view
     }

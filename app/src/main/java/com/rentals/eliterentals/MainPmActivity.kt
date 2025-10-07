@@ -2,57 +2,47 @@ package com.rentals.eliterentals
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainPmActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_pm)
 
-        val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNav)
-
-        // Load default
+        // --- Load DashboardFragment by default ---
         if (savedInstanceState == null) {
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.container, DashboardFragment())
-                .commit()
+            loadFragment(DashboardFragment())
         }
 
-        bottomNav.setOnItemSelectedListener {
-            when (it.itemId) {
-                R.id.nav_dashboard -> {
-                    loadFragment(DashboardFragment())
-                    true
-                }
-                R.id.nav_properties -> {
-                    loadFragment(PropertiesFragment())
-                    true
-                }
-                R.id.nav_tenants -> {
-                    loadFragment(TenantsFragment())
-                    true
-                }
-                R.id.nav_add_tenants -> {
-                    val intent = Intent(this, RegisterTenantActivity::class.java)
-                    startActivity(intent)
-                    true
-                }
-                R.id.nav_leases -> {
-                    loadFragment(LeasesFragment())
-                    true
-                }
+        // --- Custom Bottom Navigation Clicks ---
+        findViewById<View>(R.id.navDashboard).setOnClickListener {
+            loadFragment(DashboardFragment())
+        }
 
-                else -> false
-            }
+        findViewById<View>(R.id.navMaintenance).setOnClickListener {
+            // Open maintenance ACTIVITY (not a fragment)
+            val intent = Intent(this, CaretakerTrackMaintenanceActivity::class.java)
+            startActivity(intent)
+        }
+
+        findViewById<View>(R.id.navTenants).setOnClickListener {
+            loadFragment(TenantsFragment())
+        }
+
+        findViewById<View>(R.id.navSettings).setOnClickListener {
+            // Open settings ACTIVITY (not a fragment)
+            val intent = Intent(this, SettingsActivity::class.java)
+            startActivity(intent)
         }
     }
 
+    // --- Helper to Load Fragments into the FrameLayout ---
     fun loadFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction()
-            .replace(R.id.container, fragment)
+            .replace(R.id.fragment_container, fragment)
             .commit()
     }
 

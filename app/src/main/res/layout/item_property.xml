@@ -1,23 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
-    android:padding="8dp"
-    android:elevation="4dp">
+    app:cardCornerRadius="12dp"
+    app:cardElevation="4dp">
 
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:padding="12dp">
 
+        <!-- Property Image -->
         <ImageView
             android:id="@+id/ivProperty"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/ic_placeholder" />
+            android:src="@drawable/ic_placeholder"
+            android:background="@android:color/darker_gray"
+            android:contentDescription="Property Image" />
 
+        <!-- Property Info -->
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="0dp"
@@ -27,47 +33,62 @@
 
             <TextView
                 android:id="@+id/tvTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="Title"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:textColor="?android:textColorPrimary" />
 
             <TextView
                 android:id="@+id/tvAddress"
-                android:text="Address"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:text="Address"
+                android:textSize="14sp"
+                android:textColor="?android:textColorSecondary" />
 
             <TextView
                 android:id="@+id/tvRent"
-                android:text="R0.00"
-                android:textColor="#2E86C1"
-                android:textStyle="bold"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:text="R0.00"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="#2E86C1"
+                android:layout_marginTop="4dp" />
         </LinearLayout>
 
+        <!-- Action Buttons -->
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:gravity="center">
+            android:gravity="center"
+            android:layout_marginStart="8dp">
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnEdit"
-                android:text="Edit"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-
-            <Button
-                android:id="@+id/btnDelete"
-                android:text="Delete"
-                android:textColor="#FFFFFF"
-                android:backgroundTint="#C0392B"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"/>
+                android:text="Edit"
+                android:textColor="@android:color/white"
+                app:backgroundTint="#2979FF"
+                app:cornerRadius="8dp"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="8dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnDelete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Delete"
+                android:textColor="@android:color/white"
+                app:backgroundTint="#C0392B"
+                app:cornerRadius="8dp"
+                android:layout_marginTop="8dp"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="8dp" />
         </LinearLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

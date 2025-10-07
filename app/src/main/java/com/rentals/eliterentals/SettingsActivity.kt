@@ -140,6 +140,27 @@ class SettingsActivity : BaseActivity() {
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
         }
+        // Bottom navigation functionality
+        findViewById<LinearLayout>(R.id.navDashboard).setOnClickListener {
+            startActivity(Intent(this, TenantDashboardActivity::class.java))
+            finish()
+        }
+
+        findViewById<LinearLayout>(R.id.navMaintenance).setOnClickListener {
+            startActivity(Intent(this, ReportMaintenanceActivity::class.java))
+            finish()
+        }
+
+        findViewById<LinearLayout>(R.id.navPayments).setOnClickListener {
+            startActivity(Intent(this, UploadProofActivity::class.java))
+            finish()
+        }
+
+        findViewById<LinearLayout>(R.id.navSettings).setOnClickListener {
+            startActivity(Intent(this, SettingsActivity::class.java))
+            finish()
+        }
+
     }
 
     private fun buildSecureRetrofit(token: String): Retrofit {

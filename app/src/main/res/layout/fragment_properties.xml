@@ -1,20 +1,40 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:padding="16dp"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#F8F8F8">
 
-    <Button
+    <!-- Add Property Button -->
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btnAddProperty"
         android:text="Add New Property"
         android:textColor="#FFFFFF"
-        android:backgroundTint="#2E86C1"
+        app:backgroundTint="#2979FF"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="12dp"/>
+        android:layout_marginBottom="12dp"
+        app:cornerRadius="8dp" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvProps"
+    <!-- Properties List -->
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="4dp"
+        android:clipToPadding="false"
+        android:padding="8dp"
+        android:background="#FFFFFF">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvProps"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="vertical"
+            android:clipToPadding="false"
+            android:padding="4dp" />
+    </androidx.cardview.widget.CardView>
+
 </LinearLayout>

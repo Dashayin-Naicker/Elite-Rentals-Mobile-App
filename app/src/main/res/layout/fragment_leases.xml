@@ -1,51 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="#FFFFFF">
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <!-- Tenant Selection -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Select Tenant"
+            android:textStyle="bold"
+            android:textSize="14sp"
+            android:layout_marginBottom="4dp" />
+
         <Spinner
             android:id="@+id/spTenant"
             android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginBottom="16dp"
+            android:background="@android:drawable/editbox_background"
+            android:padding="8dp" />
+
+        <!-- Property Selection -->
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"/>
+            android:text="Select Property"
+            android:textStyle="bold"
+            android:textSize="14sp"
+            android:layout_marginBottom="4dp" />
 
         <Spinner
             android:id="@+id/spProperty"
             android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginBottom="16dp"
+            android:background="@android:drawable/editbox_background"
+            android:padding="8dp" />
+
+        <!-- Start Date -->
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"/>
+            android:text="Start Date"
+            android:textStyle="bold"
+            android:textSize="14sp"
+            android:layout_marginBottom="4dp" />
 
         <EditText
             android:id="@+id/etStartDate"
-            android:hint="Start Date (yyyy-MM-dd)"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:background="@android:drawable/editbox_background"
+            android:hint="yyyy-MM-dd"
+            android:inputType="date"
+            android:padding="8dp" />
+
+        <!-- End Date -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="End Date"
+            android:textStyle="bold"
+            android:textSize="14sp"
+            android:layout_marginBottom="4dp" />
 
         <EditText
             android:id="@+id/etEndDate"
-            android:hint="End Date (yyyy-MM-dd)"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:background="@android:drawable/editbox_background"
+            android:hint="yyyy-MM-dd"
+            android:inputType="date"
+            android:padding="8dp" />
+
+        <!-- Deposit -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Deposit"
+            android:textStyle="bold"
+            android:textSize="14sp"
+            android:layout_marginBottom="4dp" />
 
         <EditText
             android:id="@+id/etDeposit"
-            android:hint="Deposit"
-            android:inputType="numberDecimal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-        <Button
-            android:id="@+id/btnAssignLease"
-            android:text="Assign Lease"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/material_dynamic_primary0"
+            android:layout_marginBottom="16dp"
+            android:background="@android:drawable/editbox_background"
+            android:hint="Enter deposit amount"
+            android:inputType="numberDecimal"
+            android:padding="8dp" />
+
+        <!-- Assign Lease Button -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnAssignLease"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Assign Lease"
             android:textColor="@android:color/white"
-            android:layout_marginTop="12dp"/>
+            android:layout_marginTop="12dp"
+            app:backgroundTint="#2196F3"
+            app:cornerRadius="8dp"
+            android:padding="12dp" />
     </LinearLayout>
 </ScrollView>
