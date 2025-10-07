@@ -98,7 +98,7 @@ class TrackMaintenanceActivity : AppCompatActivity() {
 
         // Maintenance (current activity)
         findViewById<LinearLayout>(R.id.navMaintenance).setOnClickListener {
-            // Already in TrackMaintenanceActivity, maybe scroll to top or show toast
+            // Already `in TrackMaintenanceActivity, maybe scroll to top or show toast
             Toast.makeText(this, "You are already in Maintenance", Toast.LENGTH_SHORT).show()
         }
 

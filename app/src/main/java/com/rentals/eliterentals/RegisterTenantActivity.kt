@@ -1,10 +1,13 @@
 package com.rentals.eliterentals
 
+import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -51,7 +54,6 @@ class RegisterTenantActivity : AppCompatActivity() {
                             ).show()
                             finish() // Close activity after successful registration
                         } else {
-                            // Display error message from API if available
                             val code = response.code()
                             val message = response.errorBody()?.string()
                             Toast.makeText(
@@ -70,5 +72,41 @@ class RegisterTenantActivity : AppCompatActivity() {
                 }
             }
         }
+
+        // Bottom Navigation Clicks
+        findViewById<ImageView>(R.id.navManageProperties).setOnClickListener {
+            navigateToActivity(AddEditPropertyActivity::class.java)
+        }
+
+        findViewById<ImageView>(R.id.navManageTenants).setOnClickListener {
+            navigateToFragment(TenantsFragment())
+        }
+
+        findViewById<ImageView>(R.id.navAssignLeases).setOnClickListener {
+            navigateToActivity(AssignLeaseActivity::class.java)
+        }
+
+        findViewById<ImageView>(R.id.navAssignMaintenance).setOnClickListener {
+            navigateToActivity(CaretakerTrackMaintenanceActivity::class.java)
+        }
+
+        findViewById<ImageView>(R.id.navRegisterTenant).setOnClickListener {
+            Toast.makeText(this, "Already on Register Tenant", Toast.LENGTH_SHORT).show()
+        }
+
+        findViewById<ImageView>(R.id.navGenerateReport).setOnClickListener {
+            Toast.makeText(this, "Coming Soon", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    // Navigate to another Activity
+    private fun navigateToActivity(activityClass: Class<*>) {
+        val intent = Intent(this, activityClass)
+        startActivity(intent)
+    }
+    private fun navigateToFragment(fragment: Fragment) {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragmentContainer, fragment)
+            .commit()
     }
 }

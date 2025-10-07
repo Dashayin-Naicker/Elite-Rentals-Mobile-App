@@ -9,11 +9,8 @@ import android.os.Handler
 import android.os.Looper
 import android.widget.*
 import com.google.android.material.button.MaterialButton
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import okhttp3.OkHttpClient
-import retrofit2.Retrofit
+import retrofit2.*
 import retrofit2.converter.gson.GsonConverterFactory
 
 class SettingsActivity : BaseActivity() {
@@ -24,6 +21,7 @@ class SettingsActivity : BaseActivity() {
     private lateinit var switchBiometric: Switch
     private lateinit var radioGroupTheme: RadioGroup
     private lateinit var btnLogout: MaterialButton
+    private lateinit var btnBack: ImageView
 
     private lateinit var prefs: SharedPreferences
     private lateinit var biometricPrefs: SharedPreferences
@@ -32,8 +30,6 @@ class SettingsActivity : BaseActivity() {
     private lateinit var role: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        // REMOVE THIS LINE - BaseActivity already handles theme application
-        // ThemeUtils.applyTheme(ThemeUtils.getSavedTheme(this))
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
 
@@ -51,11 +47,16 @@ class SettingsActivity : BaseActivity() {
         switchBiometric = findViewById(R.id.switchBiometric)
         radioGroupTheme = findViewById(R.id.radioGroupTheme)
         btnLogout = findViewById(R.id.btnLogout)
+        btnBack = findViewById(R.id.btnBack)
+
+        // Back button functionality
+        btnBack.setOnClickListener {
+            finish()
+        }
 
         // Load saved settings
         switchBiometric.isChecked = biometricPrefs.getBoolean("enabled", false)
 
-        // Get the current theme from SharedPreferences directly
         val currentTheme = prefs.getString("theme", "light") ?: "light"
         when (currentTheme) {
             "light" -> radioGroupTheme.check(R.id.radioLight)
@@ -93,20 +94,19 @@ class SettingsActivity : BaseActivity() {
         // Biometric Toggle
         switchBiometric.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                // Enable biometric: save user info
                 biometricPrefs.edit()
                     .putBoolean("enabled", true)
                     .putInt("userId", userId)
                     .putString("jwt", jwt)
                     .putString("role", role)
-                    .putString("tenantName", prefs.getString("tenantName", "")) // Save full name
+                    .putString("tenantName", prefs.getString("tenantName", ""))
                     .apply()
             } else {
-                // Disable biometric: clear info
                 biometricPrefs.edit().clear().apply()
             }
         }
 
+        // Theme Selection
         radioGroupTheme.setOnCheckedChangeListener { _, checkedId ->
             val selectedTheme = when (checkedId) {
                 R.id.radioLight -> "light"
@@ -115,36 +115,22 @@ class SettingsActivity : BaseActivity() {
                 else -> "light"
             }
 
-            // Save theme to SharedPreferences
             prefs.edit().putString("theme", selectedTheme).apply()
-
-            // Apply the theme
             ThemeUtils.applyTheme(selectedTheme)
 
-            // Show a brief progress indicator
-            val progressBar = ProgressBar(this).apply {
-                isIndeterminate = true
-            }
+            val progressBar = ProgressBar(this).apply { isIndeterminate = true }
             val dialog = AlertDialog.Builder(this)
                 .setView(progressBar)
                 .setMessage("Applying theme...")
                 .setCancelable(false)
                 .create()
-
             dialog.show()
 
-            // Use a safer approach for delayed recreation
             Handler(Looper.getMainLooper()).postDelayed({
-                // Check if the activity is still valid before dismissing and recreating
                 if (!isFinishing && !isDestroyed) {
                     try {
-                        if (dialog.isShowing) {
-                            dialog.dismiss()
-                        }
-                    } catch (e: IllegalArgumentException) {
-                        // Ignore if the dialog window is already gone
-                        e.printStackTrace()
-                    }
+                        if (dialog.isShowing) dialog.dismiss()
+                    } catch (e: Exception) { e.printStackTrace() }
                     recreate()
                 }
             }, 300)
@@ -153,31 +139,9 @@ class SettingsActivity : BaseActivity() {
         // Logout
         btnLogout.setOnClickListener {
             prefs.edit().clear().apply()
-            // Do not clear biometric prefs if biometric is enabled
             val intent = Intent(this, LoginActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
-        }
-
-        // Bottom navigation functionality
-        findViewById<LinearLayout>(R.id.navDashboard).setOnClickListener {
-            startActivity(Intent(this, TenantDashboardActivity::class.java))
-            finish()
-        }
-
-        findViewById<LinearLayout>(R.id.navMaintenance).setOnClickListener {
-            startActivity(Intent(this, ReportMaintenanceActivity::class.java))
-            finish()
-        }
-
-        findViewById<LinearLayout>(R.id.navPayments).setOnClickListener {
-            startActivity(Intent(this, UploadProofActivity::class.java))
-            finish()
-        }
-
-        findViewById<LinearLayout>(R.id.navSettings).setOnClickListener {
-            startActivity(Intent(this, SettingsActivity::class.java))
-            finish()
         }
     }
 

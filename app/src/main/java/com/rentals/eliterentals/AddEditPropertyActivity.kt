@@ -3,24 +3,19 @@ package com.rentals.eliterentals
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.util.Log
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.rentals.eliterentals.utils.FileUtils
+import kotlinx.coroutines.*
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 import java.io.IOException
 import java.math.BigDecimal
-import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import kotlinx.coroutines.launch
-
+import kotlin.jvm.java
 
 class AddEditPropertyActivity : AppCompatActivity() {
 
@@ -29,7 +24,7 @@ class AddEditPropertyActivity : AppCompatActivity() {
     private val client = OkHttpClient()
     private lateinit var jwt: String
 
-    // Inputs
+    // UI elements
     private lateinit var etTitle: EditText
     private lateinit var etDescription: EditText
     private lateinit var etAddress: EditText
@@ -51,7 +46,13 @@ class AddEditPropertyActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_edit_property)
 
-        // Find views
+        // 🔹 Top Bar Back Button
+        findViewById<ImageView>(R.id.ic_back)?.setOnClickListener { finish() }
+
+        // 🔹 Bottom Navbar setup
+
+
+        // 🔹 Form fields
         etTitle = findViewById(R.id.etTitle)
         etDescription = findViewById(R.id.etDescription)
         etAddress = findViewById(R.id.etAddress)
@@ -71,7 +72,7 @@ class AddEditPropertyActivity : AppCompatActivity() {
 
         jwt = getSharedPreferences("app", MODE_PRIVATE).getString("jwt", "") ?: ""
 
-        // Check if editing existing property
+        // Load property if editing
         editingProperty = intent.getParcelableExtra("property")
         editingProperty?.let { fillForm(it) }
 
@@ -82,8 +83,11 @@ class AddEditPropertyActivity : AppCompatActivity() {
         }
 
         btnSave.setOnClickListener { saveProperty() }
+
+
     }
 
+    // 🔹 Fill existing data for edit mode
     private fun fillForm(p: PropertyDto) {
         etTitle.setText(p.title ?: "")
         etDescription.setText(p.description ?: "")
@@ -97,12 +101,10 @@ class AddEditPropertyActivity : AppCompatActivity() {
         etParkingType.setText(p.parkingType ?: "")
         etParkingSpots.setText(p.numOfParkingSpots?.toString() ?: "")
         cbPetFriendly.isChecked = p.petFriendly ?: false
-        spStatus.setSelection(
-            if ((p.status?.lowercase() ?: "available") == "available") 0 else 1
-        )
+        spStatus.setSelection(if ((p.status?.lowercase() ?: "available") == "available") 0 else 1)
     }
 
-
+    // 🔹 Handle image picker
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 101 && resultCode == RESULT_OK) {
@@ -117,20 +119,11 @@ class AddEditPropertyActivity : AppCompatActivity() {
         }
     }
 
+    // 🔹 Save or update property
     private fun saveProperty() {
         val title = etTitle.text.toString().trim()
-        val description = etDescription.text.toString().trim()
         val address = etAddress.text.toString().trim()
-        val city = etCity.text.toString().trim()
-        val province = etProvince.text.toString().trim()
-        val country = etCountry.text.toString().trim()
         val rentStr = etRent.text.toString().trim()
-        val bedroomsStr = etBedrooms.text.toString().trim()
-        val bathroomsStr = etBathrooms.text.toString().trim()
-        val parkingType = etParkingType.text.toString().trim()
-        val parkingSpotsStr = etParkingSpots.text.toString().trim()
-        val petFriendly = cbPetFriendly.isChecked
-        val status = spStatus.selectedItem.toString()
 
         if (title.isEmpty() || address.isEmpty() || rentStr.isEmpty()) {
             Toast.makeText(this, "Please fill in required fields", Toast.LENGTH_SHORT).show()
@@ -138,43 +131,37 @@ class AddEditPropertyActivity : AppCompatActivity() {
         }
 
         val rent = rentStr.toDoubleOrNull() ?: 0.0
-        val bedrooms = bedroomsStr.toIntOrNull() ?: 0
-        val bathrooms = bathroomsStr.toIntOrNull() ?: 0
-        val parkingSpots = parkingSpotsStr.toIntOrNull() ?: 0
-
         if (rent <= 0) {
             Toast.makeText(this, "Enter a valid rent amount", Toast.LENGTH_SHORT).show()
             return
         }
 
-        if (selectedImageFile == null && editingProperty == null) {
-            Toast.makeText(this, "Please select an image", Toast.LENGTH_SHORT).show()
-            return
-        }
-
         val property = Property(
             title = title,
-            description = description.ifEmpty { "No description" },
+            description = etDescription.text.toString().ifEmpty { "No description" },
             address = address,
-            city = city.ifEmpty { "Unknown" },
-            province = province.ifEmpty { "Unknown" },
-            country = country.ifEmpty { "South Africa" },
+            city = etCity.text.toString().ifEmpty { "Unknown" },
+            province = etProvince.text.toString().ifEmpty { "Unknown" },
+            country = etCountry.text.toString().ifEmpty { "South Africa" },
             rentAmount = BigDecimal(rent),
-            numOfBedrooms = bedrooms,
-            numOfBathrooms = bathrooms,
-            parkingType = parkingType.ifEmpty { "None" },
-            numOfParkingSpots = parkingSpots,
-            petFriendly = petFriendly,
-            status = status
+            numOfBedrooms = etBedrooms.text.toString().toIntOrNull() ?: 0,
+            numOfBathrooms = etBathrooms.text.toString().toIntOrNull() ?: 0,
+            parkingType = etParkingType.text.toString().ifEmpty { "None" },
+            numOfParkingSpots = etParkingSpots.text.toString().toIntOrNull() ?: 0,
+            petFriendly = cbPetFriendly.isChecked,
+            status = spStatus.selectedItem.toString()
         )
 
         if (editingProperty != null) {
             updateProperty(editingProperty!!.propertyId, property)
-        } else {
+        } else if (selectedImageFile != null) {
             uploadPropertyWithImage(property, selectedImageFile!!)
+        } else {
+            Toast.makeText(this, "Please select an image", Toast.LENGTH_SHORT).show()
         }
     }
 
+    // 🔹 Upload property with image
     private fun uploadPropertyWithImage(property: Property, imageFile: File) {
         lifecycleScope.launch {
             try {
@@ -213,12 +200,11 @@ class AddEditPropertyActivity : AppCompatActivity() {
 
             } catch (e: IOException) {
                 Toast.makeText(this@AddEditPropertyActivity, "Upload failed: ${e.message}", Toast.LENGTH_LONG).show()
-            } catch (e: CancellationException) {
-                // Request was cancelled because Activity was destroyed; do nothing
             }
         }
     }
 
+    // 🔹 Update property details
     private fun updateProperty(propertyId: Int, property: Property) {
         lifecycleScope.launch {
             try {
@@ -259,11 +245,10 @@ class AddEditPropertyActivity : AppCompatActivity() {
 
             } catch (e: IOException) {
                 Toast.makeText(this@AddEditPropertyActivity, "Update failed: ${e.message}", Toast.LENGTH_LONG).show()
-            } catch (e: CancellationException) {
-                // Activity destroyed, ignore
             }
         }
     }
 
+    // 🔹 Bottom Navbar functionality
 
 }

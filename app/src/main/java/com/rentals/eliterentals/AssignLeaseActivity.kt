@@ -1,8 +1,10 @@
 package com.rentals.eliterentals
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -44,6 +46,44 @@ class AssignLeaseActivity : AppCompatActivity() {
         btnAssign.setOnClickListener {
             assignLease()
         }
+
+        // Bottom Navigation Clicks
+//        findViewById<ImageView>(R.id.navManageProperties).setOnClickListener {
+//            navigateToFragment(PropertiesFragment())
+//        }
+//
+//        findViewById<ImageView>(R.id.navManageTenants).setOnClickListener {
+//            navigateToFragment(TenantsFragment())
+//        }
+        findViewById<ImageView>(R.id.navManageProperties).setOnClickListener {
+            navigateToActivity(PropertiesFragment::class.java)
+        }
+
+        findViewById<ImageView>(R.id.navManageTenants).setOnClickListener {
+            navigateToActivity(TenantsFragment::class.java)
+        }
+
+        findViewById<ImageView>(R.id.navAssignLeases).setOnClickListener {
+            Toast.makeText(this, "Already on Assign Lease", Toast.LENGTH_SHORT).show()
+        }
+
+
+        findViewById<ImageView>(R.id.navAssignLeases).setOnClickListener {
+            Toast.makeText(this, "Already on Assign Lease", Toast.LENGTH_SHORT).show()
+        }
+
+        findViewById<ImageView>(R.id.navAssignMaintenance).setOnClickListener {
+            navigateToActivity(CaretakerTrackMaintenanceActivity::class.java)
+        }
+
+        findViewById<ImageView>(R.id.navRegisterTenant).setOnClickListener {
+            navigateToActivity(RegisterTenantActivity::class.java)
+        }
+
+        findViewById<ImageView>(R.id.navGenerateReport).setOnClickListener {
+            Toast.makeText(this, "Coming Soon", Toast.LENGTH_SHORT).show()
+        }
+
     }
 
     private fun fetchData() {
@@ -54,11 +94,8 @@ class AssignLeaseActivity : AppCompatActivity() {
                     val propsRes = try { api.getAllProperties("Bearer $jwt") } catch (e: Exception) { null }
                     val leasesRes = try { api.getAllLeases("Bearer $jwt") } catch (e: Exception) { null }
 
-                    val leasedTenantIds = leasesRes?.body()
-                        ?.mapNotNull { it.tenantId }
-                        ?.toSet() ?: emptySet()
+                    val leasedTenantIds = leasesRes?.body()?.mapNotNull { it.tenantId }?.toSet() ?: emptySet()
 
-                    // Filter nulls here
                     tenants = tenantsRes?.body()
                         ?.filterNotNull()
                         ?.filter { it.role == "Tenant" && it.tenantApproval == "Approved" && it.userId !in leasedTenantIds }
@@ -76,17 +113,12 @@ class AssignLeaseActivity : AppCompatActivity() {
                         android.R.layout.simple_spinner_dropdown_item,
                         props.map { it.address ?: it.title ?: "Property ${it.propertyId}" }
                     )
-
                 } catch (e: Exception) {
                     Toast.makeText(this@AssignLeaseActivity, "Error loading data: ${e.message}", Toast.LENGTH_LONG).show()
                 }
             }
         }
     }
-
-
-
-
 
     private fun assignLease() {
         if (tenantSpinner.selectedItemPosition == -1 || propSpinner.selectedItemPosition == -1) {
@@ -124,7 +156,6 @@ class AssignLeaseActivity : AppCompatActivity() {
                         // Update property status to "Occupied"
                         val statusUpdate = PropertyStatusDto("Occupied")
                         val statusRes = api.updatePropertyStatus("Bearer $jwt", propId, statusUpdate)
-
                         if (statusRes.isSuccessful) {
                             Toast.makeText(this@AssignLeaseActivity, "Property marked as Occupied", Toast.LENGTH_SHORT).show()
                         } else {
@@ -132,7 +163,6 @@ class AssignLeaseActivity : AppCompatActivity() {
                         }
 
                         finish()
-
                     } else {
                         Toast.makeText(this@AssignLeaseActivity, "Error: ${response.code()}", Toast.LENGTH_SHORT).show()
                     }
@@ -141,6 +171,17 @@ class AssignLeaseActivity : AppCompatActivity() {
                 }
             }
         }
+    }
 
+    // Navigate to another Activity
+    private fun navigateToActivity(activityClass: Class<*>) {
+        val intent = Intent(this, activityClass)
+        startActivity(intent)
+    }
+
+    public fun navigateToFragment(fragment: Fragment) {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragmentContainer, fragment)
+            .commit()
     }
 }

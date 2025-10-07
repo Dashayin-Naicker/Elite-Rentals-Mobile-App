@@ -5,130 +5,104 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#F9F9F9"
+    android:background="#F8F8F8"
     tools:context=".MainPmActivity">
 
-    <!-- Top Header -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="16dp"
-        android:gravity="center_vertical">
-
-        <TextView
-            android:id="@+id/txtTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Manager Dashboard"
-            android:textColor="@android:color/white"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-    </LinearLayout>
-
-    <!-- Fragment container (this fixes your error) -->
+    <!-- Main Fragment Container -->
     <FrameLayout
-        android:id="@+id/fragment_container"
+        android:id="@+id/fragmentContainer"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:background="@android:color/white"
-        tools:ignore="MissingConstraints" />
+        android:layout_weight="1"/>
 
     <!-- Bottom Navigation Bar -->
     <LinearLayout
-        android:id="@+id/bottomNavBar"
+        android:id="@+id/bottomNavbar"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:background="@color/white"
         android:orientation="horizontal"
-        android:weightSum="4"
-        android:elevation="8dp"
-        android:paddingVertical="6dp">
+        android:background="#FFFFFF"
+        android:weightSum="6"
+        android:elevation="8dp">
 
-        <!-- Dashboard -->
-        <LinearLayout
-            android:id="@+id/navDashboard"
+        <!-- 6 Icons -->
+        <ImageView
+            android:id="@+id/navManageProperties"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center">
+            android:padding="12dp"
+            android:src="@drawable/property_manage"
+            android:contentDescription="Manage Properties"
+            android:scaleType="centerInside"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackgroundBorderless"/>
 
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/home" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Dashboard"
-                android:textSize="12sp" />
-        </LinearLayout>
-
-        <!-- Maintenance -->
-        <LinearLayout
-            android:id="@+id/navMaintenance"
+        <ImageView
+            android:id="@+id/navManageTenants"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center">
+            android:padding="12dp"
+            android:src="@drawable/tenant"
+            android:contentDescription="Manage Tenants"
+            android:scaleType="centerInside"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackgroundBorderless"/>
 
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/maintenance" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Maintenance"
-                android:textSize="12sp" />
-        </LinearLayout>
-
-        <!-- Tenants -->
-        <LinearLayout
-            android:id="@+id/navTenants"
+        <ImageView
+            android:id="@+id/navAssignLeases"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center">
+            android:padding="12dp"
+            android:src="@drawable/view_lease"
+            android:contentDescription="Assign Leases"
+            android:scaleType="centerInside"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackgroundBorderless"/>
 
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_person" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Tenants"
-                android:textSize="12sp" />
-        </LinearLayout>
-
-        <!-- Settings -->
-        <LinearLayout
-            android:id="@+id/navSettings"
+        <ImageView
+            android:id="@+id/navAssignMaintenance"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center">
+            android:padding="12dp"
+            android:src="@drawable/maintenance"
+            android:contentDescription="Assign Maintenance"
+            android:scaleType="centerInside"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackgroundBorderless"/>
 
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/settings" />
+        <ImageView
+            android:id="@+id/navRegisterTenant"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="12dp"
+            android:src="@drawable/caretaker_assign"
+            android:contentDescription="Register Tenant"
+            android:scaleType="centerInside"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackgroundBorderless"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Settings"
-                android:textSize="12sp" />
-        </LinearLayout>
-
+        <ImageView
+            android:id="@+id/navGenerateReport"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="12dp"
+            android:src="@drawable/img_1"
+            android:contentDescription="Generate Report"
+            android:scaleType="centerInside"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackgroundBorderless"/>
     </LinearLayout>
 
 </LinearLayout>
