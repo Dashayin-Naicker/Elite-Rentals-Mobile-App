@@ -53,6 +53,12 @@ class TenantDashboardActivity : BaseActivity() {
             val intent = Intent(this, UploadProofActivity::class.java)
             startActivity(intent)
         }
+        val maintenanceCard = findViewById<CardView>(R.id.cardMaintenance)
+
+        maintenanceCard.setOnClickListener {
+            val intent = Intent(this, ReportMaintenanceActivity::class.java)
+            startActivity(intent)
+        }
 
         // Fetch leases safely
         lifecycleScope.launch {
@@ -63,6 +69,8 @@ class TenantDashboardActivity : BaseActivity() {
                     val lease = leases.firstOrNull()
 
                     if (lease != null) {
+                        prefs.edit().putInt("propertyId", lease.property?.propertyId ?: -1).apply()
+
                         populateLeaseInfo(
                             leaseInfoTv, rentStatusTv, rentAmountTv,
                             rentDueDaysTv, leaseEndDaysTv, lease

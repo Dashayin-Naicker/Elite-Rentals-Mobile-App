@@ -42,6 +42,7 @@
 
 
 
+
         <!-- Optional: MainActivity if needed elsewhere -->
         <activity android:name=".MainActivity" />
     </application>

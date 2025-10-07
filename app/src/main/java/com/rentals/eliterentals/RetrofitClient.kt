@@ -38,11 +38,16 @@ object RetrofitClient {
                     .build()
             }
             response
+        } catch (e: javax.net.ssl.SSLProtocolException) {
+            // Ignore harmless SSL close errors (BAD_DECRYPT)
+            android.util.Log.w("RetrofitClient", "Ignored SSLProtocolException: ${e.message}")
+            throw java.io.IOException("Network closed unexpectedly (non-fatal)")
         } catch (e: Exception) {
             e.printStackTrace()
             throw e
         }
     }
+
 
 
     // Trust all SSL certificates (for dev only)

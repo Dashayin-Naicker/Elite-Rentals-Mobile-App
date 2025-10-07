@@ -129,5 +129,18 @@ interface ApiService {
         @Body dto: ChangePasswordRequest
     ): Call<ApiResponse>
 
+    @Multipart
+    @POST("api/Maintenance")
+    suspend fun createMaintenance(
+        @Header("Authorization") token: String,
+        @Part("tenantId") tenantId: RequestBody,
+        @Part("propertyId") propertyId: RequestBody,
+        @Part("description") description: RequestBody,
+        @Part("category") category: RequestBody,
+        @Part("urgency") urgency: RequestBody,
+        @Part proof: MultipartBody.Part? = null
+    ): Response<Void>
+
+
 
 }
