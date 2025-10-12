@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -24,6 +25,14 @@ class TenantsFragment : Fragment() {
     ): View? = inflater.inflate(R.layout.fragment_tenants, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
+        view.findViewById<ImageView>(R.id.ic_back)?.apply {
+            visibility = View.VISIBLE
+            setOnClickListener {
+                (activity as? MainPmActivity)?.navigateToFragment(DashboardFragment())
+            }
+        }
+
         jwt = requireContext().getSharedPreferences("app", Context.MODE_PRIVATE)
             .getString("jwt", "") ?: ""
 

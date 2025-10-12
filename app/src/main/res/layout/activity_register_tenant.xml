@@ -1,25 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:background="#F9F9F9">
+    android:background="#F9F9F9"
+    tools:context=".RegisterTenantActivity">
 
-    <!-- Top Heading -->
+    <!-- Top Bar -->
     <LinearLayout
+        android:id="@+id/topBar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="16dp"
-        android:gravity="center_vertical">
+        android:layout_height="56dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="#2979FF"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+    <ImageView
+            android:id="@+id/ic_back"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_back"
+            android:contentDescription="Back" />
 
         <TextView
             android:id="@+id/txtHeading"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Add Tenant"
-            android:textColor="@android:color/black"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginStart="16dp" />
     </LinearLayout>
 
     <!-- Form Content -->
@@ -47,6 +65,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Email"
+                android:inputType="textEmailAddress"
                 android:layout_marginBottom="12dp" />
 
             <EditText
@@ -60,22 +79,37 @@
             <Button
                 android:id="@+id/btnRegister"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="48dp"
                 android:text="Register Tenant"
-                android:backgroundTint="#2979FF"
+                android:textAllCaps="false"
+                android:backgroundTint="#238BF0"
                 android:textColor="@android:color/white" />
         </LinearLayout>
     </ScrollView>
 
     <!-- Bottom Navigation Bar -->
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout
         android:id="@+id/bottomNavbar"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:orientation="horizontal"
         android:background="#FFFFFF"
-        android:weightSum="6"
+        android:weightSum="7"
         android:elevation="8dp">
+
+        <!-- Dashboard -->
+        <ImageView
+            android:id="@+id/navDashboard"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="12dp"
+            android:src="@drawable/home"
+            android:contentDescription="Dashboard"
+            android:scaleType="centerInside"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackgroundBorderless"/>
 
         <!-- Manage Properties -->
         <ImageView
@@ -161,5 +195,5 @@
             android:focusable="true"
             android:background="?attr/selectableItemBackgroundBorderless"/>
     </LinearLayout>
-    </LinearLayout>
 
+</LinearLayout>

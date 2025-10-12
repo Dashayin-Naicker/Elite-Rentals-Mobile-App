@@ -6,13 +6,46 @@
     android:layout_height="match_parent"
     android:background="#F9F9F9">
 
+    <!-- Top App Bar -->
+    <LinearLayout
+        android:id="@+id/topBar"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="#2979FF"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+    <ImageView
+            android:id="@+id/ic_back"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_back"
+            android:contentDescription="Back"
+            android:layout_marginEnd="12dp" />
+
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Assign Lease"
+            android:textColor="@android:color/white"
+            android:textStyle="bold"
+            android:textSize="18sp"/>
+    </LinearLayout>
+
+    <!-- Form -->
     <ScrollView
         android:id="@+id/scrollForm"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:padding="16dp"
         android:fillViewport="true"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/topBar"
         app:layout_constraintBottom_toTopOf="@id/bottomNavbar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -26,18 +59,16 @@
                 android:id="@+id/txtHeading"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Assign Lease"
-                android:textColor="@android:color/black"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="16dp"/>
+                android:text="Fill the details below"
+                android:textColor="#222222"
+                android:textSize="16sp"
+                android:layout_marginBottom="12dp"/>
 
             <Spinner
                 android:id="@+id/tenantSpinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
-                android:backgroundTint="?android:textColorSecondary"
                 android:popupBackground="@android:color/white"/>
 
             <Spinner
@@ -45,7 +76,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
-                android:backgroundTint="?android:textColorSecondary"
                 android:popupBackground="@android:color/white"/>
 
             <EditText
@@ -53,16 +83,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Start Date (yyyy-MM-dd)"
-                android:layout_marginBottom="12dp"
-                android:textColor="?android:textColorPrimary"/>
+                android:focusable="false"
+                android:clickable="true"
+                android:layout_marginBottom="12dp"/>
 
             <EditText
                 android:id="@+id/endEt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="End Date (yyyy-MM-dd)"
-                android:layout_marginBottom="12dp"
-                android:textColor="?android:textColorPrimary"/>
+                android:focusable="false"
+                android:clickable="true"
+                android:layout_marginBottom="12dp"/>
 
             <EditText
                 android:id="@+id/depositEt"
@@ -70,31 +102,46 @@
                 android:layout_height="wrap_content"
                 android:hint="Deposit"
                 android:inputType="numberDecimal"
-                android:layout_marginBottom="16dp"
-                android:textColor="?android:textColorPrimary"/>
+                android:layout_marginBottom="16dp"/>
 
             <Button
                 android:id="@+id/btnAssign"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="48dp"
+                android:layout_marginBottom="24dp"
+                android:backgroundTint="#238BF0"
                 android:text="Assign Lease"
-                android:backgroundTint="#2979FF"
-                android:textColor="@android:color/white"
-                android:layout_marginBottom="24dp"/>
+                android:textAllCaps="false"
+                android:textColor="@android:color/white" />
         </LinearLayout>
     </ScrollView>
 
+    <!-- Bottom Navigation -->
     <LinearLayout
         android:id="@+id/bottomNavbar"
         android:layout_width="0dp"
         android:layout_height="60dp"
         android:orientation="horizontal"
         android:background="#FFFFFF"
-        android:weightSum="6"
+        android:weightSum="7"
         android:elevation="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- Dashboard (home.png in res/drawable as @drawable/home) -->
+        <ImageView
+            android:id="@+id/navDashboard"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="12dp"
+            android:src="@drawable/home"
+            android:contentDescription="Dashboard"
+            android:scaleType="centerInside"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackgroundBorderless"/>
 
         <ImageView
             android:id="@+id/navManageProperties"

@@ -16,16 +16,31 @@
         android:layout_weight="1"/>
 
     <!-- Bottom Navigation Bar -->
+    <!-- Bottom Navigation Bar -->
     <LinearLayout
         android:id="@+id/bottomNavbar"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:orientation="horizontal"
         android:background="#FFFFFF"
-        android:weightSum="6"
+        android:weightSum="7"
         android:elevation="8dp">
 
-        <!-- 6 Icons -->
+        <!-- Dashboard -->
+        <ImageView
+            android:id="@+id/navDashboard"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="12dp"
+            android:src="@drawable/home"
+            android:contentDescription="Dashboard"
+            android:scaleType="centerInside"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackgroundBorderless"/>
+
+        <!-- Manage Properties -->
         <ImageView
             android:id="@+id/navManageProperties"
             android:layout_width="0dp"
@@ -39,6 +54,7 @@
             android:focusable="true"
             android:background="?attr/selectableItemBackgroundBorderless"/>
 
+        <!-- Manage Tenants -->
         <ImageView
             android:id="@+id/navManageTenants"
             android:layout_width="0dp"
@@ -52,6 +68,7 @@
             android:focusable="true"
             android:background="?attr/selectableItemBackgroundBorderless"/>
 
+        <!-- Assign Leases -->
         <ImageView
             android:id="@+id/navAssignLeases"
             android:layout_width="0dp"
@@ -65,6 +82,7 @@
             android:focusable="true"
             android:background="?attr/selectableItemBackgroundBorderless"/>
 
+        <!-- Assign Maintenance -->
         <ImageView
             android:id="@+id/navAssignMaintenance"
             android:layout_width="0dp"
@@ -78,6 +96,7 @@
             android:focusable="true"
             android:background="?attr/selectableItemBackgroundBorderless"/>
 
+        <!-- Register Tenant -->
         <ImageView
             android:id="@+id/navRegisterTenant"
             android:layout_width="0dp"
@@ -91,6 +110,7 @@
             android:focusable="true"
             android:background="?attr/selectableItemBackgroundBorderless"/>
 
+        <!-- Generate Report -->
         <ImageView
             android:id="@+id/navGenerateReport"
             android:layout_width="0dp"
@@ -104,5 +124,6 @@
             android:focusable="true"
             android:background="?attr/selectableItemBackgroundBorderless"/>
     </LinearLayout>
+
 
 </LinearLayout>

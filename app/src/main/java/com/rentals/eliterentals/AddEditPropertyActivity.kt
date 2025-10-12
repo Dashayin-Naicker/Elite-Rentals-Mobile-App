@@ -5,17 +5,19 @@ import android.net.Uri
 import android.os.Bundle
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.rentals.eliterentals.utils.FileUtils
-import kotlinx.coroutines.*
-import okhttp3.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.OkHttpClient
+import okhttp3.Request
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 import java.io.IOException
 import java.math.BigDecimal
-import kotlin.jvm.java
 
 class AddEditPropertyActivity : AppCompatActivity() {
 
@@ -24,7 +26,7 @@ class AddEditPropertyActivity : AppCompatActivity() {
     private val client = OkHttpClient()
     private lateinit var jwt: String
 
-    // UI elements
+    // UI
     private lateinit var etTitle: EditText
     private lateinit var etDescription: EditText
     private lateinit var etAddress: EditText
@@ -46,13 +48,46 @@ class AddEditPropertyActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_edit_property)
 
-        // 🔹 Top Bar Back Button
-        findViewById<ImageView>(R.id.ic_back)?.setOnClickListener { finish() }
+        // 🔹 Top bar back -> Dashboard
+        findViewById<ImageView>(R.id.ic_back)?.setOnClickListener {
+            goToDashboard()
+        }
 
-        // 🔹 Bottom Navbar setup
+        // 🔹 Bottom navbar listeners (including Dashboard)
+        findViewById<ImageView>(R.id.navDashboard)?.setOnClickListener { goToDashboard() }
 
+        findViewById<ImageView>(R.id.navManageProperties)?.setOnClickListener {
+            // dedicated Properties list screen
+            startActivity(Intent(this, PropertyListActivity::class.java))
+            finish()
+        }
 
-        // 🔹 Form fields
+        findViewById<ImageView>(R.id.navManageTenants)?.setOnClickListener {
+            // open the PM main screen (Tenants available from there)
+            startActivity(Intent(this, MainPmActivity::class.java))
+            finish()
+        }
+
+        findViewById<ImageView>(R.id.navAssignLeases)?.setOnClickListener {
+            startActivity(Intent(this, AssignLeaseActivity::class.java))
+            finish()
+        }
+
+        findViewById<ImageView>(R.id.navAssignMaintenance)?.setOnClickListener {
+            startActivity(Intent(this, CaretakerTrackMaintenanceActivity::class.java))
+            finish()
+        }
+
+        findViewById<ImageView>(R.id.navRegisterTenant)?.setOnClickListener {
+            startActivity(Intent(this, RegisterTenantActivity::class.java))
+            finish()
+        }
+
+        findViewById<ImageView>(R.id.navGenerateReport)?.setOnClickListener {
+            Toast.makeText(this, "Coming Soon", Toast.LENGTH_SHORT).show()
+        }
+
+        // 🔹 Form views
         etTitle = findViewById(R.id.etTitle)
         etDescription = findViewById(R.id.etDescription)
         etAddress = findViewById(R.id.etAddress)
@@ -72,22 +107,26 @@ class AddEditPropertyActivity : AppCompatActivity() {
 
         jwt = getSharedPreferences("app", MODE_PRIVATE).getString("jwt", "") ?: ""
 
-        // Load property if editing
+        // If editing, prefill
         editingProperty = intent.getParcelableExtra("property")
         editingProperty?.let { fillForm(it) }
 
         btnPickImage.setOnClickListener {
-            val intent = Intent(Intent.ACTION_GET_CONTENT)
-            intent.type = "image/*"
+            val intent = Intent(Intent.ACTION_GET_CONTENT).apply { type = "image/*" }
             startActivityForResult(intent, 101)
         }
 
         btnSave.setOnClickListener { saveProperty() }
-
-
     }
 
-    // 🔹 Fill existing data for edit mode
+    private fun goToDashboard() {
+        val intent = Intent(this, MainPmActivity::class.java)
+            .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+        startActivity(intent)
+        finish()
+    }
+
+    // 🔹 Prefill when editing
     private fun fillForm(p: PropertyDto) {
         etTitle.setText(p.title ?: "")
         etDescription.setText(p.description ?: "")
@@ -161,7 +200,7 @@ class AddEditPropertyActivity : AppCompatActivity() {
         }
     }
 
-    // 🔹 Upload property with image
+    // 🔹 Upload property with image (POST)
     private fun uploadPropertyWithImage(property: Property, imageFile: File) {
         lifecycleScope.launch {
             try {
@@ -193,7 +232,7 @@ class AddEditPropertyActivity : AppCompatActivity() {
 
                 if (response.isSuccessful) {
                     Toast.makeText(this@AddEditPropertyActivity, "Property saved successfully!", Toast.LENGTH_SHORT).show()
-                    finish()
+                    goToDashboard()
                 } else {
                     Toast.makeText(this@AddEditPropertyActivity, "Error ${response.code}", Toast.LENGTH_LONG).show()
                 }
@@ -204,7 +243,7 @@ class AddEditPropertyActivity : AppCompatActivity() {
         }
     }
 
-    // 🔹 Update property details
+    // 🔹 Update property (PUT)
     private fun updateProperty(propertyId: Int, property: Property) {
         lifecycleScope.launch {
             try {
@@ -238,7 +277,7 @@ class AddEditPropertyActivity : AppCompatActivity() {
 
                 if (response.isSuccessful) {
                     Toast.makeText(this@AddEditPropertyActivity, "Property updated successfully!", Toast.LENGTH_SHORT).show()
-                    finish()
+                    goToDashboard()
                 } else {
                     Toast.makeText(this@AddEditPropertyActivity, "Error ${response.code}", Toast.LENGTH_LONG).show()
                 }
@@ -248,7 +287,4 @@ class AddEditPropertyActivity : AppCompatActivity() {
             }
         }
     }
-
-    // 🔹 Bottom Navbar functionality
-
 }

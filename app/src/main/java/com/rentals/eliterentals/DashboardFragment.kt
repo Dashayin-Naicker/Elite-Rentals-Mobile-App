@@ -18,7 +18,6 @@ class DashboardFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_dashboard, container, false)
 
-        // --- CardView references ---
         val cardManageProperties = view.findViewById<CardView>(R.id.cardManageProperties)
         val cardManageTenants = view.findViewById<CardView>(R.id.cardManageTenants)
         val cardViewLeases = view.findViewById<CardView>(R.id.cardViewLeases)
@@ -27,15 +26,16 @@ class DashboardFragment : Fragment() {
         val cardGenerateReport = view.findViewById<CardView>(R.id.cardReports)
         val cardSettings = view.findViewById<CardView>(R.id.cardSettings)
 
-        // --- Navigation handling ---
+        // ✅ Switch tabs inside MainPmActivity (host) instead of trying to start a Fragment as an Activity
         cardManageProperties.setOnClickListener {
-            startActivity(Intent(requireContext(), PropertiesFragment::class.java))
+            startActivity(MainPmActivity.createIntent(requireContext(), MainPmActivity.Tab.PROPERTIES))
         }
 
         cardManageTenants.setOnClickListener {
-            startActivity(Intent(requireContext(), TenantListActivity::class.java))
+            startActivity(MainPmActivity.createIntent(requireContext(), MainPmActivity.Tab.TENANTS))
         }
 
+        // Real activities:
         cardViewLeases.setOnClickListener {
             startActivity(Intent(requireContext(), AssignLeaseActivity::class.java))
         }
@@ -44,12 +44,12 @@ class DashboardFragment : Fragment() {
             startActivity(Intent(requireContext(), CaretakerTrackMaintenanceActivity::class.java))
         }
 
-        cardSettings.setOnClickListener {
-            startActivity(Intent(requireContext(), SettingsActivity::class.java))
-        }
-
         cardRegisterTenant.setOnClickListener {
             startActivity(Intent(requireContext(), RegisterTenantActivity::class.java))
+        }
+
+        cardSettings.setOnClickListener {
+            startActivity(Intent(requireContext(), SettingsActivity::class.java))
         }
 
         cardGenerateReport.setOnClickListener {

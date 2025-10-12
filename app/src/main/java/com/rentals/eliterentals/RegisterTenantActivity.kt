@@ -7,7 +7,6 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -15,33 +14,73 @@ import kotlinx.coroutines.launch
 
 class RegisterTenantActivity : AppCompatActivity() {
 
+    private lateinit var etName: EditText
+    private lateinit var etEmail: EditText
+    private lateinit var etPassword: EditText
+    private lateinit var btnRegister: Button
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register_tenant)
 
-        val etName = findViewById<EditText>(R.id.etName)
-        val etEmail = findViewById<EditText>(R.id.etEmail)
-        val etPassword = findViewById<EditText>(R.id.etPassword)
-        val btnRegister = findViewById<Button>(R.id.btnRegister)
+        etName = findViewById(R.id.etName)
+        etEmail = findViewById(R.id.etEmail)
+        etPassword = findViewById(R.id.etPassword)
+        btnRegister = findViewById(R.id.btnRegister)
 
+        // 🔙 Top bar back -> Dashboard
+        findViewById<ImageView>(R.id.ic_back)?.setOnClickListener {
+            startActivity(MainPmActivity.createIntent(this, MainPmActivity.Tab.DASHBOARD))
+            finish()
+        }
+
+        // ✅ Bottom navbar routes (now includes Dashboard)
+        findViewById<ImageView>(R.id.navDashboard).setOnClickListener {
+            startActivity(MainPmActivity.createIntent(this, MainPmActivity.Tab.DASHBOARD))
+            finish()
+        }
+        findViewById<ImageView>(R.id.navManageProperties).setOnClickListener {
+            startActivity(MainPmActivity.createIntent(this, MainPmActivity.Tab.PROPERTIES))
+            finish()
+        }
+        findViewById<ImageView>(R.id.navManageTenants).setOnClickListener {
+            startActivity(MainPmActivity.createIntent(this, MainPmActivity.Tab.TENANTS))
+            finish()
+        }
+        findViewById<ImageView>(R.id.navAssignLeases).setOnClickListener {
+            startActivity(Intent(this, AssignLeaseActivity::class.java))
+        }
+        findViewById<ImageView>(R.id.navAssignMaintenance).setOnClickListener {
+            startActivity(Intent(this, CaretakerTrackMaintenanceActivity::class.java))
+        }
+        findViewById<ImageView>(R.id.navRegisterTenant).setOnClickListener {
+            Toast.makeText(this, "Already on Register Tenant", Toast.LENGTH_SHORT).show()
+        }
+        findViewById<ImageView>(R.id.navGenerateReport).setOnClickListener {
+            Toast.makeText(this, "Coming Soon", Toast.LENGTH_SHORT).show()
+        }
+
+        // 📝 Register flow
         btnRegister.setOnClickListener {
             val fullName = etName.text.toString().trim()
-            if (fullName.isEmpty() || etEmail.text.isBlank() || etPassword.text.isBlank()) {
+            val email = etEmail.text.toString().trim()
+            val password = etPassword.text.toString().trim()
+
+            if (fullName.isEmpty() || email.isEmpty() || password.isEmpty()) {
                 Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            val first = fullName.split(" ").firstOrNull() ?: ""
+            val first = fullName.split(" ").firstOrNull().orEmpty()
             val last = fullName.split(" ").drop(1).joinToString(" ")
 
             val request = RegisterRequest(
                 firstName = first,
                 lastName = last,
-                email = etEmail.text.toString().trim(),
-                password = etPassword.text.toString().trim()
+                email = email,
+                password = password
             )
 
-            // Use coroutine to call API
             lifecycleScope.launch {
                 repeatOnLifecycle(Lifecycle.State.STARTED) {
                     try {
@@ -52,61 +91,17 @@ class RegisterTenantActivity : AppCompatActivity() {
                                 "Tenant Registered Successfully!",
                                 Toast.LENGTH_SHORT
                             ).show()
-                            finish() // Close activity after successful registration
+                            // Go “home” after success
+                            startActivity(MainPmActivity.createIntent(this@RegisterTenantActivity, MainPmActivity.Tab.DASHBOARD))
+                            finish()
                         } else {
-                            val code = response.code()
-                            val message = response.errorBody()?.string()
-                            Toast.makeText(
-                                this@RegisterTenantActivity,
-                                "Failed: $code\n$message",
-                                Toast.LENGTH_LONG
-                            ).show()
+                            Toast.makeText(this@RegisterTenantActivity, "Failed: ${response.code()}", Toast.LENGTH_LONG).show()
                         }
                     } catch (e: Exception) {
-                        Toast.makeText(
-                            this@RegisterTenantActivity,
-                            "Error: ${e.localizedMessage}",
-                            Toast.LENGTH_LONG
-                        ).show()
+                        Toast.makeText(this@RegisterTenantActivity, "Error: ${e.localizedMessage}", Toast.LENGTH_LONG).show()
                     }
                 }
             }
         }
-
-        // Bottom Navigation Clicks
-        findViewById<ImageView>(R.id.navManageProperties).setOnClickListener {
-            navigateToActivity(AddEditPropertyActivity::class.java)
-        }
-
-        findViewById<ImageView>(R.id.navManageTenants).setOnClickListener {
-            navigateToFragment(TenantsFragment())
-        }
-
-        findViewById<ImageView>(R.id.navAssignLeases).setOnClickListener {
-            navigateToActivity(AssignLeaseActivity::class.java)
-        }
-
-        findViewById<ImageView>(R.id.navAssignMaintenance).setOnClickListener {
-            navigateToActivity(CaretakerTrackMaintenanceActivity::class.java)
-        }
-
-        findViewById<ImageView>(R.id.navRegisterTenant).setOnClickListener {
-            Toast.makeText(this, "Already on Register Tenant", Toast.LENGTH_SHORT).show()
-        }
-
-        findViewById<ImageView>(R.id.navGenerateReport).setOnClickListener {
-            Toast.makeText(this, "Coming Soon", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    // Navigate to another Activity
-    private fun navigateToActivity(activityClass: Class<*>) {
-        val intent = Intent(this, activityClass)
-        startActivity(intent)
-    }
-    private fun navigateToFragment(fragment: Fragment) {
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.fragmentContainer, fragment)
-            .commit()
     }
 }

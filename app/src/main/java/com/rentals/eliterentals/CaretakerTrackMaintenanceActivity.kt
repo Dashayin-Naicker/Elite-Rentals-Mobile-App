@@ -3,47 +3,52 @@ package com.rentals.eliterentals
 import android.content.Intent
 import android.os.Bundle
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 
 class CaretakerTrackMaintenanceActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_caretaker_track_maintenance)
 
-        // Back button functionality
-        findViewById<ImageView>(R.id.ic_back).setOnClickListener {
+        // 🔙 Back -> Manager Dashboard
+        findViewById<ImageView>(R.id.ic_back)?.setOnClickListener {
+            goToManagerDashboard()
+        }
+
+        // ✅ Bottom navbar
+        findViewById<ImageView>(R.id.navDashboard).setOnClickListener {
+            startActivity(MainPmActivity.createIntent(this, MainPmActivity.Tab.DASHBOARD))
             finish()
         }
-
-        // Bottom Navigation Clicks
         findViewById<ImageView>(R.id.navManageProperties).setOnClickListener {
-            navigateToActivity(PropertiesFragment::class.java)
+            startActivity(MainPmActivity.createIntent(this, MainPmActivity.Tab.PROPERTIES))
+            finish()
         }
-
         findViewById<ImageView>(R.id.navManageTenants).setOnClickListener {
-            navigateToActivity(TenantsFragment::class.java)
+            startActivity(MainPmActivity.createIntent(this, MainPmActivity.Tab.TENANTS))
+            finish()
         }
-
         findViewById<ImageView>(R.id.navAssignLeases).setOnClickListener {
-            navigateToActivity(AssignLeaseActivity::class.java)
+            startActivity(Intent(this, AssignLeaseActivity::class.java))
         }
-
         findViewById<ImageView>(R.id.navAssignMaintenance).setOnClickListener {
-            // Already on this screen
+            Toast.makeText(this, "Already on Assign Maintenance", Toast.LENGTH_SHORT).show()
         }
-
         findViewById<ImageView>(R.id.navRegisterTenant).setOnClickListener {
-            navigateToActivity(RegisterTenantActivity::class.java)
+            startActivity(Intent(this, RegisterTenantActivity::class.java))
         }
-
         findViewById<ImageView>(R.id.navGenerateReport).setOnClickListener {
-            // Placeholder for future feature
+            Toast.makeText(this, "Coming Soon", Toast.LENGTH_SHORT).show()
         }
     }
 
-    private fun navigateToActivity(activityClass: Class<*>) {
-        val intent = Intent(this, activityClass)
-        startActivity(intent)
-        finish() // Optional: close current activity to prevent back stack clutter
+    private fun goToManagerDashboard() {
+        startActivity(
+            MainPmActivity.createIntent(this, MainPmActivity.Tab.DASHBOARD)
+                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+        )
+        finish()
     }
 }
