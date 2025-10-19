@@ -147,7 +147,38 @@ interface ApiService {
     ): Response<List<Maintenance>>
 
 
+    // 🔹 Get inbox messages
+    @GET("api/Message/inbox/{userId}")
+    fun getInboxMessages(
+        @Header("Authorization") bearer: String,
+        @Path("userId") userId: Int
+    ): Call<List<MessageDto>>
 
+    // 🔹 Send a message
+    @POST("api/Message")
+    fun sendMessage(
+        @Header("Authorization") bearer: String,
+        @Body message: MessageDto
+    ): Call<MessageDto>
+
+    @GET("api/Message/conversation/{user1}/{user2}")
+    fun getConversation(
+        @Header("Authorization") bearer: String,
+        @Path("user1") user1: Int,
+        @Path("user2") user2: Int
+    ): Call<List<MessageDto>>
+
+    @GET("api/Users/{id}")
+    fun getUserById(
+        @Header("Authorization") bearer: String,
+        @Path("id") userId: Int
+    ): Call<UserDto>
+
+    @GET("api/Message/announcements/{userId}")
+    fun getAnnouncements(
+        @Header("Authorization") bearer: String,
+        @Path("userId") userId: Int
+    ): Call<List<MessageDto>>
 
 
 

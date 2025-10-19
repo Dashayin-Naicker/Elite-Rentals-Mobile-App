@@ -2,13 +2,17 @@ package com.rentals.eliterentals
 
 import android.app.Activity
 import android.content.Intent
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Bundle
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.rentals.eliterentals.utils.FileUtils
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -39,10 +43,8 @@ class ReportMaintenanceActivity : AppCompatActivity() {
         uploadLayout = findViewById(R.id.uploadContainer)
         ivUpload = findViewById(R.id.ivUpload)
 
-        // Top back button
         findViewById<ImageView>(R.id.ivBack).setOnClickListener { finish() }
 
-        // Populate spinners
         spinnerCategory.adapter = ArrayAdapter(
             this,
             android.R.layout.simple_spinner_dropdown_item,
@@ -55,22 +57,18 @@ class ReportMaintenanceActivity : AppCompatActivity() {
             listOf("Low", "Medium", "High", "Critical")
         )
 
-        // Upload photo click
         uploadLayout.setOnClickListener {
             val intent = Intent(Intent.ACTION_PICK).apply { type = "image/*" }
             startActivityForResult(intent, REQUEST_IMAGE_PICK)
         }
 
-        // Submit maintenance request
         btnSubmit.setOnClickListener { submitMaintenance() }
 
-        // Bottom navigation clicks
+        // Bottom nav
         findViewById<LinearLayout>(R.id.navDashboard).setOnClickListener {
             startActivity(Intent(this, TenantDashboardActivity::class.java))
         }
-        findViewById<LinearLayout>(R.id.navMaintenance).setOnClickListener {
-            // Current page, do nothing or scroll to top
-        }
+        findViewById<LinearLayout>(R.id.navMaintenance).setOnClickListener { }
         findViewById<LinearLayout>(R.id.navPayments).setOnClickListener {
             startActivity(Intent(this, UploadProofActivity::class.java))
         }
@@ -84,65 +82,87 @@ class ReportMaintenanceActivity : AppCompatActivity() {
         val jwt = prefs.getString("jwt", null)
         val tenantId = prefs.getInt("userId", -1)
         val propertyId = prefs.getInt("propertyId", -1)
-
         val category = spinnerCategory.selectedItem.toString()
         val urgency = spinnerUrgency.selectedItem.toString()
         val description = etDescription.text.toString().trim()
 
-        if (jwt == null || tenantId == -1) {
+        if (jwt.isNullOrEmpty() || tenantId == -1) {
             Toast.makeText(this, "Please log in first", Toast.LENGTH_SHORT).show()
             return
         }
-
         if (propertyId == -1) {
             Toast.makeText(this, "No property linked to tenant", Toast.LENGTH_SHORT).show()
             return
         }
-
         if (description.isEmpty()) {
             Toast.makeText(this, "Please enter a description", Toast.LENGTH_SHORT).show()
             return
         }
 
-        lifecycleScope.launch {
-            try {
-                val tenantPart = RequestBody.create("text/plain".toMediaTypeOrNull(), tenantId.toString())
-                val propertyPart = RequestBody.create("text/plain".toMediaTypeOrNull(), propertyId.toString())
-                val descriptionPart = RequestBody.create("text/plain".toMediaTypeOrNull(), description)
-                val categoryPart = RequestBody.create("text/plain".toMediaTypeOrNull(), category)
-                val urgencyPart = RequestBody.create("text/plain".toMediaTypeOrNull(), urgency)
+        lifecycleScope.launch(Dispatchers.IO) {
+            val db = AppDatabase.getDatabase(applicationContext)
+            val online = isOnline()
 
-                val proofPart = selectedUri?.let {
-                    val filePath = FileUtils.getPath(this@ReportMaintenanceActivity, it)
-                    val file = File(filePath!!)
-                    val requestFile = RequestBody.create(contentResolver.getType(it)?.toMediaTypeOrNull(), file)
-                    MultipartBody.Part.createFormData("proof", file.name, requestFile)
+            // Save locally
+            val requestEntity = OfflineRequest(
+                tenantId = tenantId,
+                propertyId = propertyId,
+                category = category,
+                urgency = urgency,
+                description = description,
+                imageUri = selectedUri?.toString(),
+                syncStatus = if (online) "synced" else "pending"
+            )
+            db.offlineDao().insertRequest(requestEntity)
+
+            if (online) {
+                try {
+
+                    val tenantPart = RequestBody.create("text/plain".toMediaTypeOrNull(), tenantId.toString())
+                    val propertyPart = RequestBody.create("text/plain".toMediaTypeOrNull(), propertyId.toString())
+                    val descriptionPart = RequestBody.create("text/plain".toMediaTypeOrNull(), description)
+                    val categoryPart = RequestBody.create("text/plain".toMediaTypeOrNull(), category)
+                    val urgencyPart = RequestBody.create("text/plain".toMediaTypeOrNull(), urgency)
+                    val proofPart = selectedUri?.let {
+                        val filePath = FileUtils.getPath(this@ReportMaintenanceActivity, it)
+                        val file = File(filePath!!)
+                        val requestFile = RequestBody.create(contentResolver.getType(it)?.toMediaTypeOrNull(), file)
+                        MultipartBody.Part.createFormData("proof", file.name, requestFile)
+                    }
+
+                    val response = RetrofitClient.instance.createMaintenance(
+                        "Bearer $jwt",
+                        tenantPart, propertyPart, descriptionPart, categoryPart, urgencyPart, proofPart
+                    )
+
+                    if (!response.isSuccessful) {
+                        requestEntity.syncStatus = "pending"
+                        db.offlineDao().updateRequest(requestEntity)
+                    }
+
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    requestEntity.syncStatus = "pending"
+                    db.offlineDao().updateRequest(requestEntity)
                 }
+            }
 
-                val response = RetrofitClient.instance.createMaintenance(
-                    "Bearer $jwt",
-                    tenantPart,
-                    propertyPart,
-                    descriptionPart,
-                    categoryPart,
-                    urgencyPart,
-                    proofPart
-                )
-
-                if (response.isSuccessful) {
-                    Toast.makeText(this@ReportMaintenanceActivity, "Maintenance request submitted successfully", Toast.LENGTH_LONG).show()
-                    val intent = Intent(this@ReportMaintenanceActivity, TenantDashboardActivity::class.java)
-                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
-                    startActivity(intent)
-                    finish()
-                } else {
-                    Toast.makeText(this@ReportMaintenanceActivity, "Failed to submit request", Toast.LENGTH_LONG).show()
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-                Toast.makeText(this@ReportMaintenanceActivity, "Error: ${e.message}", Toast.LENGTH_LONG).show()
+            withContext(Dispatchers.Main) {
+                Toast.makeText(
+                    this@ReportMaintenanceActivity,
+                    if (online) "Maintenance request submitted successfully" else "Saved locally — will sync when online",
+                    Toast.LENGTH_LONG
+                ).show()
+                finish()
             }
         }
+    }
+
+    private fun isOnline(): Boolean {
+        val cm = getSystemService(ConnectivityManager::class.java)
+        val network = cm.activeNetwork ?: return false
+        val capabilities = cm.getNetworkCapabilities(network) ?: return false
+        return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -150,7 +170,7 @@ class ReportMaintenanceActivity : AppCompatActivity() {
         if (requestCode == REQUEST_IMAGE_PICK && resultCode == Activity.RESULT_OK) {
             selectedUri = data?.data
             selectedUri?.let {
-                ivUpload.setImageURI(it)  // display selected photo
+                ivUpload.setImageURI(it)
                 Toast.makeText(this, "Photo selected", Toast.LENGTH_SHORT).show()
             }
         }

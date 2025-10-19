@@ -3,6 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
         android:allowBackup="true"
@@ -39,6 +42,10 @@
         <activity android:name=".UploadProofActivity" />
         <activity android:name=".SettingsActivity" />
         <activity android:name=".TrackMaintenanceActivity" />
+        <activity android:name=".MessagesActivity" />
+        <activity android:name=".ReplyActivity" />
+        <activity android:name=".AnnouncementsActivity" />
+
 
 
 

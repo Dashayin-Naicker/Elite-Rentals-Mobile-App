@@ -2,5 +2,10 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="primaryText">#212121</color>
+    <color name="secondaryText">#424242</color>
+    <color name="hintText">#757575</color>
+    <color name="primaryAccent">#00796B</color> <!-- Teal or your brand color -->
+
 </resources>
 

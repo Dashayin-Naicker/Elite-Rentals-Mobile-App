@@ -13,6 +13,7 @@ import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import android.widget.LinearLayout
 import com.rentals.eliterentals.SettingsActivity
+import android.widget.ImageView
 
 class TenantDashboardActivity : BaseActivity() {
 
@@ -102,6 +103,13 @@ class TenantDashboardActivity : BaseActivity() {
             startActivity(intent)
         }
 
+        val notificationIcon = findViewById<ImageView>(R.id.notificationIcon)
+        notificationIcon.setOnClickListener {
+            val intent = Intent(this, MessagesActivity::class.java)
+            startActivity(intent)
+        }
+
+
     }
 
     private fun populateLeaseInfo(
@@ -110,7 +118,7 @@ class TenantDashboardActivity : BaseActivity() {
         rentAmountTv: TextView,
         rentDueDaysTv: TextView,
         leaseEndDaysTv: TextView,
-        lease: LeaseDto
+        lease: LeaseDto,
     ) {
         val startDate = formatDate(lease.startDate)
         val endDate = formatDate(lease.endDate)

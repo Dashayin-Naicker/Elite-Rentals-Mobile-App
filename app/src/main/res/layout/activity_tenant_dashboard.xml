@@ -45,9 +45,14 @@
                     android:layout_marginStart="12dp" />
 
                 <ImageView
+                    android:id="@+id/notificationIcon"
                     android:layout_width="28dp"
                     android:layout_height="28dp"
-                    android:src="@drawable/notifications" />
+                    android:src="@drawable/notifications"
+                    android:contentDescription="Messages"
+                    android:clickable="true"
+                    android:focusable="true" />
+
             </LinearLayout>
 
             <!-- Rent Due Banner -->

@@ -1,6 +1,8 @@
 package com.rentals.eliterentals
 
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.widget.EditText
@@ -33,6 +35,12 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(arrayOf(android.Manifest.permission.POST_NOTIFICATIONS), 1001)
+            }
+        }
 
         etUsername = findViewById(R.id.etUsername)
         etPassword = findViewById(R.id.etPassword)
@@ -210,6 +218,9 @@ class LoginActivity : AppCompatActivity() {
         prefs.putBoolean("biometric_enabled", true) // Enable biometric after successful login
         loginResponse.user.managerId?.let { prefs.putInt("managerId", it) }
         prefs.apply()
+
+        SyncScheduler.scheduleSync(applicationContext, loginResponse.token)
+
 
         Toast.makeText(this@LoginActivity, "Welcome ${loginResponse.user.firstName}", Toast.LENGTH_LONG).show()
 
