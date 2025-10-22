@@ -24,5 +24,18 @@ object SharedPrefs {
         }
     }
 
+    fun saveFcmToken(context: Context, token: String) {
+        val prefs = context.getSharedPreferences("app", Context.MODE_PRIVATE).edit()
+        prefs.putString("fcmToken", token)
+        prefs.apply()
+    }
+
+    fun getFcmToken(context: Context): String {
+        val prefs = context.getSharedPreferences("app", Context.MODE_PRIVATE)
+        return prefs.getString("fcmToken", "") ?: ""
+    }
+
+
+
 }
 

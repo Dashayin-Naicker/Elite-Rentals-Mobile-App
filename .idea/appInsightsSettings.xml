@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.rentals.eliterentals" />
+                  <option name="mobileSdkAppId" value="1:719647668815:android:59f921843689e07498483a" />
+                  <option name="projectId" value="elite-rentals-42256" />
+                  <option name="projectNumber" value="719647668815" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

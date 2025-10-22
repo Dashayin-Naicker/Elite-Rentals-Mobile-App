@@ -15,9 +15,12 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
+import com.google.firebase.messaging.FirebaseMessaging
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 class LoginActivity : AppCompatActivity() {
 
@@ -235,6 +238,33 @@ class LoginActivity : AppCompatActivity() {
                 return
             }
         }
+
+        FirebaseMessaging.getInstance().token.addOnSuccessListener { token ->
+            Log.d("FCM", "Sending token after login: $token")
+            val api = Retrofit.Builder()
+                .baseUrl("https://eliterentalsapi-czckh7fadmgbgtgf.southafricanorth-01.azurewebsites.net/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+                .create(ApiService::class.java)
+
+            val prefs = getSharedPreferences("app", MODE_PRIVATE)
+            val userId = prefs.getInt("userId", -1)
+            val jwtToken = prefs.getString("jwt", null)
+
+            if (userId != -1 && jwtToken != null) {
+                api.updateFcmToken("Bearer $jwtToken", userId, FcmTokenRequest(token))
+                    .enqueue(object : Callback<Void> {
+                        override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                            Log.d("FCM", "✅ Token sent after login: ${response.code()}")
+                        }
+
+                        override fun onFailure(call: Call<Void>, t: Throwable) {
+                            Log.e("FCM", "❌ Token send failed: ${t.message}")
+                        }
+                    })
+            }
+        }
+
         intent.putExtra("token", loginResponse.token)
         intent.putExtra("userId", loginResponse.user.userId)
         startActivity(intent)

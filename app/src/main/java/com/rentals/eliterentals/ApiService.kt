@@ -180,6 +180,14 @@ interface ApiService {
         @Path("userId") userId: Int
     ): Call<List<MessageDto>>
 
+    @PATCH("api/Users/{id}/fcmtoken")
+    fun updateFcmToken(
+        @Header("Authorization") bearer: String,
+        @Path("id") userId: Int,
+        @Body request: FcmTokenRequest
+    ): Call<Void>
+
+
 
 
 }

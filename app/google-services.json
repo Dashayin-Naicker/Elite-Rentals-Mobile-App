@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "719647668815",
+    "project_id": "elite-rentals-42256",
+    "storage_bucket": "elite-rentals-42256.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:719647668815:android:59f921843689e07498483a",
+        "android_client_info": {
+          "package_name": "com.rentals.eliterentals"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCzyIUBmrDlMSXv8OnkSi9HfYD4pG2TJOc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
