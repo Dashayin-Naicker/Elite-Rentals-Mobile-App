@@ -27,11 +27,7 @@ class TrackMaintenanceActivity : AppCompatActivity() {
         val rv = findViewById<RecyclerView>(R.id.rvMaintenance)
         rv.layoutManager = LinearLayoutManager(this)
 
-        // Initially attach empty adapter to avoid "No adapter attached" error
-        adapter = MaintenanceAdapter(emptyList())
-        rv.adapter = adapter
-
-        // Load saved JWT
+        // Load saved JWT first
         val prefs = getSharedPreferences("app", MODE_PRIVATE)
         jwtToken = prefs.getString("jwt", "") ?: ""
 
@@ -40,6 +36,10 @@ class TrackMaintenanceActivity : AppCompatActivity() {
             finish()
             return
         }
+
+        // Now attach the empty adapter safely
+        adapter = MaintenanceAdapter(emptyList(), jwtToken)
+        rv.adapter = adapter
 
         // Load tenant maintenance requests
         fetchMaintenance(rv)
@@ -60,10 +60,18 @@ class TrackMaintenanceActivity : AppCompatActivity() {
 
                 if (response.isSuccessful) {
                     val requests = response.body() ?: emptyList()
-                    adapter = MaintenanceAdapter(requests)
+
+                    // ✅ Corrected image URL path
+                    val mappedRequests = requests.map { m ->
+                        m.copy(
+                            imageUrl = "https://eliterentalsapi-czckh7fadmgbgtgf.southafricanorth-01.azurewebsites.net/api/maintenance/${m.maintenanceId}/proof"
+                        )
+                    }
+
+                    adapter = MaintenanceAdapter(mappedRequests, jwtToken)
                     rv.adapter = adapter
 
-                    if (requests.isEmpty()) {
+                    if (mappedRequests.isEmpty()) {
                         Toast.makeText(
                             this@TrackMaintenanceActivity,
                             "No maintenance requests found.",
@@ -89,6 +97,7 @@ class TrackMaintenanceActivity : AppCompatActivity() {
         }
     }
 
+
     private fun setupBottomNav() {
         // Dashboard
         findViewById<LinearLayout>(R.id.navDashboard).setOnClickListener {
@@ -98,7 +107,6 @@ class TrackMaintenanceActivity : AppCompatActivity() {
 
         // Maintenance (current activity)
         findViewById<LinearLayout>(R.id.navMaintenance).setOnClickListener {
-            // Already `in TrackMaintenanceActivity, maybe scroll to top or show toast
             Toast.makeText(this, "You are already in Maintenance", Toast.LENGTH_SHORT).show()
         }
 
