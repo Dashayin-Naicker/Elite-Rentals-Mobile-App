@@ -139,6 +139,10 @@ class SyncWorker(appContext: Context, workerParams: WorkerParameters) :
                 showConflictNotification(conflictList)
             }
 
+            if (syncedRequests.isNotEmpty() || syncedPayments.isNotEmpty()) {
+                showSyncSummaryNotification(syncedRequests, syncedPayments)
+            }
+
             // Clear synced entries
             dao.clearSyncedRequests()
             dao.clearSyncedPayments()
