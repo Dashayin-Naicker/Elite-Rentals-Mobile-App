@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- App Info -->
+    <string name="app_name">EliteRentals</string>
+    <string name="server_client_id">166696853938-86rhhlf1b06ilmlpi9tpha1tj50nq5et.apps.googleusercontent.com</string>
+
+    <!-- UI Strings -->
+    <string name="change_password">Shintsha iphasiwedi</string>
+    <string name="current_password">Iphasiwedi yanamuhla</string>
+    <string name="new_password">Iphasiwedi entsha</string>
+    <string name="logout">Phuma</string>
+    <string name="login">Ngena</string>
+    <string name="dark">Mnyama</string>
+    <string name="light">Khanya</string>
+    <string name="theme_high_contrast">Okuhlukile kakhulu</string>
+    <string name="use_biometric_login">Sebenzisa i-biometric login</string>
+    <string name="fill_fields">Sicela ugcwalise zonke izinkambu</string>
+    <string name="password_updated">Iphasiwedi ishintshiwe</string>
+    <string name="error">Iphutha</string>
+    <string name="back">Emuva</string>
+    <string name="right">Kwesokudla</string>
+    <string name="theme">Itimu</string>
+    <string name="settings">Izilungiselelo</string>
+    <string name="select_language">Khetha ulimi</string>
+    <string name="enter_valid_rent">Faka inani lerenti elivumelekile</string>
+    <string name="select_image">Sicela ukhethe isithombe</string>
+    <string name="property_saved">Indawo igcinwe ngempumelelo!</string>
+    <string name="property_error_code">Iphutha %1$d</string>
+    <string name="upload_failed_with_message">Ukulayisha kwehlulekile: %1$s</string>
+    <string name="property_updated">Indawo ibuyekeziwe ngempumelelo!</string>
+    <string name="update_failed_with_message">Ukubuyekezwa kwehlulekile: %1$s</string>
+
+
+
+
+</resources>
