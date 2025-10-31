@@ -15,14 +15,13 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
 import java.util.*
 
-class UploadProofActivity : AppCompatActivity() {
+class UploadProofActivity : BaseActivity() {
 
     private val PICK_FILE_REQUEST = 1
     private var fileUri: Uri? = null
@@ -53,7 +52,7 @@ class UploadProofActivity : AppCompatActivity() {
         tenantId = prefs.getInt("userId", -1)
 
         if (tenantId == -1) {
-            txtStatus.text = "Tenant ID not found. Please log in again."
+            txtStatus.text = getString(R.string.error_tenant_id_missing)
             btnUpload.isEnabled = false
             return
         }
@@ -68,7 +67,6 @@ class UploadProofActivity : AppCompatActivity() {
             }, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH)).show()
         }
 
-        // Bottom nav
         findViewById<LinearLayout>(R.id.navDashboard).setOnClickListener {
             startActivity(Intent(this, TenantDashboardActivity::class.java))
             finish()
@@ -94,7 +92,7 @@ class UploadProofActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == PICK_FILE_REQUEST && resultCode == Activity.RESULT_OK) {
             fileUri = data?.data
-            txtFileName.text = fileUri?.lastPathSegment ?: "Unknown file"
+            txtFileName.text = fileUri?.lastPathSegment ?: getString(R.string.unknown_file)
         }
     }
 
@@ -103,11 +101,11 @@ class UploadProofActivity : AppCompatActivity() {
         val date = etDate.text.toString().trim()
 
         if (fileUri == null) {
-            txtStatus.text = "Please choose a file first."
+            txtStatus.text = getString(R.string.error_file_required)
             return
         }
         if (amount.isEmpty() || date.isEmpty()) {
-            txtStatus.text = "Please enter both amount and date."
+            txtStatus.text = getString(R.string.error_amount_date_required)
             return
         }
 
@@ -170,7 +168,8 @@ class UploadProofActivity : AppCompatActivity() {
             withContext(Dispatchers.Main) {
                 Toast.makeText(
                     this@UploadProofActivity,
-                    if (online) "Payment submitted successfully" else "Saved locally — will sync when online",
+                    if (online) getString(R.string.payment_submit_success)
+                    else getString(R.string.payment_saved_offline),
                     Toast.LENGTH_LONG
                 ).show()
                 finish()

@@ -18,7 +18,7 @@
             android:id="@+id/tvTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Leaky faucet in kitchen"
+            android:text="@string/sample_maintenance_title"
             android:textSize="16sp"
             android:textStyle="bold"
             android:textColor="?android:textColorPrimary" />
@@ -28,7 +28,7 @@
             android:id="@+id/tvDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Logged at: --"
+            android:text="@string/logged_at_placeholder"
             android:textSize="12sp"
             android:textColor="?android:textColorSecondary"
             android:layout_marginTop="4dp" />
@@ -47,7 +47,7 @@
                 android:layout_height="24dp"
                 android:layout_marginEnd="8dp"
                 android:src="@drawable/ic_image"
-                android:contentDescription="Attached image"
+                android:contentDescription="@string/image_attached"
                 android:clickable="true"
                 android:focusable="true" />
 
@@ -55,7 +55,7 @@
                 android:id="@+id/tvStatus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="In Progress"
+                android:text="@string/status_in_progress"
                 android:textColor="@android:color/white"
                 android:background="@drawable/bg_status_in_progress"
                 android:paddingStart="8dp"

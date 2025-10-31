@@ -26,7 +26,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Settings"
+            android:text="@string/settings"
             android:textColor="@android:color/white"
             android:textSize="20sp"
             android:textStyle="bold"
@@ -63,7 +63,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Change Password"
+                        android:text="@string/change_password"
                         android:textSize="18sp"
                         android:textStyle="bold"
                         android:textColor="?android:textColorPrimary"
@@ -83,7 +83,7 @@
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/etCurrentPassword"
-                            android:hint="Current Password"
+                            android:hint="@string/current_password"
                             android:inputType="textPassword"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -104,7 +104,7 @@
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/etNewPassword"
-                            android:hint="New Password"
+                            android:hint="@string/new_password"
                             android:inputType="textPassword"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -115,7 +115,7 @@
                         android:id="@+id/btnChangePassword"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Change Password"
+                        android:text="@string/change_password"
                         android:textColor="@android:color/white"
                         app:backgroundTint="#2979FF"
                         app:cornerRadius="8dp" />
@@ -146,14 +146,14 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Enable Biometric Login"
+                            android:text="@string/use_biometric_login"
                             android:textColor="?android:textColorPrimary"
                             android:textSize="16sp" />
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Use fingerprint or face recognition to login"
+                            android:text="@string/biometric_description"
                             android:textColor="?android:textColorSecondary"
                             android:textSize="12sp"
                             android:layout_marginTop="4dp" />
@@ -183,7 +183,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Select Theme"
+                        android:text="@string/select_theme"
                         android:textColor="?android:textColorPrimary"
                         android:textSize="16sp"
                         android:textStyle="bold"
@@ -199,7 +199,7 @@
                             android:id="@+id/radioLight"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Light"
+                            android:text="@string/light"
                             android:textColor="?android:textColorPrimary"
                             android:paddingVertical="12dp" />
 
@@ -207,7 +207,7 @@
                             android:id="@+id/radioDark"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Dark"
+                            android:text="@string/dark"
                             android:textColor="?android:textColorPrimary"
                             android:paddingVertical="12dp" />
 
@@ -215,7 +215,7 @@
                             android:id="@+id/radioHighContrast"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="High Contrast"
+                            android:text="@string/theme_high_contrast"
                             android:textColor="?android:textColorPrimary"
                             android:paddingVertical="12dp" />
                     </RadioGroup>
@@ -259,7 +259,7 @@
                 android:id="@+id/btnLogout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Logout"
+                android:text="@string/logout"
                 android:textColor="@android:color/white"
                 app:backgroundTint="#D32F2F"
                 app:cornerRadius="8dp"

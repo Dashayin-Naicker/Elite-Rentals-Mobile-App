@@ -18,7 +18,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import java.io.File
 
-class ReportMaintenanceActivity : AppCompatActivity() {
+class ReportMaintenanceActivity : BaseActivity() {
 
     private lateinit var spinnerCategory: Spinner
     private lateinit var spinnerUrgency: Spinner
@@ -45,16 +45,16 @@ class ReportMaintenanceActivity : AppCompatActivity() {
 
         findViewById<ImageView>(R.id.ivBack).setOnClickListener { finish() }
 
-        spinnerCategory.adapter = ArrayAdapter(
+        spinnerCategory.adapter = ArrayAdapter.createFromResource(
             this,
-            android.R.layout.simple_spinner_dropdown_item,
-            listOf("Plumbing", "Electrical", "Appliances", "Structural", "Other")
+            R.array.maintenance_categories,
+            android.R.layout.simple_spinner_dropdown_item
         )
 
-        spinnerUrgency.adapter = ArrayAdapter(
+        spinnerUrgency.adapter = ArrayAdapter.createFromResource(
             this,
-            android.R.layout.simple_spinner_dropdown_item,
-            listOf("Low", "Medium", "High", "Critical")
+            R.array.urgency_levels,
+            android.R.layout.simple_spinner_dropdown_item
         )
 
         uploadLayout.setOnClickListener {
@@ -64,7 +64,6 @@ class ReportMaintenanceActivity : AppCompatActivity() {
 
         btnSubmit.setOnClickListener { submitMaintenance() }
 
-        // Bottom nav
         findViewById<LinearLayout>(R.id.navDashboard).setOnClickListener {
             startActivity(Intent(this, TenantDashboardActivity::class.java))
         }
@@ -87,15 +86,15 @@ class ReportMaintenanceActivity : AppCompatActivity() {
         val description = etDescription.text.toString().trim()
 
         if (jwt.isNullOrEmpty() || tenantId == -1) {
-            Toast.makeText(this, "Please log in first", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.error_login_required), Toast.LENGTH_SHORT).show()
             return
         }
         if (propertyId == -1) {
-            Toast.makeText(this, "No property linked to tenant", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.error_no_property), Toast.LENGTH_SHORT).show()
             return
         }
         if (description.isEmpty()) {
-            Toast.makeText(this, "Please enter a description", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.error_description_required), Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -103,7 +102,6 @@ class ReportMaintenanceActivity : AppCompatActivity() {
             val db = AppDatabase.getDatabase(applicationContext)
             val online = isOnline()
 
-            // Save locally
             val requestEntity = OfflineRequest(
                 tenantId = tenantId,
                 propertyId = propertyId,
@@ -117,7 +115,6 @@ class ReportMaintenanceActivity : AppCompatActivity() {
 
             if (online) {
                 try {
-
                     val tenantPart = RequestBody.create("text/plain".toMediaTypeOrNull(), tenantId.toString())
                     val propertyPart = RequestBody.create("text/plain".toMediaTypeOrNull(), propertyId.toString())
                     val descriptionPart = RequestBody.create("text/plain".toMediaTypeOrNull(), description)
@@ -150,7 +147,8 @@ class ReportMaintenanceActivity : AppCompatActivity() {
             withContext(Dispatchers.Main) {
                 Toast.makeText(
                     this@ReportMaintenanceActivity,
-                    if (online) "Maintenance request submitted successfully" else "Saved locally — will sync when online",
+                    if (online) getString(R.string.maintenance_submit_success)
+                    else getString(R.string.maintenance_saved_offline),
                     Toast.LENGTH_LONG
                 ).show()
                 finish()
@@ -171,7 +169,7 @@ class ReportMaintenanceActivity : AppCompatActivity() {
             selectedUri = data?.data
             selectedUri?.let {
                 ivUpload.setImageURI(it)
-                Toast.makeText(this, "Photo selected", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.photo_selected), Toast.LENGTH_SHORT).show()
             }
         }
     }

@@ -25,16 +25,24 @@ class AnnouncementAdapter(private val items: List<MessageDto>) :
 
     override fun onBindViewHolder(holder: AnnouncementViewHolder, position: Int) {
         val msg = items[position]
+        val context = holder.itemView.context
+
         holder.messageText.text = msg.messageText
-        holder.roleText.text = if (msg.targetRole == null) "For All Users" else "For ${msg.targetRole}"
+
+        holder.roleText.text = if (msg.targetRole == null) {
+            context.getString(R.string.for_all_users)
+        } else {
+            "${context.getString(R.string.for_prefix)} ${msg.targetRole}"
+        }
 
         val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
         val outputFormat = SimpleDateFormat("MMM dd, h:mm a", Locale.getDefault())
         val formattedTime = try {
-            outputFormat.format(inputFormat.parse(msg.timestamp ?: "")!!)
+            msg.timestamp?.let { inputFormat.parse(it) }?.let { outputFormat.format(it) }
         } catch (e: Exception) {
-            msg.timestamp ?: ""
-        }
+            null
+        } ?: msg.timestamp.orEmpty()
+
         holder.timestampText.text = formattedTime
     }
 

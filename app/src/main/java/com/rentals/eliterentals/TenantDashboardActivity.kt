@@ -49,7 +49,8 @@ class TenantDashboardActivity : BaseActivity() {
         jwt = prefs.getString("jwt", "") ?: ""
         tenantId = prefs.getInt("userId", 0)
         val tenantName = prefs.getString("tenantName", "Tenant")
-        tenantNameTv.text = "Hi, $tenantName!"
+        tenantNameTv.text = getString(R.string.greeting, tenantName)
+
 
         // Navigate to UploadProofActivity
         uploadProofCard.setOnClickListener {
@@ -139,9 +140,11 @@ class TenantDashboardActivity : BaseActivity() {
     ) {
         val startDate = formatDate(lease.startDate)
         val endDate = formatDate(lease.endDate)
-        leaseInfoTv.text = "Lease: $startDate → $endDate"
+        leaseInfoTv.text = getString(R.string.lease_period, startDate, endDate)
 
-        rentStatusTv.text = "Rent Status: $paymentStatus"
+
+        rentStatusTv.text = getString(R.string.rent_status, paymentStatus)
+
 
         // Color-code rent status
         val statusColor = when (paymentStatus.lowercase()) {
@@ -160,13 +163,16 @@ class TenantDashboardActivity : BaseActivity() {
         rentStatusTv.setTextColor(Color.WHITE)
 
         val rent = lease.property?.rentAmount?.toInt() ?: 0
-        rentAmountTv.text = "R$rent"
+        rentAmountTv.text = getString(R.string.rent_amount, rent)
+
 
         val rentDueDays = calculateDaysUntilMonthEnd()
-        rentDueDaysTv.text = "Rent Due in $rentDueDays Days"
+        rentDueDaysTv.text = getString(R.string.rent_due_days, rentDueDays)
+
 
         val leaseEndDays = calculateDaysLeft(lease.endDate)
-        leaseEndDaysTv.text = "Lease Ends in $leaseEndDays Days"
+        leaseEndDaysTv.text = getString(R.string.lease_end_days, leaseEndDays)
+
     }
 
     private fun showNoLease(
@@ -176,11 +182,12 @@ class TenantDashboardActivity : BaseActivity() {
         rentDueDaysTv: TextView,
         leaseEndDaysTv: TextView
     ) {
-        leaseInfoTv.text = "No active lease"
-        rentStatusTv.text = "Rent Status: N/A"
-        rentAmountTv.text = "R0"
-        rentDueDaysTv.text = "No rent due"
-        leaseEndDaysTv.text = "Lease Ends: N/A"
+        leaseInfoTv.text = getString(R.string.no_active_lease)
+        rentStatusTv.text = getString(R.string.rent_status_na)
+        rentAmountTv.text = getString(R.string.rent_amount, 0)
+        rentDueDaysTv.text = getString(R.string.no_rent_due)
+        leaseEndDaysTv.text = getString(R.string.lease_end_na)
+
     }
 
     private fun showError(
@@ -190,11 +197,12 @@ class TenantDashboardActivity : BaseActivity() {
         rentDueDaysTv: TextView,
         leaseEndDaysTv: TextView
     ) {
-        leaseInfoTv.text = "Error loading lease"
-        rentStatusTv.text = "N/A"
-        rentAmountTv.text = "R0"
-        rentDueDaysTv.text = "N/A"
-        leaseEndDaysTv.text = "N/A"
+        leaseInfoTv.text = getString(R.string.error_loading_lease)
+        rentStatusTv.text = getString(R.string.rent_status_na)
+        rentAmountTv.text = getString(R.string.rent_amount, 0)
+        rentDueDaysTv.text = getString(R.string.rent_due_days_na)
+        leaseEndDaysTv.text = getString(R.string.lease_end_na)
+
     }
 
     private fun calculateDaysUntilMonthEnd(): Int {

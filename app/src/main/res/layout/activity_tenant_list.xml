@@ -8,7 +8,7 @@
 
     <!-- Header -->
     <TextView
-        android:text="Tenants"
+        android:text="@string/tenants"
         android:textSize="22sp"
         android:textStyle="bold"
         android:textColor="#222222"

@@ -9,7 +9,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class AnnouncementsActivity : AppCompatActivity() {
+class AnnouncementsActivity : BaseActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: AnnouncementAdapter
     private val announcements = mutableListOf<MessageDto>()
@@ -38,12 +38,20 @@ class AnnouncementsActivity : AppCompatActivity() {
                         announcements.addAll(response.body() ?: emptyList())
                         adapter.notifyDataSetChanged()
                     } else {
-                        Toast.makeText(this@AnnouncementsActivity, "Failed to load announcements", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            this@AnnouncementsActivity,
+                            getString(R.string.error_loading_announcements),
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
 
                 override fun onFailure(call: Call<List<MessageDto>>, t: Throwable) {
-                    Toast.makeText(this@AnnouncementsActivity, "Network error", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this@AnnouncementsActivity,
+                        getString(R.string.error_network),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             })
     }

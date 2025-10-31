@@ -11,6 +11,36 @@
         <item>Unavailable</item>
     </string-array>
 
+    <string-array name="language_options">
+        <item>English</item>
+        <item>isiZulu</item>
+    </string-array>
+
+    <string name="error_login_required">Please log in first</string>
+    <string name="error_no_property">No property linked to tenant</string>
+    <string name="error_description_required">Please enter a description</string>
+    <string name="maintenance_submit_success">Maintenance request submitted successfully</string>
+    <string name="maintenance_saved_offline">Saved locally — will sync when online</string>
+    <string name="photo_selected">Photo selected</string>
+
+    <string-array name="maintenance_categories">
+        <item>Plumbing</item>
+        <item>Electrical</item>
+        <item>Appliances</item>
+        <item>Structural</item>
+        <item>Other</item>
+    </string-array>
+
+    <string-array name="urgency_levels">
+        <item>Low</item>
+        <item>Medium</item>
+        <item>High</item>
+        <item>Critical</item>
+    </string-array>
+
+
+
+
     <!-- UI Strings -->
     <string name="change_password">Change Password</string>
     <string name="current_password">Current Password</string>
@@ -36,6 +66,84 @@
     <string name="upload_failed_with_message">Upload failed: %1$s</string>
     <string name="property_updated">Property updated successfully!</string>
     <string name="update_failed_with_message">Update failed: %1$s</string>
+    <string name="greeting">Hi, %1$s!</string>
+    <string name="lease_period">Lease: %1$s → %2$s</string>
+    <string name="rent_status">Rent Status: %1$s</string>
+    <string name="rent_amount">R%1$d</string>
+    <string name="rent_due_days">Rent Due in %1$d Days</string>
+    <string name="lease_end_days">Lease Ends in %1$d Days</string>
+    <string name="no_active_lease">No active lease</string>
+    <string name="rent_status_na">Rent Status: N/A</string>
+    <string name="no_rent_due">No rent due</string>
+    <string name="lease_end_na">Lease Ends: N/A</string>
+    <string name="error_loading_lease">Error loading lease</string>
+    <string name="rent_due_days_na">N/A</string>
+    <string name="report_maintenance">Report Maintenance</string>
+    <string name="chatbot">Chatbot</string>
+    <string name="rent_due_days_placeholder">Rent Due in 0 Days</string>
+    <string name="upload_proof">Upload Proof</string>
+    <string name="invoice">Invoice</string>
+    <string name="lease_period_placeholder">Lease: 01 Jan 2025 → 31 Dec 2025</string>
+    <string name="lease_end_days_placeholder">Lease Ends in 0 Days</string>
+    <string name="rent_status_label">Rent Status</string>
+    <string name="rent_status_pending">Pending Payment</string>
+    <string name="rent_status_paid">Paid</string>
+    <string name="rent_status_overdue">Overdue</string>
+    <string name="view_maintenance_requests">View Maintenance Requests</string>
+    <string name="dashboard">Dashboard</string>
+    <string name="maintenance">Maintenance</string>
+    <string name="payments">Payments</string>
+    <string name="logged_at">Logged at: %1$s</string>
+    <string name="status_pending">Pending</string>
+    <string name="status_in_progress">In Progress</string>
+    <string name="status_resolved">Resolved</string>
+    <string name="no_photo_uploaded">No photo uploaded</string>
+    <string name="error_tenant_id_missing">Tenant ID not found. Please log in again.</string>
+    <string name="error_file_required">Please choose a file first.</string>
+    <string name="error_amount_date_required">Please enter both amount and date.</string>
+    <string name="payment_submit_success">Payment submitted successfully</string>
+    <string name="payment_saved_offline">Saved locally — will sync when online</string>
+    <string name="unknown_file">Unknown file</string>
+    <string name="upload_payment_proof">Upload Payment Proof</string>
+    <string name="payment_amount">Payment Amount</string>
+    <string name="hint_payment_amount">Enter payment amount</string>
+    <string name="payment_date">Payment Date</string>
+    <string name="hint_payment_date">Select payment date</string>
+    <string name="choose_file">Choose File</string>
+    <string name="no_file_selected">No file selected</string>
+    <string name="sample_maintenance_title">Leaky faucet in kitchen</string>
+    <string name="logged_at_placeholder">Logged at: --</string>
+    <string name="image_attached">Attached image</string>
+    <string name="my_maintenance_requests">My Maintenance Requests</string>
+    <string name="tenants">Tenants</string>
+    <string name="for_all_users">For All Users</string>
+    <string name="for_prefix">For</string>
+    <string name="error_loading_announcements">Failed to load announcements</string>
+    <string name="error_network">Network error</string>
+    <string name="announcements_screen_desc">Announcements screen</string>
+    <string name="announcements_list_desc">List of announcements</string>
+    <string name="error_fill_fields">Please fill both fields</string>
+    <string name="error_generic">Error: %1$s</string>
+    <string name="applying_theme">Applying theme...</string>
+    <string name="biometric_description">Use fingerprint or face recognition to login</string>
+    <string name="select_theme">Select Theme</string>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

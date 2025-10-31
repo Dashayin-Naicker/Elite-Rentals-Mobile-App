@@ -38,7 +38,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Hi, Barb!"
+                    android:text="@string/greeting"
                     android:textColor="?android:textColorPrimary"
                     android:textSize="22sp"
                     android:textStyle="bold"
@@ -92,7 +92,7 @@
                             android:id="@+id/tvRentDueDays"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Rent Due in 0 Days"
+                            android:text="@string/rent_due_days_placeholder"
                             android:textSize="15sp"
                             android:textColor="@android:color/white" />
                     </LinearLayout>
@@ -147,13 +147,13 @@
                             android:layout_height="40dp"
                             android:src="@drawable/maintenance" />
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Report Maintenance"
-                            android:textColor="?android:textColorPrimary"
-                            android:layout_marginTop="8dp" />
-                    </LinearLayout>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/report_maintenance"
+                                android:textColor="?android:textColorPrimary"
+                                android:layout_marginTop="8dp" />
+                        </LinearLayout>
                 </androidx.cardview.widget.CardView>
 
                 <!-- Chatbot -->
@@ -180,7 +180,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Chatbot"
+                            android:text="@string/chatbot"
                             android:textColor="?android:textColorPrimary"
                             android:layout_marginTop="8dp" />
                     </LinearLayout>
@@ -211,7 +211,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Upload Proof"
+                            android:text="@string/upload_proof"
                             android:textColor="?android:textColorPrimary"
                             android:layout_marginTop="8dp" />
                     </LinearLayout>
@@ -241,7 +241,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Invoice"
+                            android:text="@string/invoice"
                             android:textColor="?android:textColorPrimary"
                             android:layout_marginTop="8dp" />
                     </LinearLayout>
@@ -267,7 +267,7 @@
                         android:id="@+id/tvLeaseInfo"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Lease: 01 Jan 2025 → 31 Dec 2025"
+                        android:text="@string/lease_period_placeholder"
                         android:textColor="?android:textColorPrimary"
                         android:textSize="16sp" />
 
@@ -275,7 +275,7 @@
                         android:id="@+id/tvLeaseEndDays"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Lease Ends in 92 Days"
+                        android:text="@string/lease_end_days_placeholder"
                         android:textColor="?android:textColorSecondary"
                         android:textSize="14sp"
                         android:layout_marginTop="4dp" />
@@ -302,7 +302,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Rent Status"
+                        android:text="@string/rent_status_label"
                         android:textStyle="bold"
                         android:textColor="?android:textColorPrimary" />
 
@@ -310,7 +310,7 @@
                         android:id="@+id/tvRentStatus"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Pending Payment"
+                        android:text="@string/rent_status_pending"
                         android:background="@drawable/ic_status_bg"
                         android:padding="6dp"
                         android:textColor="@android:color/white" />
@@ -342,7 +342,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="View Maintenance Requests"
+                        android:text="@string/view_maintenance_requests"
                         android:textSize="16sp"
                         android:textColor="?android:textColorPrimary"
                         android:layout_marginStart="12dp"
@@ -379,7 +379,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Dashboard"
+                android:text="@string/dashboard"
                 android:textSize="12sp"
                 android:textColor="?android:textColorPrimary" />
         </LinearLayout>
@@ -404,7 +404,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Maintenance"
+                android:text="@string/maintenance"
                 android:textSize="12sp"
                 android:textColor="?android:textColorPrimary" />
         </LinearLayout>
@@ -424,7 +424,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Payments"
+                android:text="@string/payments"
                 android:textSize="12sp"
                 android:textColor="?android:textColorPrimary" />
         </LinearLayout>
@@ -448,7 +448,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Settings"
+                android:text="@string/settings"
                 android:textSize="12sp"
                 android:textColor="?android:textColorPrimary" />
         </LinearLayout>
