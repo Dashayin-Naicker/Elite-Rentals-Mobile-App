@@ -127,7 +127,38 @@
     <string name="applying_theme">Applying theme...</string>
     <string name="biometric_description">Use fingerprint or face recognition to login</string>
     <string name="select_theme">Select Theme</string>
-    
+    <string name="biometric_error">Auth error: %1$s</string>
+    <string name="biometric_failed">Authentication failed</string>
+    <string name="welcome_user">Welcome %1$s</string>
+    <string name="unknown_role">Unknown role: %1$s</string>
+    <string name="login_missing_fields">Please enter both username and password</string>
+    <string name="login_empty_response">Empty response from server</string>
+    <string name="login_invalid_credentials">Invalid credentials</string>
+    <string name="error_network_with_message">Network error: %1$s</string>
+    <string name="login_no_id_token">No ID Token received</string>
+    <string name="login_sso_failed">SSO Login failed</string>
+    <string name="biometric_success">Biometric login successful</string>
+    <string name="login_title">Log In</string>
+    <string name="hint_username">Username</string>
+    <string name="hint_password">Password</string>
+    <string name="btn_login">Login</string>
+    <string name="divider_or">OR</string>
+    <string name="btn_google_login">Log In with Google</string>
+    <string name="btn_fingerprint_login">Log In with Fingerprint</string>
+    <string name="biometric_title">Biometric Login</string>
+    <string name="biometric_subtitle">Use fingerprint or face to login</string>
+    <string name="cancel">Cancel</string>
+    <string name="settings_fill_fields">Please fill both fields</string>
+    <string name="settings_password_updated">Password updated</string>
+    <string name="settings_error_with_message">Error: %1$s</string>
+    <string name="theme_applying">Applying theme...</string>
+    <string name="language_en">English</string>
+    <string name="language_zu">Zulu</string>
+    <string name="settings_logout_success">You have been logged out</string>
+
+
+
+
 
 
 

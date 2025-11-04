@@ -112,14 +112,47 @@
     <string name="error_network">Inkinga yenethiwekhi</string>
     <string name="announcements_screen_desc">Isikrini sezaziso</string>
     <string name="announcements_list_desc">Uhlu lwezaziso</string>
-
     <string name="error_fill_fields">Sicela ugcwalise wonke amasimu</string>
     <string name="password_updated">Iphasiwedi ibuyekeziwe</string>
     <string name="error_generic">Iphutha: %1$s</string>
     <string name="applying_theme">Kusetshenziswa itimu...</string>
-
     <string name="biometric_description">Sebenzisa umunwe noma ubuso ukuze ungene</string>
     <string name="select_theme">Khetha Itimu</string>
+    <string name="biometric_error">Iphutha lokungena: %1$s</string>
+    <string name="biometric_failed">Ukungena kwehlulekile</string>
+    <string name="welcome_user">Siyakwamukela %1$s</string>
+    <string name="unknown_role">Indima engaziwa: %1$s</string>
+    <string name="login_missing_fields">Sicela ufake igama lomsebenzisi nephasiwedi</string>
+    <string name="login_empty_response">Impendulo engenalutho evela kuseva</string>
+    <string name="login_invalid_credentials">Izinkomba ezingavumelekile</string>
+    <string name="error_network_with_message">Iphutha lenethiwekhi: %1$s</string>
+    <string name="login_no_id_token">Ayikho i-ID Token eyamukelwayo</string>
+    <string name="login_sso_failed">Ukungena nge-SSO kwehlulekile</string>
+    <string name="biometric_success">Ukungena nge-biometric kuphumelele</string>
+    <string name="login_title">Ngena ngemvume</string>
+    <string name="hint_username">Igama lomsebenzisi</string>
+    <string name="hint_password">Iphasiwedi</string>
+    <string name="btn_login">Ngena</string>
+    <string name="divider_or">NOMA</string>
+    <string name="btn_google_login">Ngena nge-Google</string>
+    <string name="btn_fingerprint_login">Ngena nge-Fingerprint</string>
+    <string name="biometric_title">Ukungena nge-Biometric</string>
+    <string name="biometric_subtitle">Sebenzisa umunwe noma ubuso ukuze ungene</string>
+    <string name="cancel">Khansela</string>
+    <string name="settings_fill_fields">Sicela ugcwalise wonke amasimu</string>
+    <string name="settings_password_updated">Iphasiwedi ibuyekeziwe</string>
+    <string name="settings_error_with_message">Iphutha: %1$s</string>
+    <string name="theme_applying">Kusetshenziswa itimu...</string>
+    <string name="language_en">IsiNgisi</string>
+    <string name="language_zu">IsiZulu</string>
+    <string name="settings_logout_success">Uphumile ngempumelelo</string>
+
+
+
+
+
+
+
 
 
 

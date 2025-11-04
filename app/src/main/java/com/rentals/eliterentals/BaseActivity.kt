@@ -1,12 +1,10 @@
 package com.rentals.eliterentals
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.os.Bundle
-import android.preference.PreferenceManager
 import androidx.appcompat.app.AppCompatActivity
-import java.util.Locale
+import java.util.*
 
 open class BaseActivity : AppCompatActivity() {
 
@@ -31,9 +29,7 @@ open class BaseActivity : AppCompatActivity() {
 
     private fun applySavedTheme() {
         val prefs = getSharedPreferences("app", Context.MODE_PRIVATE)
-        val savedTheme = prefs.getString("theme", "light") ?: "light"
-
-        when (savedTheme) {
+        when (prefs.getString("theme", "light")) {
             "light" -> setTheme(R.style.Theme_EliteRentals_Light)
             "dark" -> setTheme(R.style.Theme_EliteRentals_Dark)
             "high_contrast" -> setTheme(R.style.Theme_EliteRentals_HighContrast)

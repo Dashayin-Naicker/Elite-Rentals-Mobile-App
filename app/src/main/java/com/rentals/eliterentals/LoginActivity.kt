@@ -22,7 +22,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class LoginActivity : AppCompatActivity() {
+class LoginActivity : BaseActivity() {
 
     private lateinit var etUsername: EditText
     private lateinit var etPassword: EditText
@@ -69,7 +69,8 @@ class LoginActivity : AppCompatActivity() {
         val password = etPassword.text.toString().trim()
 
         if (username.isEmpty() || password.isEmpty()) {
-            Toast.makeText(this, "Please enter both username and password", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.login_missing_fields), Toast.LENGTH_SHORT).show()
+
             return
         }
 
@@ -81,15 +82,18 @@ class LoginActivity : AppCompatActivity() {
                     if (loginResponse != null) {
                         handleLoginSuccess(loginResponse)
                     } else {
-                        Toast.makeText(this@LoginActivity, "Empty response from server", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@LoginActivity, getString(R.string.login_empty_response), Toast.LENGTH_SHORT).show()
+
                     }
                 } else {
-                    Toast.makeText(this@LoginActivity, "Invalid credentials", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@LoginActivity, getString(R.string.login_invalid_credentials), Toast.LENGTH_SHORT).show()
+
                 }
             }
 
             override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
-                Toast.makeText(this@LoginActivity, "Network error: ${t.message}", Toast.LENGTH_LONG).show()
+                Toast.makeText(this@LoginActivity, getString(R.string.error_network_with_message, t.message), Toast.LENGTH_LONG).show()
+
             }
         })
     }
@@ -110,7 +114,8 @@ class LoginActivity : AppCompatActivity() {
                 if (!idToken.isNullOrEmpty()) {
                     sendIdTokenToApi(idToken)
                 } else {
-                    Toast.makeText(this, "No ID Token received", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.login_no_id_token), Toast.LENGTH_SHORT).show()
+
                 }
             } catch (e: ApiException) {
                 Log.e("GoogleLogin", "Google sign in failed", e)
@@ -133,12 +138,14 @@ class LoginActivity : AppCompatActivity() {
                 if (response.isSuccessful && response.body() != null) {
                     handleLoginSuccess(response.body()!!)
                 } else {
-                    Toast.makeText(this@LoginActivity, "SSO Login failed", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@LoginActivity, getString(R.string.login_sso_failed), Toast.LENGTH_SHORT).show()
+
                 }
             }
 
             override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
-                Toast.makeText(this@LoginActivity, "Network error: ${t.message}", Toast.LENGTH_LONG).show()
+                Toast.makeText(this@LoginActivity, getString(R.string.error_network_with_message, t.message), Toast.LENGTH_LONG).show()
+
             }
         })
     }
@@ -154,7 +161,8 @@ class LoginActivity : AppCompatActivity() {
         val role = biometricPrefs.getString("role", "Tenant") ?: "Tenant"
 
         if (!enabled || userId == -1 || jwt == null) {
-            Toast.makeText(this, "Please login first", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.error_login_required), Toast.LENGTH_SHORT).show()
+
             return
         }
 
@@ -162,12 +170,20 @@ class LoginActivity : AppCompatActivity() {
             object : BiometricPrompt.AuthenticationCallback() {
                 override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
                     super.onAuthenticationSucceeded(result)
-                    Toast.makeText(this@LoginActivity, "Biometric login successful", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@LoginActivity, getString(R.string.biometric_success), Toast.LENGTH_SHORT).show()
+
 
                     val tenantName = biometricPrefs.getString("tenantName", "Tenant") ?: "Tenant"
 
                     // Restore session
-                    getSharedPreferences("app", MODE_PRIVATE).edit()
+                    val appPrefs = getSharedPreferences("app", MODE_PRIVATE)
+                    val lang = appPrefs.getString("language", "en")
+                    val theme = appPrefs.getString("theme", "light")
+
+                    appPrefs.edit().clear().apply()
+                    appPrefs.edit()
+                        .putString("language", lang)
+                        .putString("theme", theme)
                         .putInt("userId", userId)
                         .putString("jwt", jwt)
                         .putString("role", role)
@@ -188,20 +204,30 @@ class LoginActivity : AppCompatActivity() {
 
                 override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
                     super.onAuthenticationError(errorCode, errString)
-                    Toast.makeText(this@LoginActivity, "Auth error: $errString", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this@LoginActivity,
+                        getString(R.string.biometric_error, errString),
+                        Toast.LENGTH_SHORT
+                    ).show()
+
                 }
 
                 override fun onAuthenticationFailed() {
                     super.onAuthenticationFailed()
-                    Toast.makeText(this@LoginActivity, "Authentication failed", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this@LoginActivity,
+                        getString(R.string.biometric_failed),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             })
 
         val promptInfo = BiometricPrompt.PromptInfo.Builder()
-            .setTitle("Biometric Login")
-            .setSubtitle("Use fingerprint or face to login")
-            .setNegativeButtonText("Cancel")
+            .setTitle(getString(R.string.biometric_title))
+            .setSubtitle(getString(R.string.biometric_subtitle))
+            .setNegativeButtonText(getString(R.string.cancel))
             .build()
+
 
         biometricPrompt.authenticate(promptInfo)
     }
@@ -213,19 +239,31 @@ class LoginActivity : AppCompatActivity() {
         Log.d("LoginResponse", "User email: ${loginResponse.user.email}")
         Log.d("LoginResponse", "Manager ID: ${loginResponse.user.managerId}")
 
-        val prefs = getSharedPreferences("app", MODE_PRIVATE).edit()
-        prefs.putString("jwt", loginResponse.token)
-        prefs.putInt("userId", loginResponse.user.userId)
-        prefs.putString("tenantName", "${loginResponse.user.firstName} ${loginResponse.user.lastName}")
-        prefs.putString("role", loginResponse.user.role?.trim() ?: "Tenant")
-        prefs.putBoolean("biometric_enabled", true) // Enable biometric after successful login
-        loginResponse.user.managerId?.let { prefs.putInt("managerId", it) }
-        prefs.apply()
+        val appPrefs = getSharedPreferences("app", MODE_PRIVATE)
+        val lang = appPrefs.getString("language", "en")
+        val theme = appPrefs.getString("theme", "light")
+
+        appPrefs.edit().clear().apply()
+        appPrefs.edit()
+            .putString("language", lang)
+            .putString("theme", theme)
+            .putString("jwt", loginResponse.token)
+            .putInt("userId", loginResponse.user.userId)
+            .putString("tenantName", "${loginResponse.user.firstName} ${loginResponse.user.lastName}")
+            .putString("role", loginResponse.user.role?.trim() ?: "Tenant")
+            .putBoolean("biometric_enabled", true)
+            .apply()
+
+        loginResponse.user.managerId?.let {
+            appPrefs.edit().putInt("managerId", it).apply()
+        }
+
 
         SyncScheduler.scheduleSync(applicationContext, loginResponse.token)
 
 
-        Toast.makeText(this@LoginActivity, "Welcome ${loginResponse.user.firstName}", Toast.LENGTH_LONG).show()
+        Toast.makeText(this@LoginActivity, getString(R.string.welcome_user, loginResponse.user.firstName), Toast.LENGTH_LONG).show()
+
 
         // Navigate to correct dashboard
         val role = loginResponse.user.role?.trim()
@@ -234,7 +272,8 @@ class LoginActivity : AppCompatActivity() {
             "Caretaker" -> Intent(this, CaretakerTrackMaintenanceActivity::class.java)
             "PropertyManager" -> Intent(this, MainPmActivity::class.java)
             else -> {
-                Toast.makeText(this, "Unknown role: $role", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.unknown_role, role), Toast.LENGTH_SHORT).show()
+
                 return
             }
         }
