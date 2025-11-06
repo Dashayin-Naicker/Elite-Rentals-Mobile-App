@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="brandBlue">#2979FF</color> <!-- stays consistent -->
+    <color name="backgroundLight">#121212</color>
+    <color name="boxBackground">#1E1E1E</color>
+    <color name="textTitle">#FFFFFF</color>
+    <color name="textPrimary">#FFFFFF</color>
+    <color name="textSecondary">#CCCCCC</color>
+</resources>
