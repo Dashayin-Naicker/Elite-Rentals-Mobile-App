@@ -211,13 +211,6 @@
                             android:textColor="?android:textColorPrimary"
                             android:paddingVertical="12dp" />
 
-                        <RadioButton
-                            android:id="@+id/radioHighContrast"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/theme_high_contrast"
-                            android:textColor="?android:textColorPrimary"
-                            android:paddingVertical="12dp" />
                     </RadioGroup>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>

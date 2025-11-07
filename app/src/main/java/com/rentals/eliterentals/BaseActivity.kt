@@ -32,7 +32,7 @@ open class BaseActivity : AppCompatActivity() {
         when (prefs.getString("theme", "light")) {
             "light" -> setTheme(R.style.Theme_EliteRentals_Light)
             "dark" -> setTheme(R.style.Theme_EliteRentals_Dark)
-            "high_contrast" -> setTheme(R.style.Theme_EliteRentals_HighContrast)
+
             else -> setTheme(R.style.Theme_EliteRentals_Light)
         }
     }

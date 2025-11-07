@@ -59,7 +59,7 @@ class SettingsActivity : BaseActivity() {
         when (prefs.getString("theme", "light")) {
             "light" -> radioGroupTheme.check(R.id.radioLight)
             "dark" -> radioGroupTheme.check(R.id.radioDark)
-            "high_contrast" -> radioGroupTheme.check(R.id.radioHighContrast)
+
         }
 
         btnChangePassword.setOnClickListener {
@@ -110,7 +110,6 @@ class SettingsActivity : BaseActivity() {
             val selectedTheme = when (checkedId) {
                 R.id.radioLight -> "light"
                 R.id.radioDark -> "dark"
-                R.id.radioHighContrast -> "high_contrast"
                 else -> "light"
             }
 
