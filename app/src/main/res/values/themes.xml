@@ -13,4 +13,10 @@
         <item name="cornerRadius">12dp</item>
     </style>
 
+    <style name="Theme.EliteRentals.NoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
+
 </resources>

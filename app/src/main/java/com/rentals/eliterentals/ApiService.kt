@@ -146,6 +146,36 @@ interface ApiService {
         @Header("Authorization") token: String
     ): Response<List<Maintenance>>
 
+    @GET("api/Maintenance/caretaker-requests")
+    suspend fun getCaretakerRequests(
+        @Header("Authorization") token: String
+    ): Response<List<Maintenance>>
+
+    @Multipart
+    @POST("api/Maintenance/{id}/proof")
+    suspend fun updateMaintenanceProof(
+        @Header("Authorization") token: String,
+        @Path("id") maintenanceId: Int,
+        @Part proof: MultipartBody.Part
+    ): Response<Void>
+
+
+    @PUT("api/Maintenance/{id}/status")
+    suspend fun updateMaintenanceStatus(
+        @Header("Authorization") token: String,
+        @Path("id") maintenanceId: Int,
+        @Body dto: MaintenanceStatusDto
+    ): Response<Unit>
+
+    @POST("api/maintenance/{id}/comment")
+    suspend fun addMaintenanceComment(
+        @Header("Authorization") token: String,
+        @Path("id") maintenanceId: Int,
+        @Body commentDto: MaintenanceCommentDto
+    ): Response<ResponseBody>
+
+
+
 
     // 🔹 Get inbox messages
     @GET("api/Message/inbox/{userId}")
