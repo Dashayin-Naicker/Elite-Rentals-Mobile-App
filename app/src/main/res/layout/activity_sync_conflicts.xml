@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layoutRoot"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:gravity="center"
+    android:background="@color/white">
+
+    <!-- Conflict Info -->
+    <TextView
+        android:id="@+id/tvConflictInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Conflict detected for ..."
+        android:textSize="18sp"
+        android:textColor="@color/black"
+        android:gravity="center"
+        android:paddingBottom="32dp"/>
+
+    <!-- Keep Local Button -->
+    <Button
+        android:id="@+id/btnKeepLocal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Keep Local"
+        android:backgroundTint="@color/material_dynamic_primary20"
+        android:textColor="@android:color/white"
+        android:layout_marginBottom="16dp"/>
+
+    <!-- Keep Server Button -->
+    <Button
+        android:id="@+id/btnKeepServer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Keep Server"
+        android:backgroundTint="@color/material_dynamic_primary20"
+        android:textColor="@android:color/white"/>
+
+</LinearLayout>

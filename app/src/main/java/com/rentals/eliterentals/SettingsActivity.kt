@@ -7,11 +7,13 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.View
 import android.widget.*
 import com.google.android.material.button.MaterialButton
 import okhttp3.OkHttpClient
 import retrofit2.*
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.*
 
 class SettingsActivity : BaseActivity() {
 
@@ -22,6 +24,7 @@ class SettingsActivity : BaseActivity() {
     private lateinit var radioGroupTheme: RadioGroup
     private lateinit var btnLogout: MaterialButton
     private lateinit var btnBack: ImageView
+    private lateinit var spinnerLanguage: Spinner
 
     private lateinit var prefs: SharedPreferences
     private lateinit var biometricPrefs: SharedPreferences
@@ -40,7 +43,6 @@ class SettingsActivity : BaseActivity() {
         jwt = prefs.getString("jwt", "") ?: ""
         role = prefs.getString("role", "Tenant") ?: "Tenant"
 
-        // Initialize views
         etCurrentPassword = findViewById(R.id.etCurrentPassword)
         etNewPassword = findViewById(R.id.etNewPassword)
         btnChangePassword = findViewById(R.id.btnChangePassword)
@@ -48,28 +50,23 @@ class SettingsActivity : BaseActivity() {
         radioGroupTheme = findViewById(R.id.radioGroupTheme)
         btnLogout = findViewById(R.id.btnLogout)
         btnBack = findViewById(R.id.btnBack)
+        spinnerLanguage = findViewById(R.id.spinnerLanguage)
 
-        // Back button functionality
-        btnBack.setOnClickListener {
-            finish()
-        }
+        btnBack.setOnClickListener { finish() }
 
-        // Load saved settings
         switchBiometric.isChecked = biometricPrefs.getBoolean("enabled", false)
 
-        val currentTheme = prefs.getString("theme", "light") ?: "light"
-        when (currentTheme) {
+        when (prefs.getString("theme", "light")) {
             "light" -> radioGroupTheme.check(R.id.radioLight)
             "dark" -> radioGroupTheme.check(R.id.radioDark)
-            "high_contrast" -> radioGroupTheme.check(R.id.radioHighContrast)
+
         }
 
-        // Change Password
         btnChangePassword.setOnClickListener {
             val current = etCurrentPassword.text.toString()
             val new = etNewPassword.text.toString()
             if (current.isEmpty() || new.isEmpty()) {
-                Toast.makeText(this, "Please fill both fields", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.settings_fill_fields), Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
@@ -79,19 +76,22 @@ class SettingsActivity : BaseActivity() {
 
             api.changePassword(userId, dto).enqueue(object : Callback<ApiResponse> {
                 override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {
-                    val msg = response.body()?.message ?: "Password updated"
+                    val msg = response.body()?.message ?: getString(R.string.settings_password_updated)
                     Toast.makeText(this@SettingsActivity, msg, Toast.LENGTH_SHORT).show()
                     etCurrentPassword.text.clear()
                     etNewPassword.text.clear()
                 }
 
                 override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
-                    Toast.makeText(this@SettingsActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this@SettingsActivity,
+                        getString(R.string.settings_error_with_message, t.message),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             })
         }
 
-        // Biometric Toggle
         switchBiometric.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 biometricPrefs.edit()
@@ -106,12 +106,10 @@ class SettingsActivity : BaseActivity() {
             }
         }
 
-        // Theme Selection
         radioGroupTheme.setOnCheckedChangeListener { _, checkedId ->
             val selectedTheme = when (checkedId) {
                 R.id.radioLight -> "light"
                 R.id.radioDark -> "dark"
-                R.id.radioHighContrast -> "high_contrast"
                 else -> "light"
             }
 
@@ -121,7 +119,7 @@ class SettingsActivity : BaseActivity() {
             val progressBar = ProgressBar(this).apply { isIndeterminate = true }
             val dialog = AlertDialog.Builder(this)
                 .setView(progressBar)
-                .setMessage("Applying theme...")
+                .setMessage(getString(R.string.theme_applying))
                 .setCancelable(false)
                 .create()
             dialog.show()
@@ -130,19 +128,63 @@ class SettingsActivity : BaseActivity() {
                 if (!isFinishing && !isDestroyed) {
                     try {
                         if (dialog.isShowing) dialog.dismiss()
-                    } catch (e: Exception) { e.printStackTrace() }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
                     recreate()
                 }
             }, 300)
         }
 
-        // Logout
+        val languageOptions = resources.getStringArray(R.array.language_options)
+        val languageAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, languageOptions)
+        languageAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinnerLanguage.adapter = languageAdapter
+
+        val savedLang = prefs.getString("language", Locale.getDefault().language)
+        spinnerLanguage.setSelection(
+            when (savedLang) {
+                "zu" -> 1
+                else -> 0
+            }
+        )
+
+        spinnerLanguage.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                val selectedLang = if (position == 1) "zu" else "en"
+                val currentLang = prefs.getString("language", "en") ?: "en"
+
+                if (selectedLang != currentLang) {
+                    prefs.edit().putString("language", selectedLang).apply()
+                    restartApp()
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {}
+        }
+
         btnLogout.setOnClickListener {
+            val lang = prefs.getString("language", "en")
+            val theme = prefs.getString("theme", "light")
+
             prefs.edit().clear().apply()
+            prefs.edit()
+                .putString("language", lang)
+                .putString("theme", theme)
+                .apply()
+
+            Toast.makeText(this, getString(R.string.settings_logout_success), Toast.LENGTH_SHORT).show()
             val intent = Intent(this, LoginActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
         }
+    }
+
+    private fun restartApp() {
+        val intent = Intent(this, TenantDashboardActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivity(intent)
+        finish()
     }
 
     private fun buildSecureRetrofit(token: String): Retrofit {

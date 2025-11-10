@@ -3,6 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
 
     <application
         android:allowBackup="true"
@@ -14,6 +18,23 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.EliteRentals">
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+        <service
+            android:name=".MyFirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
 
         <!-- Launch LoginActivity first -->
         <activity
@@ -39,6 +60,14 @@
         <activity android:name=".UploadProofActivity" />
         <activity android:name=".SettingsActivity" />
         <activity android:name=".TrackMaintenanceActivity" />
+        <activity android:name=".MessagesActivity" />
+        <activity android:name=".ReplyActivity" />
+        <activity android:name=".AnnouncementsActivity" />
+        <activity android:name=".ViewPhotoActivity"
+            android:screenOrientation="sensorPortrait"
+            android:exported="true" />
+
+
 
 
 

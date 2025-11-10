@@ -27,7 +27,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="My Maintenance Requests"
+            android:text="@string/my_maintenance_requests"
             android:textColor="@android:color/white"
             android:textSize="18sp"
             android:textStyle="bold"
@@ -85,7 +85,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Dashboard"
+                android:text="@string/dashboard"
                 android:textSize="12sp"
                 android:textColor="?android:textColorPrimary" />
         </LinearLayout>
@@ -110,7 +110,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Maintenance"
+                android:text="@string/maintenance"
                 android:textSize="12sp"
                 android:textColor="?android:textColorPrimary" />
         </LinearLayout>
@@ -135,7 +135,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Payments"
+                android:text="@string/payments"
                 android:textSize="12sp"
                 android:textColor="?android:textColorPrimary" />
         </LinearLayout>
@@ -160,7 +160,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Settings"
+                android:text="@string/settings"
                 android:textSize="12sp"
                 android:textColor="?android:textColorPrimary" />
         </LinearLayout>

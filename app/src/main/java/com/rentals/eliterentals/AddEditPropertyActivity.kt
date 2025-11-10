@@ -165,13 +165,14 @@ class AddEditPropertyActivity : AppCompatActivity() {
         val rentStr = etRent.text.toString().trim()
 
         if (title.isEmpty() || address.isEmpty() || rentStr.isEmpty()) {
-            Toast.makeText(this, "Please fill in required fields", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.fill_fields), Toast.LENGTH_SHORT).show()
             return
         }
 
         val rent = rentStr.toDoubleOrNull() ?: 0.0
         if (rent <= 0) {
-            Toast.makeText(this, "Enter a valid rent amount", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.enter_valid_rent), Toast.LENGTH_SHORT).show()
+
             return
         }
 
@@ -196,7 +197,8 @@ class AddEditPropertyActivity : AppCompatActivity() {
         } else if (selectedImageFile != null) {
             uploadPropertyWithImage(property, selectedImageFile!!)
         } else {
-            Toast.makeText(this, "Please select an image", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.select_image), Toast.LENGTH_SHORT).show()
+
         }
     }
 
@@ -231,14 +233,17 @@ class AddEditPropertyActivity : AppCompatActivity() {
                 val response = withContext(Dispatchers.IO) { client.newCall(request).execute() }
 
                 if (response.isSuccessful) {
-                    Toast.makeText(this@AddEditPropertyActivity, "Property saved successfully!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@AddEditPropertyActivity, getString(R.string.property_saved), Toast.LENGTH_SHORT).show()
+
                     goToDashboard()
                 } else {
-                    Toast.makeText(this@AddEditPropertyActivity, "Error ${response.code}", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this@AddEditPropertyActivity, getString(R.string.property_error_code, response.code), Toast.LENGTH_LONG).show()
+
                 }
 
             } catch (e: IOException) {
-                Toast.makeText(this@AddEditPropertyActivity, "Upload failed: ${e.message}", Toast.LENGTH_LONG).show()
+                Toast.makeText(this@AddEditPropertyActivity, getString(R.string.upload_failed_with_message, e.message), Toast.LENGTH_LONG).show()
+
             }
         }
     }
@@ -276,14 +281,17 @@ class AddEditPropertyActivity : AppCompatActivity() {
                 val response = withContext(Dispatchers.IO) { client.newCall(request).execute() }
 
                 if (response.isSuccessful) {
-                    Toast.makeText(this@AddEditPropertyActivity, "Property updated successfully!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@AddEditPropertyActivity, getString(R.string.property_updated), Toast.LENGTH_SHORT).show()
+
                     goToDashboard()
                 } else {
-                    Toast.makeText(this@AddEditPropertyActivity, "Error ${response.code}", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this@AddEditPropertyActivity, getString(R.string.property_error_code, response.code), Toast.LENGTH_LONG).show()
+
                 }
 
             } catch (e: IOException) {
-                Toast.makeText(this@AddEditPropertyActivity, "Update failed: ${e.message}", Toast.LENGTH_LONG).show()
+                Toast.makeText(this@AddEditPropertyActivity, getString(R.string.update_failed_with_message, e.message), Toast.LENGTH_LONG).show()
+
             }
         }
     }

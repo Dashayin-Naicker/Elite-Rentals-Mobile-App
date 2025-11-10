@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#F8F8F8">
+    android:background="@color/backgroundLight">
 
     <!-- Scrollable Content -->
     <ScrollView
@@ -27,7 +27,7 @@
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
                 android:padding="12dp"
-                android:background="#2979FF"
+                android:background="@color/brandBlue"
                 android:layout_marginBottom="32dp">
 
                 <ImageView
@@ -38,7 +38,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Elite Rentals"
+                    android:text="@string/app_name"
                     android:textColor="@android:color/white"
                     android:textSize="22sp"
                     android:layout_marginStart="12dp"
@@ -49,44 +49,52 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Upload Payment Proof"
+                android:text="@string/upload_payment_proof"
                 android:textSize="24sp"
                 android:textStyle="bold"
-                android:textColor="#333333"
+                android:textColor="@color/textTitle"
                 android:layout_marginBottom="24dp" />
 
             <!-- Amount -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Payment Amount"
+                android:text="@string/payment_amount"
                 android:textStyle="bold"
-                android:layout_marginBottom="4dp"/>
+                android:textColor="@color/textPrimary"
+                android:layout_marginBottom="4dp" />
+
             <EditText
                 android:id="@+id/etAmount"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Enter payment amount"
+                android:hint="@string/hint_payment_amount"
                 android:inputType="numberDecimal"
                 android:padding="12dp"
                 android:background="@drawable/card_bg"
+                android:textColor="@color/textPrimary"
+                android:textColorHint="@color/textSecondary"
                 android:layout_marginBottom="16dp" />
 
             <!-- Date -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Payment Date"
+                android:text="@string/payment_date"
                 android:textStyle="bold"
-                android:layout_marginBottom="4dp"/>
+                android:textColor="@color/textPrimary"
+                android:layout_marginBottom="4dp" />
+
             <EditText
                 android:id="@+id/etDate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Select payment date"
+                android:hint="@string/hint_payment_date"
                 android:focusable="false"
                 android:padding="12dp"
                 android:background="@drawable/card_bg"
+                android:textColor="@color/textPrimary"
+                android:textColorHint="@color/textSecondary"
                 android:layout_marginBottom="16dp" />
 
             <!-- Choose File Button -->
@@ -94,9 +102,9 @@
                 android:id="@+id/btnChooseFile"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Choose File"
+                android:text="@string/choose_file"
                 android:textColor="@android:color/white"
-                app:backgroundTint="#2979FF"
+                app:backgroundTint="@color/brandBlue"
                 app:cornerRadius="8dp"
                 android:layout_marginBottom="12dp" />
 
@@ -105,8 +113,8 @@
                 android:id="@+id/txtFileName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="No file selected"
-                android:textColor="#555555"
+                android:text="@string/no_file_selected"
+                android:textColor="@color/textSecondary"
                 android:padding="10dp"
                 android:layout_marginBottom="16dp" />
 
@@ -115,9 +123,9 @@
                 android:id="@+id/btnUpload"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Upload Proof"
+                android:text="@string/upload_proof"
                 android:textColor="@android:color/white"
-                app:backgroundTint="#2979FF"
+                app:backgroundTint="@color/brandBlue"
                 app:cornerRadius="8dp"
                 android:layout_marginBottom="16dp" />
 
@@ -127,7 +135,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=""
-                android:textColor="#333333"
+                android:textColor="@color/textTitle"
                 android:padding="10dp"
                 android:layout_marginBottom="16dp" />
         </LinearLayout>
@@ -139,7 +147,7 @@
         android:layout_height="60dp"
         android:orientation="horizontal"
         android:weightSum="4"
-        android:background="?attr/colorSurface"
+        android:background="@color/boxBackground"
         android:elevation="8dp">
 
         <!-- Dashboard -->
@@ -162,9 +170,9 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Dashboard"
+                android:text="@string/dashboard"
                 android:textSize="12sp"
-                android:textColor="?android:textColorPrimary" />
+                android:textColor="@color/textPrimary" />
         </LinearLayout>
 
         <!-- Maintenance -->
@@ -187,9 +195,9 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Maintenance"
+                android:text="@string/maintenance"
                 android:textSize="12sp"
-                android:textColor="?android:textColorPrimary" />
+                android:textColor="@color/textPrimary" />
         </LinearLayout>
 
         <!-- Payments -->
@@ -212,9 +220,9 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Payments"
+                android:text="@string/payments"
                 android:textSize="12sp"
-                android:textColor="?android:textColorPrimary" />
+                android:textColor="@color/textPrimary" />
         </LinearLayout>
 
         <!-- Settings -->
@@ -237,9 +245,9 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Settings"
+                android:text="@string/settings"
                 android:textSize="12sp"
-                android:textColor="?android:textColorPrimary" />
+                android:textColor="@color/textPrimary" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

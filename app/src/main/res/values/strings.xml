@@ -1,11 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- App Info -->
     <string name="app_name">EliteRentals</string>
     <string name="server_client_id">166696853938-86rhhlf1b06ilmlpi9tpha1tj50nq5et.apps.googleusercontent.com</string>
 
+    <!-- Property Status -->
     <string-array name="property_status">
         <item>Available</item>
         <item>Occupied</item>
         <item>Unavailable</item>
     </string-array>
+
+    <string-array name="language_options">
+        <item>English</item>
+        <item>isiZulu</item>
+    </string-array>
+
+    <string name="error_login_required">Please log in first</string>
+    <string name="error_no_property">No property linked to tenant</string>
+    <string name="error_description_required">Please enter a description</string>
+    <string name="maintenance_submit_success">Maintenance request submitted successfully</string>
+    <string name="maintenance_saved_offline">Saved locally — will sync when online</string>
+    <string name="photo_selected">Photo selected</string>
+
+    <string-array name="maintenance_categories">
+        <item>Plumbing</item>
+        <item>Electrical</item>
+        <item>Appliances</item>
+        <item>Structural</item>
+        <item>Other</item>
+    </string-array>
+
+    <string-array name="urgency_levels">
+        <item>Low</item>
+        <item>Medium</item>
+        <item>High</item>
+        <item>Critical</item>
+    </string-array>
+
+
+
+
+    <!-- UI Strings -->
+    <string name="change_password">Change Password</string>
+    <string name="current_password">Current Password</string>
+    <string name="new_password">New Password</string>
+    <string name="logout">Logout</string>
+    <string name="login">Login</string>
+    <string name="dark">Dark</string>
+    <string name="light">Light</string>
+    <string name="theme_high_contrast">High Contrast</string>
+    <string name="use_biometric_login">Use biometric login</string>
+    <string name="fill_fields">Please fill both fields</string>
+    <string name="password_updated">Password updated</string>
+    <string name="error">Error</string>
+    <string name="back">Back</string>
+    <string name="right">Right</string>
+    <string name="theme">Theme</string>
+    <string name="settings">Settings</string>
+    <string name="select_language">Select Language</string>
+    <string name="enter_valid_rent">Enter a valid rent amount</string>
+    <string name="select_image">Please select an image</string>
+    <string name="property_saved">Property saved successfully!</string>
+    <string name="property_error_code">Error %1$d</string>
+    <string name="upload_failed_with_message">Upload failed: %1$s</string>
+    <string name="property_updated">Property updated successfully!</string>
+    <string name="update_failed_with_message">Update failed: %1$s</string>
+    <string name="greeting">Hi, %1$s!</string>
+    <string name="lease_period">Lease: %1$s → %2$s</string>
+    <string name="rent_status">Rent Status: %1$s</string>
+    <string name="rent_amount">R%1$d</string>
+    <string name="rent_due_days">Rent Due in %1$d Days</string>
+    <string name="lease_end_days">Lease Ends in %1$d Days</string>
+    <string name="no_active_lease">No active lease</string>
+    <string name="rent_status_na">Rent Status: N/A</string>
+    <string name="no_rent_due">No rent due</string>
+    <string name="lease_end_na">Lease Ends: N/A</string>
+    <string name="error_loading_lease">Error loading lease</string>
+    <string name="rent_due_days_na">N/A</string>
+    <string name="report_maintenance">Report Maintenance</string>
+    <string name="chatbot">Chatbot</string>
+    <string name="rent_due_days_placeholder">Rent Due in 0 Days</string>
+    <string name="upload_proof">Upload Proof</string>
+    <string name="invoice">Invoice</string>
+    <string name="lease_period_placeholder">Lease: 01 Jan 2025 → 31 Dec 2025</string>
+    <string name="lease_end_days_placeholder">Lease Ends in 0 Days</string>
+    <string name="rent_status_label">Rent Status</string>
+    <string name="rent_status_pending">Pending Payment</string>
+    <string name="rent_status_paid">Paid</string>
+    <string name="rent_status_overdue">Overdue</string>
+    <string name="view_maintenance_requests">View Maintenance Requests</string>
+    <string name="dashboard">Dashboard</string>
+    <string name="maintenance">Maintenance</string>
+    <string name="payments">Payments</string>
+    <string name="logged_at">Logged at: %1$s</string>
+    <string name="status_pending">Pending</string>
+    <string name="status_in_progress">In Progress</string>
+    <string name="status_resolved">Resolved</string>
+    <string name="no_photo_uploaded">No photo uploaded</string>
+    <string name="error_tenant_id_missing">Tenant ID not found. Please log in again.</string>
+    <string name="error_file_required">Please choose a file first.</string>
+    <string name="error_amount_date_required">Please enter both amount and date.</string>
+    <string name="payment_submit_success">Payment submitted successfully</string>
+    <string name="payment_saved_offline">Saved locally — will sync when online</string>
+    <string name="unknown_file">Unknown file</string>
+    <string name="upload_payment_proof">Upload Payment Proof</string>
+    <string name="payment_amount">Payment Amount</string>
+    <string name="hint_payment_amount">Enter payment amount</string>
+    <string name="payment_date">Payment Date</string>
+    <string name="hint_payment_date">Select payment date</string>
+    <string name="choose_file">Choose File</string>
+    <string name="no_file_selected">No file selected</string>
+    <string name="sample_maintenance_title">Leaky faucet in kitchen</string>
+    <string name="logged_at_placeholder">Logged at: --</string>
+    <string name="image_attached">Attached image</string>
+    <string name="my_maintenance_requests">My Maintenance Requests</string>
+    <string name="tenants">Tenants</string>
+    <string name="for_all_users">For All Users</string>
+    <string name="for_prefix">For</string>
+    <string name="error_loading_announcements">Failed to load announcements</string>
+    <string name="error_network">Network error</string>
+    <string name="announcements_screen_desc">Announcements screen</string>
+    <string name="announcements_list_desc">List of announcements</string>
+    <string name="error_fill_fields">Please fill both fields</string>
+    <string name="error_generic">Error: %1$s</string>
+    <string name="applying_theme">Applying theme...</string>
+    <string name="biometric_description">Use fingerprint or face recognition to login</string>
+    <string name="select_theme">Select Theme</string>
+    <string name="biometric_error">Auth error: %1$s</string>
+    <string name="biometric_failed">Authentication failed</string>
+    <string name="welcome_user">Welcome %1$s</string>
+    <string name="unknown_role">Unknown role: %1$s</string>
+    <string name="login_missing_fields">Please enter both username and password</string>
+    <string name="login_empty_response">Empty response from server</string>
+    <string name="login_invalid_credentials">Invalid credentials</string>
+    <string name="error_network_with_message">Network error: %1$s</string>
+    <string name="login_no_id_token">No ID Token received</string>
+    <string name="login_sso_failed">SSO Login failed</string>
+    <string name="biometric_success">Biometric login successful</string>
+    <string name="login_title">Log In</string>
+    <string name="hint_username">Username</string>
+    <string name="hint_password">Password</string>
+    <string name="btn_login">Login</string>
+    <string name="divider_or">OR</string>
+    <string name="btn_google_login">Log In with Google</string>
+    <string name="btn_fingerprint_login">Log In with Fingerprint</string>
+    <string name="biometric_title">Biometric Login</string>
+    <string name="biometric_subtitle">Use fingerprint or face to login</string>
+    <string name="cancel">Cancel</string>
+    <string name="settings_fill_fields">Please fill both fields</string>
+    <string name="settings_password_updated">Password updated</string>
+    <string name="settings_error_with_message">Error: %1$s</string>
+    <string name="theme_applying">Applying theme...</string>
+    <string name="language_en">English</string>
+    <string name="language_zu">Zulu</string>
+    <string name="settings_logout_success">You have been logged out</string>
+    <string name="page_title_maintenance">Maintenance Request</string>
+    <string name="label_category">Select Category</string>
+    <string name="label_urgency">Select Urgency</string>
+    <string name="label_upload_photo">Upload a photo</string>
+    <string name="label_description">Description</string>
+    <string name="hint_description">Describe the issue</string>
+    <string name="btn_submit">Submit</string>
+    <string name="nav_dashboard">Dashboard</string>
+    <string name="nav_maintenance">Maintenance</string>
+    <string name="nav_payments">Payments</string>
+    <string name="nav_settings">Settings</string>
+        <string name="maintenance_request">Maintenance Request</string>
+        <string name="select_category">Select Category</string>
+        <string name="select_urgency">Select Urgency</string>
+        <string name="upload_photo">Upload a photo</string>
+        <string name="description">Description</string>
+        <string name="describe_issue">Describe the issue</string>
+        <string name="submit">Submit</string>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 </resources>

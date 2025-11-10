@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#FFFFFF"
+    android:background="@color/backgroundLight"
     android:padding="16dp"
     tools:context=".ReportMaintenanceActivity">
 
@@ -23,7 +23,6 @@
 
             <!-- Top Bar -->
             <LinearLayout
-
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:orientation="horizontal"
@@ -41,7 +40,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Elite Rentals"
+                    android:text="@string/app_name"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:textColor="@android:color/white"
@@ -52,10 +51,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Maintenance Request"
+                android:text="@string/maintenance_request"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                android:textColor="#000000"
+                android:textColor="@color/textTitle"
                 android:layout_marginTop="24dp"
                 android:layout_marginBottom="16dp" />
 
@@ -63,9 +62,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Select Category"
+                android:text="@string/select_category"
                 android:textSize="14sp"
                 android:textStyle="bold"
+                android:textColor="@color/textPrimary"
                 android:layout_marginBottom="4dp" />
 
             <com.google.android.material.textfield.TextInputLayout
@@ -90,9 +90,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Select Urgency"
+                android:text="@string/select_urgency"
                 android:textSize="14sp"
                 android:textStyle="bold"
+                android:textColor="@color/textPrimary"
                 android:layout_marginBottom="4dp" />
 
             <com.google.android.material.textfield.TextInputLayout
@@ -120,10 +121,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:padding="16dp"
-                android:background="@android:drawable/editbox_background"
+                android:background="@color/boxBackground"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:layout_marginBottom="16dp">
+                android:layout_marginBottom="16dp"
+                android:elevation="2dp">
 
                 <ImageView
                     android:id="@+id/ivUpload"
@@ -135,8 +137,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="Upload a photo"
-                    android:textColor="#888888"
+                    android:text="@string/upload_photo"
+                    android:textColor="@color/textSecondary"
                     android:textSize="14sp" />
             </LinearLayout>
 
@@ -144,9 +146,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Description"
+                android:text="@string/description"
                 android:textSize="14sp"
                 android:textStyle="bold"
+                android:textColor="@color/textPrimary"
                 android:layout_marginBottom="4dp" />
 
             <com.google.android.material.textfield.TextInputLayout
@@ -163,9 +166,11 @@
                     android:id="@+id/etDescription"
                     android:layout_width="match_parent"
                     android:layout_height="100dp"
-                    android:hint="Describe the issue"
+                    android:hint="@string/describe_issue"
                     android:gravity="top|start"
                     android:inputType="textMultiLine"
+                    android:textColor="@color/textPrimary"
+                    app:hintTextColor="@color/textSecondary"
                     android:padding="8dp" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -173,7 +178,7 @@
                 android:id="@+id/btnSubmit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Submit"
+                android:text="@string/submit"
                 android:textColor="@android:color/white"
                 android:layout_marginTop="24dp"
                 app:backgroundTint="#2979FF"
@@ -187,7 +192,7 @@
         android:layout_height="60dp"
         android:orientation="horizontal"
         android:weightSum="4"
-        android:background="?attr/colorSurface"
+        android:background="@color/boxBackground"
         android:elevation="8dp">
 
         <LinearLayout
@@ -209,9 +214,9 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Dashboard"
+                android:text="@string/dashboard"
                 android:textSize="12sp"
-                android:textColor="?android:textColorPrimary" />
+                android:textColor="@color/textSecondary" />
         </LinearLayout>
 
         <LinearLayout
@@ -233,9 +238,9 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Maintenance"
+                android:text="@string/maintenance"
                 android:textSize="12sp"
-                android:textColor="?android:textColorPrimary" />
+                android:textColor="@color/textSecondary" />
         </LinearLayout>
 
         <LinearLayout
@@ -257,9 +262,9 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Payments"
+                android:text="@string/payments"
                 android:textSize="12sp"
-                android:textColor="?android:textColorPrimary" />
+                android:textColor="@color/textSecondary" />
         </LinearLayout>
 
         <LinearLayout
@@ -281,9 +286,9 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Settings"
+                android:text="@string/settings"
                 android:textSize="12sp"
-                android:textColor="?android:textColorPrimary" />
+                android:textColor="@color/textSecondary" />
         </LinearLayout>
     </LinearLayout>
 
