@@ -71,6 +71,21 @@ class TrackMaintenanceActivity : AppCompatActivity() {
                     adapter = MaintenanceAdapter(mappedRequests, jwtToken)
                     rv.adapter = adapter
 
+                    rv.post {
+                        for (i in 0 until rv.childCount) {
+                            val viewHolder = rv.findViewHolderForAdapterPosition(i)
+                            val itemView = viewHolder?.itemView ?: continue
+                            val ivComment = itemView.findViewById<ImageView>(R.id.ivComment)
+                            val maintenanceId = mappedRequests.getOrNull(i)?.maintenanceId ?: continue
+
+                            ivComment.setOnClickListener {
+                                val intent = Intent(this@TrackMaintenanceActivity, MessagesActivity::class.java)
+                                intent.putExtra("maintenanceId", maintenanceId)
+                                startActivity(intent)
+                            }
+                        }
+                    }
+
                     if (mappedRequests.isEmpty()) {
                         Toast.makeText(
                             this@TrackMaintenanceActivity,

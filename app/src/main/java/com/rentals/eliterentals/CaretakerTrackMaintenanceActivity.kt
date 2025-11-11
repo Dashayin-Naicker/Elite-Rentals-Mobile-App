@@ -7,8 +7,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 
 class CaretakerTrackMaintenanceActivity : AppCompatActivity() {
-// adding a comment cause someone meeeesssed the repo up teehee
-    // addding more
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_caretaker_track_maintenance)

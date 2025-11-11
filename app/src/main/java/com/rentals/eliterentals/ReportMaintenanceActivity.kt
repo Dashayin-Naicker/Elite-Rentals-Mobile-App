@@ -28,6 +28,9 @@ class ReportMaintenanceActivity : BaseActivity() {
     private lateinit var uploadLayout: LinearLayout
     private var selectedUri: Uri? = null
 
+    private var leaseId: Int = -1
+    private var propertyId: Int = -1
+
     companion object {
         private const val REQUEST_IMAGE_PICK = 100
     }
@@ -36,6 +39,17 @@ class ReportMaintenanceActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maintenance_request)
 
+        // Get Intent extras safely
+        leaseId = intent?.getIntExtra("leaseId", -1) ?: -1
+        propertyId = intent?.getIntExtra("propertyId", -1) ?: -1
+
+        if (propertyId == -1) {
+            Toast.makeText(this, getString(R.string.error_no_property), Toast.LENGTH_SHORT).show()
+            finish()
+            return
+        }
+
+        // Initialize views
         spinnerCategory = findViewById(R.id.spinnerCategory)
         spinnerUrgency = findViewById(R.id.spinnerUrgency)
         etDescription = findViewById(R.id.etDescription)
@@ -80,7 +94,6 @@ class ReportMaintenanceActivity : BaseActivity() {
         val prefs = getSharedPreferences("app", MODE_PRIVATE)
         val jwt = prefs.getString("jwt", null)
         val tenantId = prefs.getInt("userId", -1)
-        val propertyId = prefs.getInt("propertyId", -1)
         val category = spinnerCategory.selectedItem.toString()
         val urgency = spinnerUrgency.selectedItem.toString()
         val description = etDescription.text.toString().trim()
@@ -89,10 +102,7 @@ class ReportMaintenanceActivity : BaseActivity() {
             Toast.makeText(this, getString(R.string.error_login_required), Toast.LENGTH_SHORT).show()
             return
         }
-        if (propertyId == -1) {
-            Toast.makeText(this, getString(R.string.error_no_property), Toast.LENGTH_SHORT).show()
-            return
-        }
+
         if (description.isEmpty()) {
             Toast.makeText(this, getString(R.string.error_description_required), Toast.LENGTH_SHORT).show()
             return

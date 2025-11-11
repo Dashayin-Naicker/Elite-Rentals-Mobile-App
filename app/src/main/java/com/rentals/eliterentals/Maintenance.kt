@@ -7,8 +7,9 @@ data class Maintenance(
     val description: String,
     val category: String?,
     val urgency: String?,
-    val status: String,
+    var status: String,
     val createdAt: String,
     val updatedAt: String?,
-    val imageUrl: String?
+    val imageUrl: String?,
+    val assignedCaretakerId: Int?
 )
