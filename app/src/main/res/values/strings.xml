@@ -38,7 +38,9 @@
         <item>Critical</item>
     </string-array>
 
-
+    <string name="chatbot_title">Assistant</string>
+    <string name="chat_hint">Message…</string>
+    <string name="send">Send</string>
 
 
     <!-- UI Strings -->

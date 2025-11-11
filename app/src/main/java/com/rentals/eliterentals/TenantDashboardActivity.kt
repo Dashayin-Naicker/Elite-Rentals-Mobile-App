@@ -1,7 +1,6 @@
 package com.rentals.eliterentals
 
 import android.content.Intent
-import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.drawable.GradientDrawable
@@ -63,18 +62,16 @@ class TenantDashboardActivity : BaseActivity() {
         }
 
         findViewById<CardView>(R.id.cardMaintenance).setOnClickListener {
-            currentLease?.let { lease ->
-                val intent = Intent(this, ReportMaintenanceActivity::class.java)
-                intent.putExtra("leaseId", lease.leaseId)
-                intent.putExtra("propertyId", lease.propertyId)
-                startActivity(intent)
-            } ?: Toast.makeText(this, "No active lease found", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, ReportMaintenanceActivity::class.java))
         }
-
 
         findViewById<LinearLayout>(R.id.navTrackMaintenance).setOnClickListener {
             startActivity(Intent(this, ReportMaintenanceActivity::class.java))
         }
+        findViewById<CardView>(R.id.cardChatbot).setOnClickListener {
+            openChatbot()
+        }
+
 
         // Fetch leases safely
         lifecycleScope.launch {
@@ -97,22 +94,6 @@ class TenantDashboardActivity : BaseActivity() {
                         ?.second ?: "No Payment"
                 } else {
                     "No Payment"
-                }
-
-                val latestPaymentDate = if (paymentRes.isSuccessful) {
-                    val payments = paymentRes.body() ?: emptyList()
-                    payments
-                        .mapNotNull { it.date?.substring(0, 10) }
-                        .maxOrNull()
-                } else null
-
-                if (lease != null) {
-                    populateLeaseInfo(
-                        leaseInfoTv, rentStatusTv, rentAmountTv,
-                        rentDueDaysTv, leaseEndDaysTv, lease, latestPaymentStatus, latestPaymentDate
-                    )
-                } else {
-                    showNoLease(leaseInfoTv, rentStatusTv, rentAmountTv, rentDueDaysTv, leaseEndDaysTv)
                 }
 
                 if (lease != null) {
@@ -151,34 +132,13 @@ class TenantDashboardActivity : BaseActivity() {
         }
     }
 
-    // Helper to draw logo
-    private fun drawLogo(canvas: Canvas, drawableId: Int, centerX: Float, topY: Float, maxWidth: Int): Float {
-        val drawable = resources.getDrawable(drawableId, null)
-        val aspectRatio = drawable.intrinsicWidth.toFloat() / drawable.intrinsicHeight
-        val width = maxWidth.toFloat()
-        val height = width / aspectRatio
-
-        drawable.setBounds(
-            (centerX - width / 2).toInt(),
-            topY.toInt(),
-            (centerX + width / 2).toInt(),
-            (topY + height).toInt()
-        )
-        drawable.draw(canvas)
-        return topY + height + 20f // return new Y after logo + padding
-    }
-
-    // 🔹 INVOICE PDF with Logo
+    // 🔹 INVOICE PDF (Professional Look)
     private fun generateInvoicePdf(lease: LeaseDto) {
         val pdf = android.graphics.pdf.PdfDocument()
         val pageInfo = android.graphics.pdf.PdfDocument.PageInfo.Builder(595, 842, 1).create()
         val page = pdf.startPage(pageInfo)
         val canvas = page.canvas
 
-        // Draw logo
-        var y = drawLogo(canvas, R.drawable.logo, 297f, 20f, 100)
-
-        // Paints
         val titlePaint = Paint().apply {
             textSize = 22f
             isFakeBoldText = true
@@ -197,39 +157,28 @@ class TenantDashboardActivity : BaseActivity() {
             color = Color.DKGRAY
         }
 
-        val tableHeaderPaint = Paint().apply {
-            textSize = 14f
-            isFakeBoldText = true
-            color = Color.WHITE
-        }
-
         val linePaint = Paint().apply {
             color = Color.LTGRAY
             strokeWidth = 2f
         }
 
-        val tableBgPaint = Paint().apply {
-            color = Color.parseColor("#2E3A59")
-        }
-
         val startX = 60f
-        val endX = 535f
+        var y = 100f
 
         // Title
-        y += 10f
         canvas.drawText("ELITE RENTALS", 297f, y, titlePaint)
         y += 30f
         canvas.drawText("MONTHLY INVOICE", 297f, y, titlePaint)
         y += 30f
 
         // Divider
-        canvas.drawLine(startX, y, endX, y, linePaint)
-        y += 30f
+        canvas.drawLine(startX, y, 535f, y, linePaint)
+        y += 40f
 
         val tenantName = getSharedPreferences("app", MODE_PRIVATE).getString("tenantName", "Tenant")
         val rent = lease.property?.rentAmount ?: 0.0
 
-        // Tenant Info
+        // Tenant Info Section
         canvas.drawText("Invoice To:", startX, y, headerPaint)
         y += 20f
         canvas.drawText("Tenant Name: $tenantName", startX, y, textPaint)
@@ -238,42 +187,24 @@ class TenantDashboardActivity : BaseActivity() {
         y += 20f
         canvas.drawText("Address: ${lease.property?.address}", startX, y, textPaint)
         y += 20f
-        canvas.drawText("Invoice Date: ${LocalDate.now().format(DateTimeFormatter.ofPattern("dd MMM yyyy"))}", startX, y, textPaint)
-        y += 40f
 
-        // Table Headers
-        val col1 = startX
-        val col2 = startX + 300f
-        val col3 = endX - 60f
-
-        // Table background
-        canvas.drawRect(startX, y, endX, y + 30f, tableBgPaint)
-        canvas.drawText("Description", col1 + 5f, y + 20f, tableHeaderPaint)
-        canvas.drawText("Quantity", col2 + 5f, y + 20f, tableHeaderPaint)
-        canvas.drawText("Amount (R)", col3 + 5f, y + 20f, tableHeaderPaint)
-
-        y += 30f
-
-        // Table rows
-        val rowHeight = 25f
-        val rentQty = 1
-        canvas.drawText("Monthly Rent", col1 + 5f, y + 20f, textPaint)
-        canvas.drawText(rentQty.toString(), col2 + 5f, y + 20f, textPaint)
-        canvas.drawText(String.format("%.2f", rent), col3 + 5f, y + 20f, textPaint)
-        y += rowHeight
-
-        // Add any future items here
-        // e.g., utilities, penalties, discounts
-
-        // Total row
-        canvas.drawLine(col1, y, endX, y, linePaint)
+        // Invoice Details
         y += 10f
-        canvas.drawText("Total:", col2 + 5f, y + 20f, headerPaint)
-        canvas.drawText(String.format("%.2f", rent), col3 + 5f, y + 20f, headerPaint)
-        y += 50f
+        canvas.drawLine(startX, y, 535f, y, linePaint)
+        y += 30f
+        canvas.drawText("Invoice Details", startX, y, headerPaint)
+        y += 25f
+
+        val date = LocalDate.now().format(DateTimeFormatter.ofPattern("dd MMM yyyy"))
+        canvas.drawText("Invoice Date: $date", startX, y, textPaint)
+        y += 20f
+        canvas.drawText("Rent Due: R${String.format("%.2f", rent)}", startX, y, textPaint)
+        y += 20f
+        canvas.drawText("Status: Paid / Pending", startX, y, textPaint)
 
         // Footer
-        canvas.drawLine(startX, y, endX, y, linePaint)
+        y += 80f
+        canvas.drawLine(startX, y, 535f, y, linePaint)
         y += 30f
         canvas.drawText(
             "Thank you for choosing Elite Rentals.",
@@ -299,16 +230,26 @@ class TenantDashboardActivity : BaseActivity() {
         openPdf(file)
     }
 
+    // 🔹 ADDED: Single helper that passes jwt + userId
+    private fun openChatbot() {
+        val prefs = getSharedPreferences("app", MODE_PRIVATE)
+        val token = prefs.getString("jwt", null)
+        val userId = prefs.getInt("userId", -1)
 
-    // 🔹 LEASE PDF with Logo
+        val intent = Intent(this, ChatbotTenantActivity::class.java).apply {
+            putExtra("token", token)
+            putExtra("userId", userId)
+        }
+        startActivity(intent)
+    }
+
+
+    // 🔹 LEASE PDF (Professional Look)
     private fun generateLeasePdf(lease: LeaseDto) {
         val pdf = android.graphics.pdf.PdfDocument()
         val pageInfo = android.graphics.pdf.PdfDocument.PageInfo.Builder(595, 842, 1).create()
         val page = pdf.startPage(pageInfo)
         val canvas = page.canvas
-
-        // Draw logo
-        var y = drawLogo(canvas, R.drawable.logo, 297f, 20f, 100)
 
         val titlePaint = Paint().apply {
             textSize = 22f
@@ -334,9 +275,9 @@ class TenantDashboardActivity : BaseActivity() {
         }
 
         val startX = 60f
+        var y = 100f
 
         // Title
-        y += 10f
         canvas.drawText("ELITE RENTALS", 297f, y, titlePaint)
         y += 30f
         canvas.drawText("LEASE AGREEMENT SUMMARY", 297f, y, titlePaint)
@@ -418,7 +359,6 @@ class TenantDashboardActivity : BaseActivity() {
     }
 
 
-
     // 🔹 Open saved PDF
     private fun openPdf(file: File) {
         val uri = FileProvider.getUriForFile(this, "$packageName.provider", file)
@@ -428,31 +368,19 @@ class TenantDashboardActivity : BaseActivity() {
         startActivity(Intent.createChooser(intent, "Open PDF"))
     }
 
+    // 🔹 Lease display helpers
     private fun populateLeaseInfo(
         leaseInfoTv: TextView, rentStatusTv: TextView, rentAmountTv: TextView,
         rentDueDaysTv: TextView, leaseEndDaysTv: TextView,
         lease: LeaseDto, paymentStatus: String,
-        latestPaymentDate: String? = null
     ) {
         val startDate = formatDate(lease.startDate)
         val endDate = formatDate(lease.endDate)
         leaseInfoTv.text = getString(R.string.lease_period, startDate, endDate)
 
-        // 🔹 Check if payment is from current month
-        val status = if (!latestPaymentDate.isNullOrEmpty()) {
-            val paymentMonth = try {
-                LocalDate.parse(latestPaymentDate.substring(0, 10)).monthValue
-            } catch (e: Exception) { -1 }
+        rentStatusTv.text = getString(R.string.rent_status, paymentStatus)
 
-            val currentMonth = LocalDate.now().monthValue
-            if (paymentMonth != currentMonth) "pending" else paymentStatus
-        } else {
-            "pending"
-        }
-
-        rentStatusTv.text = getString(R.string.rent_status, status.capitalize())
-
-        val statusColor = when (status.lowercase()) {
+        val statusColor = when (paymentStatus.lowercase()) {
             "paid" -> Color.parseColor("#4CAF50")
             "pending" -> Color.parseColor("#FFA500")
             "overdue" -> Color.parseColor("#F44336")
@@ -475,7 +403,6 @@ class TenantDashboardActivity : BaseActivity() {
         val leaseEndDays = calculateDaysLeft(lease.endDate)
         leaseEndDaysTv.text = getString(R.string.lease_end_days, leaseEndDays)
     }
-
 
     private fun showNoLease(
         leaseInfoTv: TextView, rentStatusTv: TextView,

@@ -33,6 +33,14 @@
         <item>Okuphuthumayo</item>
     </string-array>
 
+
+        <string name="chatbot_title">Umsizi</string>
+        <string name="chat_hint">Umlayezo…</string>
+        <string name="send">Thumela</string>
+        <string name="image_attached">Isithombe sinamathiselwe</string>
+
+
+
     <!-- UI Strings -->
     <string name="change_password">Shintsha iphasiwedi</string>
     <string name="current_password">Iphasiwedi yanamuhla</string>

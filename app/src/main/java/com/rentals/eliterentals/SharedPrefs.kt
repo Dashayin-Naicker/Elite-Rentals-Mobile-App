@@ -35,7 +35,20 @@ object SharedPrefs {
         return prefs.getString("fcmToken", "") ?: ""
     }
 
+    fun setManagerId(ctx: Context, id: Int) =
+        ctx.getSharedPreferences("app", Context.MODE_PRIVATE).edit().putInt("managerId", id).apply()
+    fun getManagerId(ctx: Context) =
+        ctx.getSharedPreferences("app", Context.MODE_PRIVATE).getInt("managerId", 0)
 
+    fun setManagerName(ctx: Context, v: String) =
+        ctx.getSharedPreferences("app", Context.MODE_PRIVATE).edit().putString("managerName", v).apply()
+    fun getManagerName(ctx: Context) =
+        ctx.getSharedPreferences("app", Context.MODE_PRIVATE).getString("managerName", "")
+
+    fun setManagerEmail(ctx: Context, v: String) =
+        ctx.getSharedPreferences("app", Context.MODE_PRIVATE).edit().putString("managerEmail", v).apply()
+    fun getManagerEmail(ctx: Context) =
+        ctx.getSharedPreferences("app", Context.MODE_PRIVATE).getString("managerEmail", "")
 
 }
 

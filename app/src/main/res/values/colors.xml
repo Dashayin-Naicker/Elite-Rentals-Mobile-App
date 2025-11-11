@@ -12,6 +12,18 @@
     <color name="textTitle">#333333</color>
     <color name="textPrimary">#212121</color>
     <color name="textSecondary">#666666</color><!-- Teal or your brand color -->
+    <color name="brand_blue">#1565C0</color>
+    <color name="chat_bg">#F6F8FA</color>
 
+    <color name="bubble_bot">#FFFFFFFF</color>
+    <color name="bubble_bot_stroke">#E2E8F0</color>
+
+    <color name="chip_bg">#E3F2FD</color>
+    <color name="chip_stroke">#BBDEFB</color>
+
+    <color name="input_stroke">#E0E0E0</color>
+
+    <color name="text_primary">#111111</color>
 </resources>
+
 

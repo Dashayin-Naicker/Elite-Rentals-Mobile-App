@@ -9,7 +9,7 @@ import retrofit2.http.*
 
 interface ApiService {
 
-    // Users
+    // ---------- Users ----------
     @POST("api/Users/login")
     fun login(@Body request: LoginRequest): Call<LoginResponse>
 
@@ -22,9 +22,15 @@ interface ApiService {
     @GET("api/Users")
     suspend fun getAllUsers(@Header("Authorization") bearer: String): Response<List<UserDto?>>
 
+    @GET("api/Users/{id}")
+    fun getUserById(
+        @Header("Authorization") bearer: String,
+        @Path("id") userId: Int
+    ): Call<UserDto>
+
     @PUT("api/Users/{id}")
     suspend fun updateUser(
-        @Header("Authorization") token: String,
+        @Header("Authorization") bearer: String,
         @Path("id") userId: Int,
         @Body user: User
     ): Response<User>
@@ -33,9 +39,23 @@ interface ApiService {
     suspend fun toggleUserStatus(
         @Header("Authorization") bearer: String,
         @Path("id") id: Int
-    ): Response<Unit> // Use Unit for empty body
+    ): Response<Unit>
 
-    // Properties
+    // *** Reverted to match SettingsActivity (auth comes from your OkHttp interceptor) ***
+    @PATCH("api/Users/{id}/password")
+    fun changePassword(
+        @Path("id") id: Int,
+        @Body dto: ChangePasswordRequest
+    ): Call<ApiResponse>
+
+    @PATCH("api/Users/{id}/fcmtoken")
+    fun updateFcmToken(
+        @Header("Authorization") bearer: String,
+        @Path("id") userId: Int,
+        @Body request: FcmTokenRequest
+    ): Call<Void>
+
+    // ---------- Properties ----------
     @GET("api/Property")
     suspend fun getAllProperties(@Header("Authorization") bearer: String): Response<List<PropertyDto>>
 
@@ -57,15 +77,15 @@ interface ApiService {
         @Header("Authorization") bearer: String,
         @Path("id") propertyId: Int,
         @Body statusDto: PropertyStatusDto
-    ): Response<Unit> // Use Unit instead of expecting JSON
+    ): Response<Unit>
 
     @DELETE("api/Property/{id}")
     suspend fun deleteProperty(
         @Header("Authorization") bearer: String,
         @Path("id") id: Int
-    ): Response<Unit> // DELETE often returns 204 NoContent
+    ): Response<Unit>
 
-    // Leases
+    // ---------- Leases ----------
     @POST("api/Lease")
     suspend fun createLease(
         @Header("Authorization") bearer: String,
@@ -76,7 +96,8 @@ interface ApiService {
     suspend fun getAllLeases(
         @Header("Authorization") bearer: String
     ): Response<List<LeaseDto>>
-    // 🔹 Submit payment with proof file
+
+    // ---------- Payments ----------
     @Multipart
     @POST("api/Payment")
     suspend fun createPayment(
@@ -87,35 +108,29 @@ interface ApiService {
         @Part proof: MultipartBody.Part? = null
     ): Response<PaymentDto>
 
-
-    // 🔹 Get all payments (Admin/Manager)
     @GET("api/Payment")
     suspend fun getAllPayments(
         @Header("Authorization") bearer: String
     ): Response<List<PaymentDto>>
 
-    // 🔹 Get all payments for a specific tenant
     @GET("api/Payment/tenant/{tenantId}")
     suspend fun getTenantPayments(
         @Header("Authorization") bearer: String,
         @Path("tenantId") tenantId: Int
     ): Response<List<PaymentDto>>
 
-    // 🔹 Get a single payment
     @GET("api/Payment/{id}")
     suspend fun getPaymentById(
         @Header("Authorization") bearer: String,
         @Path("id") paymentId: Int
     ): Response<PaymentDto>
 
-    // 🔹 Download proof of payment
     @GET("api/Payment/{id}/proof")
     suspend fun downloadProof(
         @Header("Authorization") bearer: String,
         @Path("id") paymentId: Int
     ): Response<ResponseBody>
 
-    // 🔹 Update payment status (Admin/Manager)
     @PUT("api/Payment/{id}/status")
     suspend fun updatePaymentStatus(
         @Header("Authorization") bearer: String,
@@ -123,16 +138,11 @@ interface ApiService {
         @Body dto: PaymentStatusDto
     ): Response<Unit>
 
-    @PATCH("api/users/{id}/password")
-    fun changePassword(
-        @Path("id") id: Int,
-        @Body dto: ChangePasswordRequest
-    ): Call<ApiResponse>
-
+    // ---------- Maintenance ----------
     @Multipart
     @POST("api/Maintenance")
     suspend fun createMaintenance(
-        @Header("Authorization") token: String,
+        @Header("Authorization") bearer: String,
         @Part("tenantId") tenantId: RequestBody,
         @Part("propertyId") propertyId: RequestBody,
         @Part("description") description: RequestBody,
@@ -143,7 +153,7 @@ interface ApiService {
 
     @GET("api/Maintenance/my-requests")
     suspend fun getMyRequests(
-        @Header("Authorization") token: String
+        @Header("Authorization") bearer: String
     ): Response<List<Maintenance>>
 
     @GET("api/Maintenance/caretaker-requests")
@@ -176,20 +186,18 @@ interface ApiService {
 
 
 
-
-    // 🔹 Get inbox messages
+    // ---------- Messages / Inbox ----------
     @GET("api/Message/inbox/{userId}")
     fun getInboxMessages(
         @Header("Authorization") bearer: String,
         @Path("userId") userId: Int
     ): Call<List<MessageDto>>
 
-    // 🔹 Send a message
     @POST("api/Message")
     fun sendMessage(
         @Header("Authorization") bearer: String,
         @Body message: MessageDto
-    ): Call<MessageDto>
+    ): retrofit2.Call<MessageDto>
 
     @GET("api/Message/conversation/{user1}/{user2}")
     fun getConversation(
@@ -198,26 +206,41 @@ interface ApiService {
         @Path("user2") user2: Int
     ): Call<List<MessageDto>>
 
-    @GET("api/Users/{id}")
-    fun getUserById(
-        @Header("Authorization") bearer: String,
-        @Path("id") userId: Int
-    ): Call<UserDto>
-
     @GET("api/Message/announcements/{userId}")
     fun getAnnouncements(
         @Header("Authorization") bearer: String,
         @Path("userId") userId: Int
     ): Call<List<MessageDto>>
 
-    @PATCH("api/Users/{id}/fcmtoken")
-    fun updateFcmToken(
+    // ---------- Chatbot (auth + language) ----------
+    data class ChatbotMessageCreate(
+        val messageText: String,
+        val isChatbot: Boolean = true,
+        val language: String? = null // "en" | "zu" | "st"
+    )
+
+    @POST("api/Message")
+    suspend fun sendChatbotMessage(
         @Header("Authorization") bearer: String,
-        @Path("id") userId: Int,
-        @Body request: FcmTokenRequest
-    ): Call<Void>
+        @Body body: ChatbotMessageCreate
+    ): Response<MessageDto>
 
+    @GET("api/Message")
+    suspend fun getMessages(
+        @Header("Authorization") bearer: String
+    ): Response<List<MessageDto>>
 
+    // ---------- Reports (escalation) ----------
+    @POST("api/Report")
+    suspend fun createReport(
+        @Header("Authorization") bearer: String,
+        @Body body: Map<String, @JvmSuppressWildcards Any?>
+    ): Response<Unit>
 
+    @POST("api/Message")
+    fun sendMessageSimple(
+        @Header("Authorization") bearer: String,
+        @Body body: Map<String, @JvmSuppressWildcards Any>
+    ): retrofit2.Call<Void>
 
 }

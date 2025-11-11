@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.EditText
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import com.google.android.material.button.MaterialButton
@@ -51,7 +50,6 @@ class LoginActivity : BaseActivity() {
         btnGoogle = findViewById(R.id.btnGoogle)
         btnFingerprint = findViewById(R.id.btnFingerprint)
 
-        // Configure Google Sign-In
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.server_client_id))
             .requestEmail()
@@ -70,7 +68,6 @@ class LoginActivity : BaseActivity() {
 
         if (username.isEmpty() || password.isEmpty()) {
             Toast.makeText(this, getString(R.string.login_missing_fields), Toast.LENGTH_SHORT).show()
-
             return
         }
 
@@ -83,17 +80,14 @@ class LoginActivity : BaseActivity() {
                         handleLoginSuccess(loginResponse)
                     } else {
                         Toast.makeText(this@LoginActivity, getString(R.string.login_empty_response), Toast.LENGTH_SHORT).show()
-
                     }
                 } else {
                     Toast.makeText(this@LoginActivity, getString(R.string.login_invalid_credentials), Toast.LENGTH_SHORT).show()
-
                 }
             }
 
             override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
                 Toast.makeText(this@LoginActivity, getString(R.string.error_network_with_message, t.message), Toast.LENGTH_LONG).show()
-
             }
         })
     }
@@ -115,7 +109,6 @@ class LoginActivity : BaseActivity() {
                     sendIdTokenToApi(idToken)
                 } else {
                     Toast.makeText(this, getString(R.string.login_no_id_token), Toast.LENGTH_SHORT).show()
-
                 }
             } catch (e: ApiException) {
                 Log.e("GoogleLogin", "Google sign in failed", e)
@@ -139,13 +132,11 @@ class LoginActivity : BaseActivity() {
                     handleLoginSuccess(response.body()!!)
                 } else {
                     Toast.makeText(this@LoginActivity, getString(R.string.login_sso_failed), Toast.LENGTH_SHORT).show()
-
                 }
             }
 
             override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
                 Toast.makeText(this@LoginActivity, getString(R.string.error_network_with_message, t.message), Toast.LENGTH_LONG).show()
-
             }
         })
     }
@@ -162,7 +153,6 @@ class LoginActivity : BaseActivity() {
 
         if (!enabled || userId == -1 || jwt == null) {
             Toast.makeText(this, getString(R.string.error_login_required), Toast.LENGTH_SHORT).show()
-
             return
         }
 
@@ -172,10 +162,8 @@ class LoginActivity : BaseActivity() {
                     super.onAuthenticationSucceeded(result)
                     Toast.makeText(this@LoginActivity, getString(R.string.biometric_success), Toast.LENGTH_SHORT).show()
 
-
                     val tenantName = biometricPrefs.getString("tenantName", "Tenant") ?: "Tenant"
 
-                    // Restore session
                     val appPrefs = getSharedPreferences("app", MODE_PRIVATE)
                     val lang = appPrefs.getString("language", "en")
                     val theme = appPrefs.getString("theme", "light")
@@ -190,7 +178,6 @@ class LoginActivity : BaseActivity() {
                         .putString("tenantName", tenantName)
                         .apply()
 
-                    // Open correct dashboard
                     val intent = when (role) {
                         "Tenant" -> Intent(this@LoginActivity, TenantDashboardActivity::class.java)
                         "Caretaker" -> Intent(this@LoginActivity, CaretakerTrackMaintenanceActivity::class.java)
@@ -201,24 +188,14 @@ class LoginActivity : BaseActivity() {
                     finish()
                 }
 
-
                 override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
                     super.onAuthenticationError(errorCode, errString)
-                    Toast.makeText(
-                        this@LoginActivity,
-                        getString(R.string.biometric_error, errString),
-                        Toast.LENGTH_SHORT
-                    ).show()
-
+                    Toast.makeText(this@LoginActivity, getString(R.string.biometric_error, errString), Toast.LENGTH_SHORT).show()
                 }
 
                 override fun onAuthenticationFailed() {
                     super.onAuthenticationFailed()
-                    Toast.makeText(
-                        this@LoginActivity,
-                        getString(R.string.biometric_failed),
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    Toast.makeText(this@LoginActivity, getString(R.string.biometric_failed), Toast.LENGTH_SHORT).show()
                 }
             })
 
@@ -228,10 +205,8 @@ class LoginActivity : BaseActivity() {
             .setNegativeButtonText(getString(R.string.cancel))
             .build()
 
-
         biometricPrompt.authenticate(promptInfo)
     }
-
 
     // -------------------- Shared Login Success Handler --------------------
     private fun handleLoginSuccess(loginResponse: LoginResponse) {
@@ -254,18 +229,13 @@ class LoginActivity : BaseActivity() {
             .putBoolean("biometric_enabled", true)
             .apply()
 
-        loginResponse.user.managerId?.let {
-            appPrefs.edit().putInt("managerId", it).apply()
-        }
-
+        // Save only managerId (fields exist in your DTO)
+        loginResponse.user.managerId?.let { appPrefs.edit().putInt("managerId", it).apply() }
 
         SyncScheduler.scheduleSync(applicationContext, loginResponse.token)
 
-
         Toast.makeText(this@LoginActivity, getString(R.string.welcome_user, loginResponse.user.firstName), Toast.LENGTH_LONG).show()
 
-
-        // Navigate to correct dashboard
         val role = loginResponse.user.role?.trim()
         val intent = when (role) {
             "Tenant" -> Intent(this, TenantDashboardActivity::class.java)
@@ -273,7 +243,6 @@ class LoginActivity : BaseActivity() {
             "PropertyManager" -> Intent(this, MainPmActivity::class.java)
             else -> {
                 Toast.makeText(this, getString(R.string.unknown_role, role), Toast.LENGTH_SHORT).show()
-
                 return
             }
         }

@@ -50,6 +50,16 @@
 
         <activity android:name=".LoginActivity" />
 
+        <activity
+            android:name=".ChatbotTenantActivity"
+            android:exported="false"
+            android:label="Assistant"
+            android:parentActivityName=".MessagesActivity">
+            <meta-data android:name="android.support.PARENT_ACTIVITY" android:value=".MessagesActivity"/>
+        </activity>
+
+
+
         <!-- Tenant dashboard -->
         <activity android:name=".TenantDashboardActivity" />
 

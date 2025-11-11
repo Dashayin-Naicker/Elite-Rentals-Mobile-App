@@ -52,7 +52,6 @@
                     android:contentDescription="Messages"
                     android:clickable="true"
                     android:focusable="true" />
-
             </LinearLayout>
 
             <!-- Rent Due Banner -->
@@ -147,17 +146,18 @@
                             android:layout_height="40dp"
                             android:src="@drawable/maintenance" />
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/report_maintenance"
-                                android:textColor="?android:textColorPrimary"
-                                android:layout_marginTop="8dp" />
-                        </LinearLayout>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/report_maintenance"
+                            android:textColor="?android:textColorPrimary"
+                            android:layout_marginTop="8dp" />
+                    </LinearLayout>
                 </androidx.cardview.widget.CardView>
 
-                <!-- Chatbot -->
+                <!-- Chatbot (existing block, now with an id) -->
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/cardChatbot"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1"
@@ -284,7 +284,6 @@
             </androidx.cardview.widget.CardView>
 
             <!-- Rent Status -->
-            <!-- Rent Status Section -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/rentCard"
                 android:layout_width="match_parent"
@@ -350,8 +349,6 @@
                         android:textStyle="bold" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
-
-
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

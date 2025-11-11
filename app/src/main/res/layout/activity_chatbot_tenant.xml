@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/chat_bg">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/topAppBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        app:backgroundTint="@color/brand_blue"
+        app:navigationIcon="@drawable/ic_arrow_back_24"
+        app:navigationIconTint="@color/brandBlue"
+
+        app:title="@string/chatbot_title"
+        app:titleTextColor="@color/brandBlue" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingTop="?attr/actionBarSize">
+
+        <!-- Quick chips -->
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:overScrollMode="never"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp">
+
+            <LinearLayout
+                android:id="@+id/quickGroup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" />
+        </HorizontalScrollView>
+
+        <!-- Messages -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvChat"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:clipToPadding="false"
+            android:overScrollMode="never"
+            android:padding="8dp" />
+
+        <!-- Composer -->
+        <!-- Composer -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/chat_bg"
+            android:orientation="horizontal"
+            android:padding="8dp">
+
+            <EditText
+                android:id="@+id/inputChat"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/bg_input"
+                android:gravity="top|start"
+                android:hint="@string/chat_hint"
+                android:imeOptions="actionSend"
+
+                android:includeFontPadding="false"
+                android:inputType="textCapSentences|textMultiLine"
+                android:maxLines="5"
+                android:minLines="1"
+                android:overScrollMode="always"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="10dp"
+                android:scrollbars="vertical"
+                android:textAppearance="@style/TextBody"
+                tools:ignore="TouchTargetSizeCheck" />
+
+            <ImageButton
+                android:id="@+id/btnSend"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/bg_send"
+                android:contentDescription="@string/send"
+                android:src="@drawable/ic_send"
+                app:tint="@android:color/white" />
+        </LinearLayout>
+
+    </LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
