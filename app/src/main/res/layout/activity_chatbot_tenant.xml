@@ -5,19 +5,17 @@
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/chat_bg">
+    android:background="?attr/colorSurface"> <!-- theme-driven background -->
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/topAppBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
-        app:backgroundTint="@color/brand_blue"
+        app:backgroundTint="?attr/colorPrimary"
         app:navigationIcon="@drawable/ic_arrow_back_24"
-        app:navigationIconTint="@color/brandBlue"
-
+        app:navigationIconTint="?attr/colorOnPrimary"
         app:title="@string/chatbot_title"
-        app:titleTextColor="@color/brandBlue" />
+        app:titleTextColor="?attr/colorOnPrimary" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -48,17 +46,16 @@
             android:layout_weight="1"
             android:clipToPadding="false"
             android:overScrollMode="never"
-            android:padding="8dp" />
+            android:padding="8dp"
+            android:background="?attr/colorSurface" />
 
-        <!-- Composer -->
         <!-- Composer -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/chat_bg"
+            android:background="?attr/colorSurface"
             android:orientation="horizontal"
             android:padding="8dp">
-
             <EditText
                 android:id="@+id/inputChat"
                 android:layout_width="0dp"
@@ -68,7 +65,6 @@
                 android:gravity="top|start"
                 android:hint="@string/chat_hint"
                 android:imeOptions="actionSend"
-
                 android:includeFontPadding="false"
                 android:inputType="textCapSentences|textMultiLine"
                 android:maxLines="5"
@@ -78,7 +74,10 @@
                 android:paddingVertical="10dp"
                 android:scrollbars="vertical"
                 android:textAppearance="@style/TextBody"
+                android:textColor="?attr/colorOnSurface"
+                android:textColorHint="?attr/colorOnSurfaceVariant"
                 tools:ignore="TouchTargetSizeCheck" />
+
 
             <ImageButton
                 android:id="@+id/btnSend"
@@ -88,7 +87,7 @@
                 android:background="@drawable/bg_send"
                 android:contentDescription="@string/send"
                 android:src="@drawable/ic_send"
-                app:tint="@android:color/white" />
+                app:tint="?attr/colorOnPrimaryContainer" />
         </LinearLayout>
 
     </LinearLayout>

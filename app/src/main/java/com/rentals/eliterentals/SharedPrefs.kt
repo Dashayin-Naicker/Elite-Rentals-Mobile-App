@@ -50,5 +50,16 @@ object SharedPrefs {
     fun getManagerEmail(ctx: Context) =
         ctx.getSharedPreferences("app", Context.MODE_PRIVATE).getString("managerEmail", "")
 
+
+    fun getTheme(context: Context): String {
+        val prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+        return prefs.getString("theme", "light") ?: "light"
+    }
+
+    fun setTheme(context: Context, theme: String) {
+        context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+            .edit().putString("theme", theme).apply()
+    }
+
 }
 

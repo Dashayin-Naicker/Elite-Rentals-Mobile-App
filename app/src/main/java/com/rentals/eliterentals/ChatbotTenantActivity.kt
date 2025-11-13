@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import retrofit2.Response
 
-class ChatbotTenantActivity : AppCompatActivity() {
+class ChatbotTenantActivity : BaseActivity() {
 
     private lateinit var rv: RecyclerView
     private lateinit var adapter: ChatAdapter
@@ -39,6 +39,9 @@ class ChatbotTenantActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // 🔹 Apply theme like TenantDashboard
+        ThemeUtils.applyTheme(ThemeUtils.getSavedTheme(this))
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chatbot_tenant)
 
@@ -111,7 +114,6 @@ class ChatbotTenantActivity : AppCompatActivity() {
     }
 
     private fun textFor(english: String) = when (lang) {
-        // You can translate these later; keeping English to avoid missing keys.
         "zu", "st" -> english
         else -> english
     }
@@ -140,7 +142,6 @@ class ChatbotTenantActivity : AppCompatActivity() {
             }
         }
 
-        // Fallback to server chatbot if you have one
         sendToServerChatbot(text)
     }
 
