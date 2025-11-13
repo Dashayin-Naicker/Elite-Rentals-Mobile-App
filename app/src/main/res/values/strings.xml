@@ -175,11 +175,70 @@
         <string name="description">Description</string>
         <string name="describe_issue">Describe the issue</string>
         <string name="submit">Submit</string>
+    <string name="tvCaretakerName">Hello, %1$s</string>
+    <string name="caretaker_fallback">Caretaker</string>
+    <!-- Caretaker greeting -->
+    <string name="hello_with_name">Hello, %1$s</string>
+
+
+    <!-- Task fetching -->
+    <string name="fetch_tasks_failed">Failed to fetch tasks</string>
+    <string name="fetch_tasks_error">Error fetching tasks</string>
+
+    <!-- Status -->
+    <string name="update_status">Update Status</string>
+
+    <string name="status_updated">Status updated</string>
+    <string name="status_update_failed">Failed to update status</string>
+    <string name="status_update_error">Error updating status</string>
+
+    <!-- Comments -->
+    <string name="add_comment">Add Comment</string>
+    <string name="comment_hint">Enter comment for tenant</string>
+
+    <string name="comment_empty">Comment cannot be empty</string>
+    <string name="comment_sent">Comment sent to tenant</string>
+    <string name="comment_failed">Failed to send comment</string>
+    <string name="comment_error">Error sending comment</string>
+
+    <!-- Photos -->
+    <string name="photo_updated">Photo updated</string>
+    <string name="photo_update_failed">Failed to update photo</string>
+    <string name="photo_upload_error">Error uploading photo</string>
 
 
 
 
 
+
+    <!-- Buttons and Actions -->
+
+    <string name="lease_pdf">Download Lease Summary</string>
+
+    <!-- Statuses -->
+
+    <string name="status_paid">Paid</string>
+    <string name="status_overdue">Overdue</string>
+    <string name="status_no_payment">No Payment</string>
+
+    <!-- Notifications -->
+    <string name="notification_title">Notifications</string>
+    <string name="notification_message">You have new updates</string>
+
+    <!-- Toasts -->
+    <string name="no_lease_found">No active lease found</string>
+    <string name="lease_saved">Lease saved to %1$s</string>
+    <string name="invoice_saved">Invoice saved to %1$s</string>
+
+    <string name="hello_caretaker">Hello, Caretaker</string>
+    <string name="notifications">Notifications</string>
+
+    <string name="sample_issue_title">Cracked Wall</string>
+    <string name="logged_at_sample">Logged at: 2025/08/11 at 11:23am</string>
+
+    <string name="edit_photo">Edit Photo</string>
+
+    <string name="placeholder_caretaker_name">Hello, [Caretaker Name]</string>
 
 
 

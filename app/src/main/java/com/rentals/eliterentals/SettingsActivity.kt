@@ -181,11 +181,21 @@ class SettingsActivity : BaseActivity() {
     }
 
     private fun restartApp() {
-        val intent = Intent(this, TenantDashboardActivity::class.java)
+        val role = SharedPrefs.getUserRole(this, userId) ?: "Tenant"
+
+        val nextActivity = when (role) {
+            "Tenant" -> TenantDashboardActivity::class.java
+            "Caretaker" -> CaretakerTrackMaintenanceActivity::class.java
+            else -> LoginActivity::class.java
+        }
+
+        val intent = Intent(this, nextActivity)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(intent)
         finish()
     }
+
+
 
     private fun buildSecureRetrofit(token: String): Retrofit {
         val client = OkHttpClient.Builder()

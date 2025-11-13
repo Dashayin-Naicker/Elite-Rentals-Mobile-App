@@ -193,6 +193,74 @@
         <string name="dashboard">Ideshibhodi</string>
         <string name="maintenance">Ukulungisa</string>
         <string name="payments">Izinkokhelo</string>
+    <string name="tvCaretakerName">Sawubona, %1$s</string>
+    <string name="caretaker_fallback">Umnakekeli</string>
+
+
+        <!-- Caretaker greeting -->
+        <string name="hello_with_name">Sawubona, %1$s</string>
+
+
+        <!-- Task fetching -->
+        <string name="fetch_tasks_failed">Yehlulekile ukuthola imisebenzi</string>
+        <string name="fetch_tasks_error">Iphutha ekutholeni imisebenzi</string>
+
+        <!-- Status -->
+        <string name="update_status">Buyekeza Isimo</string>
+
+        <string name="status_updated">Isimo sibuyekeziwe</string>
+        <string name="status_update_failed">Yehlulekile ukubuyekeza isimo</string>
+        <string name="status_update_error">Iphutha ekubuyekezeni isimo</string>
+
+        <!-- Comments -->
+        <string name="add_comment">Faka Amazwana</string>
+        <string name="comment_hint">Faka amazwana kumqashi</string>
+
+        <string name="comment_empty">Amazwana awakwazi ukuba angenalutho</string>
+        <string name="comment_sent">Amazwana athunyelwe kumqashi</string>
+        <string name="comment_failed">Yehlulekile ukuthumela amazwana</string>
+        <string name="comment_error">Iphutha ekuthumeleni amazwana</string>
+
+        <!-- Photos -->
+        <string name="photo_updated">Isithombe sibuyekeziwe</string>
+        <string name="photo_update_failed">Yehlulekile ukubuyekeza isithombe</string>
+        <string name="photo_upload_error">Iphutha ekulayisheni isithombe</string>
+
+
+    <!-- Buttons and Actions -->
+
+    <string name="lease_pdf">Landa Isifinyezo Senkontileka</string>
+
+    <!-- Statuses -->
+
+    <string name="status_paid">Ikhokhiwe</string>
+    <string name="status_overdue">Kudlule Isikhathi</string>
+    <string name="status_no_payment">Akukho Kukhokhwa</string>
+
+    <!-- Notifications -->
+    <string name="notification_title">Izaziso</string>
+    <string name="notification_message">Unolwazi olusha</string>
+
+    <!-- Toasts -->
+    <string name="no_lease_found">Ayikho inkontileka esebenzayo</string>
+    <string name="lease_saved">Inkontileka igcinwe ku %1$s</string>
+    <string name="invoice_saved">I-invoice igcinwe ku %1$s</string>
+
+    <string name="hello_caretaker">Sawubona, Umlondolozi</string>
+    <string name="notifications">Izaziso</string>
+
+    <string name="sample_issue_title">Udonga Oluqhekekile</string>
+    <string name="logged_at_sample">Kurekhodiwe ngo: 2025/08/11 ngo-11:23 ekuseni</string>
+
+    <string name="edit_photo">Hlela Isithombe</string>
+
+
+        <string name="placeholder_caretaker_name">Sawubona, [Igama Lomlondolozi]</string>
+
+
+
+
+
 
 
 </resources>

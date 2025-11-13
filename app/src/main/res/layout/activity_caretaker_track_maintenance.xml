@@ -27,7 +27,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Hello, Caretaker"
+            android:text="@string/placeholder_caretaker_name"
             android:textColor="?android:textColorPrimary"
             android:textSize="22sp"
             android:textStyle="bold"
@@ -38,7 +38,7 @@
             android:layout_width="28dp"
             android:layout_height="28dp"
             android:src="@drawable/notifications"
-            android:contentDescription="Notifications"
+            android:contentDescription="@string/notifications"
             android:clickable="true"
             android:focusable="true"
             android:layout_marginEnd="12dp" />
@@ -48,7 +48,7 @@
             android:layout_width="28dp"
             android:layout_height="28dp"
             android:src="@drawable/settings"
-            android:contentDescription="Settings"
+            android:contentDescription="@string/settings"
             android:clickable="true"
             android:focusable="true" />
     </LinearLayout>
@@ -82,26 +82,29 @@
                     android:padding="16dp">
 
                     <TextView
+                        android:id="@+id/tvIssueTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Cracked Wall"
+                        android:text="@string/sample_issue_title"
                         android:textSize="16sp"
                         android:textStyle="bold"
                         android:textColor="?android:textColorPrimary" />
 
                     <TextView
+                        android:id="@+id/tvLoggedAt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Logged at: 2025/08/11 at 11:23am"
+                        android:text="@string/logged_at_placeholder"
                         android:textSize="12sp"
                         android:textColor="?android:textColorSecondary"
                         android:layout_marginTop="4dp" />
 
                     <!-- Status -->
                     <TextView
+                        android:id="@+id/tvStatus"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="In Progress"
+                        android:text="@string/status_in_progress"
                         android:textColor="@android:color/white"
                         android:background="@drawable/bg_status_in_progress"
                         android:paddingStart="8dp"
@@ -116,14 +119,13 @@
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:src="@drawable/ic_image"
-                        android:contentDescription="Edit Photo"
+                        android:contentDescription="@string/edit_photo"
                         android:clickable="true"
                         android:focusable="true"
                         android:layout_marginTop="8dp"/>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- Additional maintenance cards will be added here dynamically -->
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 </LinearLayout>
