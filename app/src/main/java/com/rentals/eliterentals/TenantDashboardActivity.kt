@@ -20,6 +20,7 @@ import android.widget.Toast
 import androidx.core.content.FileProvider
 import java.io.File
 import java.io.FileOutputStream
+import java.time.OffsetDateTime
 
 class TenantDashboardActivity : BaseActivity() {
 
@@ -87,40 +88,34 @@ class TenantDashboardActivity : BaseActivity() {
                 currentLease = lease
 
                 val paymentRes = api.getTenantPayments("Bearer $jwt", tenantId)
-                val latestPaymentStatus = if (paymentRes.isSuccessful) {
+                var latestPaymentDate: LocalDate? = null
+                var latestPaymentStatus = "No Payment"
+
+                if (paymentRes.isSuccessful) {
                     val payments = paymentRes.body() ?: emptyList()
-                    payments
+                    // Find the payment with the latest date
+                    val latestPayment = payments
                         .mapNotNull { p ->
                             p.date?.let { dateStr ->
-                                Pair(LocalDate.parse(dateStr.substring(0, 10)), p.status)
+                                try {
+                                    val ld = LocalDate.parse(dateStr.substring(0, 10))
+                                    Pair(ld, p.status)
+                                } catch (e: Exception) {
+                                    null
+                                }
                             }
                         }
                         .maxByOrNull { it.first }
-                        ?.second ?: "No Payment"
-                } else {
-                    "No Payment"
-                }
 
-                val latestPaymentDate = if (paymentRes.isSuccessful) {
-                    val payments = paymentRes.body() ?: emptyList()
-                    payments
-                        .mapNotNull { it.date?.substring(0, 10) }
-                        .maxOrNull()
-                } else null
-
-                if (lease != null) {
-                    populateLeaseInfo(
-                        leaseInfoTv, rentStatusTv, rentAmountTv,
-                        rentDueDaysTv, leaseEndDaysTv, lease, latestPaymentStatus, latestPaymentDate
-                    )
-                } else {
-                    showNoLease(leaseInfoTv, rentStatusTv, rentAmountTv, rentDueDaysTv, leaseEndDaysTv)
+                    latestPaymentDate = latestPayment?.first
+                    latestPaymentStatus = latestPayment?.second ?: "No Payment"
                 }
 
                 if (lease != null) {
                     populateLeaseInfo(
                         leaseInfoTv, rentStatusTv, rentAmountTv,
-                        rentDueDaysTv, leaseEndDaysTv, lease, latestPaymentStatus
+                        rentDueDaysTv, leaseEndDaysTv, lease, latestPaymentStatus,
+                        latestPaymentDate?.format(DateTimeFormatter.ISO_LOCAL_DATE)
                     )
                 } else {
                     showNoLease(leaseInfoTv, rentStatusTv, rentAmountTv, rentDueDaysTv, leaseEndDaysTv)
@@ -130,6 +125,7 @@ class TenantDashboardActivity : BaseActivity() {
                 showError(leaseInfoTv, rentStatusTv, rentAmountTv, rentDueDaysTv, leaseEndDaysTv)
             }
         }
+
 
         findViewById<CardView>(R.id.cardTrackMaintenance).setOnClickListener {
             startActivity(Intent(this, TrackMaintenanceActivity::class.java))
@@ -389,7 +385,6 @@ class TenantDashboardActivity : BaseActivity() {
         startActivity(Intent.createChooser(intent, "Open PDF"))
     }
 
-    // 🔹 Lease display helpers
     private fun populateLeaseInfo(
         leaseInfoTv: TextView, rentStatusTv: TextView, rentAmountTv: TextView,
         rentDueDaysTv: TextView, leaseEndDaysTv: TextView,
@@ -400,18 +395,31 @@ class TenantDashboardActivity : BaseActivity() {
         val endDate = formatDate(lease.endDate)
         leaseInfoTv.text = getString(R.string.lease_period, startDate, endDate)
 
-        val status = if (!latestPaymentDate.isNullOrEmpty()) {
-            val paymentMonth = try {
-                LocalDate.parse(latestPaymentDate.substring(0, 10)).monthValue
-            } catch (e: Exception) { -1 }
-
-            val currentMonth = LocalDate.now().monthValue
-            if (paymentMonth != currentMonth) "pending" else paymentStatus
-        } else {
-            "pending"
+        // 🔹 Robust date parsing
+        val paymentDate = latestPaymentDate?.let {
+            try {
+                // Try full ISO format first
+                LocalDate.parse(it.substring(0, 10), DateTimeFormatter.ISO_LOCAL_DATE)
+            } catch (e: Exception) {
+                Log.e("TenantDashboard", "Failed to parse payment date: $it", e)
+                null
+            }
         }
 
-        rentStatusTv.text = getString(R.string.rent_status, status.capitalize())
+        // Determine status based on current month
+        val status = if (paymentDate != null) {
+            val now = LocalDate.now()
+            if (paymentDate.year == now.year && paymentDate.month == now.month) {
+                paymentStatus.capitalize()
+            } else {
+                "Pending"
+            }
+        } else {
+            "Pending"
+        }
+
+        // Update UI
+        rentStatusTv.text = getString(R.string.rent_status, status)
 
         val statusColor = when (status.lowercase()) {
             "paid" -> Color.parseColor("#4CAF50")
@@ -436,6 +444,7 @@ class TenantDashboardActivity : BaseActivity() {
         val leaseEndDays = calculateDaysLeft(lease.endDate)
         leaseEndDaysTv.text = getString(R.string.lease_end_days, leaseEndDays)
     }
+
 
     private fun showNoLease(
         leaseInfoTv: TextView, rentStatusTv: TextView,
