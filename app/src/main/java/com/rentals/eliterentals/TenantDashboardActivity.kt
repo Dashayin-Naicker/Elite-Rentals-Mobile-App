@@ -62,7 +62,12 @@ class TenantDashboardActivity : BaseActivity() {
         }
 
         findViewById<CardView>(R.id.cardMaintenance).setOnClickListener {
-            startActivity(Intent(this, ReportMaintenanceActivity::class.java))
+            currentLease?.let { lease ->
+                val intent = Intent(this, ReportMaintenanceActivity::class.java)
+                intent.putExtra("leaseId", lease.leaseId)
+                intent.putExtra("propertyId", lease.propertyId)
+                startActivity(intent)
+            } ?: Toast.makeText(this, "No active lease found", Toast.LENGTH_SHORT).show()
         }
 
         findViewById<LinearLayout>(R.id.navTrackMaintenance).setOnClickListener {
@@ -94,6 +99,22 @@ class TenantDashboardActivity : BaseActivity() {
                         ?.second ?: "No Payment"
                 } else {
                     "No Payment"
+                }
+
+                val latestPaymentDate = if (paymentRes.isSuccessful) {
+                    val payments = paymentRes.body() ?: emptyList()
+                    payments
+                        .mapNotNull { it.date?.substring(0, 10) }
+                        .maxOrNull()
+                } else null
+
+                if (lease != null) {
+                    populateLeaseInfo(
+                        leaseInfoTv, rentStatusTv, rentAmountTv,
+                        rentDueDaysTv, leaseEndDaysTv, lease, latestPaymentStatus, latestPaymentDate
+                    )
+                } else {
+                    showNoLease(leaseInfoTv, rentStatusTv, rentAmountTv, rentDueDaysTv, leaseEndDaysTv)
                 }
 
                 if (lease != null) {
@@ -373,14 +394,26 @@ class TenantDashboardActivity : BaseActivity() {
         leaseInfoTv: TextView, rentStatusTv: TextView, rentAmountTv: TextView,
         rentDueDaysTv: TextView, leaseEndDaysTv: TextView,
         lease: LeaseDto, paymentStatus: String,
+        latestPaymentDate: String? = null,
     ) {
         val startDate = formatDate(lease.startDate)
         val endDate = formatDate(lease.endDate)
         leaseInfoTv.text = getString(R.string.lease_period, startDate, endDate)
 
-        rentStatusTv.text = getString(R.string.rent_status, paymentStatus)
+        val status = if (!latestPaymentDate.isNullOrEmpty()) {
+            val paymentMonth = try {
+                LocalDate.parse(latestPaymentDate.substring(0, 10)).monthValue
+            } catch (e: Exception) { -1 }
 
-        val statusColor = when (paymentStatus.lowercase()) {
+            val currentMonth = LocalDate.now().monthValue
+            if (paymentMonth != currentMonth) "pending" else paymentStatus
+        } else {
+            "pending"
+        }
+
+        rentStatusTv.text = getString(R.string.rent_status, status.capitalize())
+
+        val statusColor = when (status.lowercase()) {
             "paid" -> Color.parseColor("#4CAF50")
             "pending" -> Color.parseColor("#FFA500")
             "overdue" -> Color.parseColor("#F44336")
