@@ -24,6 +24,20 @@
     <color name="input_stroke">#E0E0E0</color>
 
     <color name="text_primary">#111111</color>
+    <color name="bluePrimary">#2978FD</color>
+    <color name="blueAccent">#14408A</color>
+
+    <!-- Outgoing messages (blue) -->
+    <color name="colorMyMessage">#2196F3</color>
+    <color name="colorMyMessageStroke">#1976D2</color>
+    <color name="textPrimaryOutgoing">#FFFFFF</color>
+
+    <!-- Incoming messages (gray) -->
+    <color name="colorIncomingMessage">#E0E0E0</color>
+    <color name="colorIncomingMessageStroke">#BDBDBD</color>
+    <color name="textPrimaryIncoming">#212121</color>
+    <color name="bluePrimaryDark">#0851A8</color>
+
 </resources>
 
 
