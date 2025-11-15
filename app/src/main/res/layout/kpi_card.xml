@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_margin="4dp"
+    android:padding="12dp"
+    android:layout_width="0dp"
+    android:layout_weight="1"
+    android:layout_height="match_parent"
+    android:background="@drawable/kpi_card_bg"
+    android:elevation="4dp"
+    android:gravity="center">
+
+    <!-- KPI Title -->
+    <TextView
+        android:id="@+id/kpiTitle"
+        android:text="Title"
+        android:textColor="#9E9E9E"
+        android:textSize="12sp"
+        android:fontFamily="sans-serif"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <!-- KPI Value -->
+    <TextView
+        android:id="@+id/kpiValue"
+        android:text="R 0"
+        android:textStyle="bold"
+        android:textColor="#212121"
+        android:fontFamily="sans-serif-medium"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp"
+        android:singleLine="true"
+        android:ellipsize="none"
+        android:autoSizeTextType="uniform"
+        android:autoSizeMinTextSize="12sp"
+        android:autoSizeMaxTextSize="28sp"
+        android:autoSizeStepGranularity="1sp"/>
+</LinearLayout>

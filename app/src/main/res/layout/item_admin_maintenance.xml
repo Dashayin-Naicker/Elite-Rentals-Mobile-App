@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:padding="12dp"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#FFFFFF"
+    android:backgroundTint="#FFFFFF"
+    android:elevation="2dp"
+    android:layout_marginBottom="8dp"
+    android:layout_marginTop="4dp"
+    android:layout_marginHorizontal="4dp">
+
+    <!-- Header -->
+    <TextView
+        android:id="@+id/txtMaintTitle"
+        android:text="Maintenance #1"
+        android:textStyle="bold"
+        android:textColor="#424242"
+        android:fontFamily="sans-serif"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawableEnd="@android:drawable/arrow_down_float"
+        android:padding="8dp"/>
+
+    <!-- Collapsible content -->
+    <LinearLayout
+        android:id="@+id/maintDetails"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/txtMaintProperty"
+            android:text="Property"
+            android:textColor="#424242"
+            android:fontFamily="sans-serif"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"/>
+
+        <TextView
+            android:id="@+id/txtMaintStatus"
+            android:text="Status"
+            android:textColor="#424242"
+            android:fontFamily="sans-serif"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"/>
+    </LinearLayout>
+</LinearLayout>
+
+

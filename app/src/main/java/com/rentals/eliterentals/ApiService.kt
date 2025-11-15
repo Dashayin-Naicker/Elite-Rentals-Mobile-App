@@ -243,4 +243,14 @@ interface ApiService {
         @Body body: Map<String, @JvmSuppressWildcards Any>
     ): retrofit2.Call<Void>
 
+    @GET("api/Lease")
+    suspend fun getLeases(@Header("Authorization") bearer: String): Response<List<LeaseDto>>
+
+    @GET("api/Maintenance")
+    suspend fun getMaintenance(@Header("Authorization") bearer: String): Response<List<Maintenance>>
+
+    @GET("api/Payment")
+    suspend fun getPayments(@Header("Authorization") bearer: String): Response<List<PaymentDto>>
+
+
 }

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:padding="10dp"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <View
+        android:id="@+id/alertBadge"
+        android:layout_width="8dp"
+        android:layout_height="8dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginTop="6dp"
+        android:background="#FF9800"
+        android:layout_gravity="center_vertical"/>
+
+    <TextView
+        android:id="@+id/txtAlertMessage"
+        android:text="Alert message"
+        android:textColor="#212121"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+</LinearLayout>
+

@@ -241,6 +241,7 @@ class LoginActivity : BaseActivity() {
             "Tenant" -> Intent(this, TenantDashboardActivity::class.java)
             "Caretaker" -> Intent(this, CaretakerTrackMaintenanceActivity::class.java)
             "PropertyManager" -> Intent(this, MainPmActivity::class.java)
+            "Admin" -> Intent(this, AdminDashboardActivity::class.java)
             else -> {
                 Toast.makeText(this, getString(R.string.unknown_role, role), Toast.LENGTH_SHORT).show()
                 return

@@ -38,6 +38,13 @@
     <color name="textPrimaryIncoming">#212121</color>
     <color name="bluePrimaryDark">#0851A8</color>
 
+    <color name="badge_success">#28a745</color>
+    <color name="badge_danger">#dc3545</color>
+    <color name="badge_warning">#ffc107</color>
+    <color name="badge_info">#0d6efd</color>
+    <color name="badge_gray">#6c757d</color>
+
+
 </resources>
 
 
