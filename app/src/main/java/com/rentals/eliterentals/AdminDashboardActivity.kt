@@ -30,6 +30,7 @@ import com.github.mikephil.charting.data.Entry
 import android.widget.Button
 import android.widget.Toast
 import android.graphics.pdf.PdfDocument
+import android.widget.ImageView
 import androidx.core.content.FileProvider
 import java.io.File
 import java.io.FileOutputStream
@@ -71,6 +72,14 @@ class AdminDashboardActivity : AppCompatActivity() {
 
         findViewById<Button>(R.id.btnExportPdf).setOnClickListener {
             generateDashboardPdf()
+        }
+
+        findViewById<ImageView>(R.id.settingsIcon).setOnClickListener {
+            startActivity(Intent(this, SettingsActivity::class.java))
+        }
+
+        findViewById<ImageView>(R.id.notificationIcon).setOnClickListener {
+            startActivity(Intent(this, MessagesActivity::class.java))
         }
 
 

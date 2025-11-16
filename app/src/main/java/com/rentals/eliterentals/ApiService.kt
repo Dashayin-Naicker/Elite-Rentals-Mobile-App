@@ -253,4 +253,10 @@ interface ApiService {
     suspend fun getPayments(@Header("Authorization") bearer: String): Response<List<PaymentDto>>
 
 
+    @POST("api/message/broadcast")
+    fun sendBroadcast(
+        @Header("Authorization") token: String,
+        @Body body: MessageDto
+    ): Call<MessageDto>
+
 }

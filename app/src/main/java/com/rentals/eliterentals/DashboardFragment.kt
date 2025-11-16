@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
+import android.widget.ImageView
 
 class DashboardFragment : Fragment() {
 
@@ -54,6 +55,11 @@ class DashboardFragment : Fragment() {
 
         cardGenerateReport.setOnClickListener {
             Toast.makeText(requireContext(), "Coming Soon", Toast.LENGTH_SHORT).show()
+        }
+
+        val notificationIcon = view.findViewById<ImageView>(R.id.notificationIcon)
+        notificationIcon.setOnClickListener {
+            startActivity(Intent(requireContext(), MessagesActivity::class.java))
         }
 
         return view

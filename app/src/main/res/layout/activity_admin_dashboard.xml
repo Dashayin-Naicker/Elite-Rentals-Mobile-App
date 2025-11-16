@@ -11,17 +11,58 @@
         android:padding="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="start|center_vertical">
 
-        <!-- Dashboard Title -->
-        <TextView
-            android:id="@+id/tvTitle"
-            android:text="Admin Dashboard"
-            android:textSize="22sp"
-            android:textStyle="bold"
-            android:textColor="#1A237E"
-            android:fontFamily="sans-serif-medium"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+
+            <!-- Dashboard Title -->
+            <TextView
+                android:id="@+id/tvTitle"
+                android:text="Admin Dashboard"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:textColor="#1A237E"
+                android:fontFamily="sans-serif-medium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <!-- Small spacing between title and icons -->
+            <View
+                android:layout_width="12dp"
+                android:layout_height="0dp" />
+
+            <!-- Notifications Icon -->
+            <ImageView
+                android:id="@+id/notificationIcon"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:src="@drawable/notifications"
+                android:contentDescription="@string/notifications"
+                android:clickable="true"
+                android:focusable="true"
+                android:layout_marginEnd="12dp" />
+
+            <!-- Settings Icon -->
+            <ImageView
+                android:id="@+id/settingsIcon"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:src="@drawable/settings"
+                android:contentDescription="@string/settings"
+                android:clickable="true"
+                android:focusable="true" />
+
+            <!-- Spacer to push nothing to the right -->
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+        </LinearLayout>
+
 
         <!-- KPI Row Container -->
         <LinearLayout

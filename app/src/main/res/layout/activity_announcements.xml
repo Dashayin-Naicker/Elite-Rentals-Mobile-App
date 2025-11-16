@@ -30,7 +30,16 @@
             android:textSize="22sp"
             android:layout_marginStart="12dp"
             android:textStyle="bold" />
+
     </LinearLayout>
+
+    <Button
+        android:id="@+id/btnPostAnnouncement"
+        android:text="Post Announcement"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewAnnouncements"

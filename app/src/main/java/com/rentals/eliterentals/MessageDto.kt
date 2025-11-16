@@ -3,7 +3,7 @@ package com.rentals.eliterentals
 data class MessageDto(
     val messageId: Int? = null,
     val senderId: Int,
-    val receiverId: Int?,
+    val receiverId: Int? =null,
     val messageText: String,
     val timestamp: String? = null,
     val isChatbot: Boolean = false,

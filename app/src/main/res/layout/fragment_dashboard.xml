@@ -44,6 +44,7 @@
                     android:textStyle="bold" />
 
                 <ImageView
+                    android:id="@+id/notificationIcon"
                     android:layout_width="28dp"
                     android:layout_height="28dp"
                     android:src="@drawable/notifications"

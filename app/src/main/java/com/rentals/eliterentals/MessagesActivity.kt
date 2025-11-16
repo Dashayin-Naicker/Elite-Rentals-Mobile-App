@@ -6,6 +6,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -24,7 +26,7 @@ import kotlinx.coroutines.withContext
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-
+import android.widget.Spinner
 class MessagesActivity : AppCompatActivity() {
 
     private lateinit var recyclerView: RecyclerView
@@ -37,6 +39,17 @@ class MessagesActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_messages)
+
+        val role = getSharedPreferences("app", MODE_PRIVATE)
+            .getString("role", "Tenant")
+
+
+        if (role == "Admin" || role == "PropertyManager") {
+            val btnSend = findViewById<Button>(R.id.btnSendMessage)
+            btnSend.visibility = View.VISIBLE
+            btnSend.setOnClickListener { openSendMessageDialog() }
+        }
+
 
         recyclerView = findViewById(R.id.recyclerViewMessages)
         val btnViewAnnouncements = findViewById<Button>(R.id.btnViewAnnouncements)
@@ -82,6 +95,88 @@ class MessagesActivity : AppCompatActivity() {
             else -> super.onOptionsItemSelected(item)
         }
     }
+
+    private fun openSendMessageDialog() {
+        val dialogView = layoutInflater.inflate(R.layout.dialog_send_message, null)
+        val spinnerUsers = dialogView.findViewById<Spinner>(R.id.spinnerUsers)
+        val edtMessage = dialogView.findViewById<EditText>(R.id.edtMessage)
+
+        val token = SharedPrefs.getToken(this)
+
+        // Launch a coroutine to fetch users
+        lifecycleScope.launch {
+            try {
+                val response = withContext(Dispatchers.IO) {
+                    RetrofitClient.instance.getAllUsers("Bearer $token")
+                }
+                if (response.isSuccessful) {
+                    val users = response.body() ?: emptyList()
+                    val adapter = ArrayAdapter(
+                        this@MessagesActivity,
+                        android.R.layout.simple_spinner_item,
+                        users.map { it?.firstName } // display name
+                    )
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                    spinnerUsers.adapter = adapter
+                    spinnerUsers.tag = users
+                } else {
+                    Toast.makeText(this@MessagesActivity, "Failed to load users", Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: Exception) {
+                Toast.makeText(this@MessagesActivity, "Network error", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        AlertDialog.Builder(this)
+            .setTitle("Send Message")
+            .setView(dialogView)
+            .setPositiveButton("Send") { _, _ ->
+                val selectedIndex = spinnerUsers.selectedItemPosition
+                val users = spinnerUsers.tag as? List<UserDto> ?: emptyList()
+                val receiverId = users.getOrNull(selectedIndex)?.userId
+                val text = edtMessage.text.toString().trim()
+
+                if (receiverId == null || text.isEmpty()) {
+                    Toast.makeText(this, "Enter valid details", Toast.LENGTH_SHORT).show()
+                } else {
+                    sendAdminMessage(receiverId, text)
+                }
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+
+
+    private fun sendAdminMessage(receiverId: Int, text: String) {
+        val token = SharedPrefs.getToken(this)
+        val senderId = SharedPrefs.getUserId(this)
+
+        val body = MessageDto(
+            senderId = senderId,
+            receiverId = receiverId,
+            messageText = text,
+            isBroadcast = false
+        )
+
+        RetrofitClient.instance.sendMessage("Bearer $token", body)
+            .enqueue(object : Callback<MessageDto> {
+                override fun onResponse(call: Call<MessageDto>, response: Response<MessageDto>) {
+                    if (response.isSuccessful) {
+                        Toast.makeText(this@MessagesActivity, "Sent", Toast.LENGTH_SHORT).show()
+                        fetchInbox()
+                    } else {
+                        Toast.makeText(this@MessagesActivity, "Failed", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                override fun onFailure(call: Call<MessageDto>, t: Throwable) {
+                    Toast.makeText(this@MessagesActivity, "Network error", Toast.LENGTH_SHORT).show()
+                }
+            })
+    }
+
+
 
     private fun openAskAssistantDialog() {
         val input = EditText(this).apply { hint = "Type your question…"; setSingleLine() }
