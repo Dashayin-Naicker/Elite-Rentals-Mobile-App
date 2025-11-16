@@ -28,12 +28,9 @@ data class PropertyDto(
     val parkingType: String? = null,
     val numOfParkingSpots: Int? = null,
     val petFriendly: Boolean? = null,
-    val status: String? = null
-) : Parcelable {
-    val imageUrl: String
-        get() = "https://eliterentalsapi-czckh7fadmgbgtgf.southafricanorth-01.azurewebsites.net/api/Property/$propertyId/image"
+    val status: String? = null,
+    val imageUrls: List<String> = emptyList()  // <-- NEW
+) : Parcelable
 
-
-}
 
 

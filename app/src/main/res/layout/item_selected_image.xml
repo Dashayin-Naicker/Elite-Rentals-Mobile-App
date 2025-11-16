@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="110dp"
+    android:layout_height="110dp"
+    android:layout_margin="6dp">
+
+    <!-- Image container -->
+    <ImageView
+        android:id="@+id/imgSelected"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:background="@drawable/round_corners"
+        android:contentDescription="@string/select_image" />
+
+    <!-- Delete badge (optional) -->
+    <TextView
+        android:id="@+id/btnRemove"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        android:layout_margin="6dp"
+        android:gravity="center"
+        android:text="✕"
+        android:textSize="12sp"
+        android:textColor="@android:color/white"
+        android:background="@drawable/badge_bg"
+        android:visibility="gone"
+        android:layout_gravity="top|end" />
+
+</FrameLayout>

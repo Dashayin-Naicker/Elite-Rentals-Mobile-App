@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 
@@ -19,13 +20,14 @@ class PropertyAdapter(
         val tvTitle: TextView = view.findViewById(R.id.tvTitle)
         val tvAddress: TextView = view.findViewById(R.id.tvAddress)
         val tvRent: TextView = view.findViewById(R.id.tvRent)
-        val ivImage: ImageView = view.findViewById(R.id.ivProperty)
+        val rvImages: RecyclerView = view.findViewById(R.id.rvImages)
         val btnDelete: Button = view.findViewById(R.id.btnDelete)
         val btnEdit: Button = view.findViewById(R.id.btnEdit)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_property, parent, false)
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_property, parent, false)
         return VH(view)
     }
 
@@ -35,11 +37,11 @@ class PropertyAdapter(
         holder.tvAddress.text = p.address ?: "No address"
         holder.tvRent.text = "R${p.rentAmount ?: 0.0}"
 
-        Glide.with(holder.itemView)
-            .load(p.imageUrl) // <-- use property, not function
-            .placeholder(R.drawable.ic_placeholder)
-            .error(R.drawable.ic_placeholder)
-            .into(holder.ivImage)
+        // Horizontal images
+        val imageAdapter = PropertyImageAdapter(p.imageUrls ?: emptyList())
+        holder.rvImages.layoutManager =
+            LinearLayoutManager(holder.itemView.context, LinearLayoutManager.HORIZONTAL, false)
+        holder.rvImages.adapter = imageAdapter
 
         holder.btnDelete.setOnClickListener { onDelete(p) }
         holder.btnEdit.setOnClickListener { onEdit(p) }
@@ -53,3 +55,4 @@ class PropertyAdapter(
         notifyDataSetChanged()
     }
 }
+

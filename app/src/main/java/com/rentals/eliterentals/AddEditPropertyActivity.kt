@@ -1,11 +1,22 @@
 package com.rentals.eliterentals
 
+import android.app.Activity
+import android.content.ContentResolver
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.provider.OpenableColumns
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.rentals.eliterentals.utils.FileUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -16,17 +27,14 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
-import java.io.IOException
+import java.io.FileOutputStream
+import java.io.InputStream
 import java.math.BigDecimal
+import java.util.*
 
 class AddEditPropertyActivity : AppCompatActivity() {
 
-    private var editingProperty: PropertyDto? = null
-    private var selectedImageFile: File? = null
-    private val client = OkHttpClient()
-    private lateinit var jwt: String
-
-    // UI
+    // UI fields (keep IDs consistent with your layouts)
     private lateinit var etTitle: EditText
     private lateinit var etDescription: EditText
     private lateinit var etAddress: EditText
@@ -42,52 +50,40 @@ class AddEditPropertyActivity : AppCompatActivity() {
     private lateinit var spStatus: Spinner
     private lateinit var btnSave: Button
     private lateinit var btnPickImage: Button
-    private lateinit var ivPreview: ImageView
+    // Gallery of selected images
+    private lateinit var rvSelectedImages: RecyclerView
+
+    private val client = OkHttpClient()
+    private var jwt: String = ""
+
+    // Editing property
+    private var editingProperty: PropertyDto? = null
+
+    // Local image files selected by user (will be uploaded)
+    private val selectedImageFiles = mutableListOf<File>()
+    private val selectedImageUris = mutableListOf<Uri>()
+
+    // Existing remote image URLs (when editing). Display-only unless you add a delete endpoint.
+    private val existingImageUrls = mutableListOf<String>()
+
+    private lateinit var imageAdapter: SelectedImageAdapter
+
+    companion object {
+        private const val REQUEST_CODE_PICK_IMAGES = 101
+        private const val TAG = "AddEditProperty"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_edit_property)
 
-        // 🔹 Top bar back -> Dashboard
-        findViewById<ImageView>(R.id.ic_back)?.setOnClickListener {
-            goToDashboard()
-        }
+        // Topbar/back handlers (if present in layout)
+        findViewById<ImageView?>(R.id.ic_back)?.setOnClickListener { goToDashboard() }
+        findViewById<ImageView?>(R.id.navDashboard)?.setOnClickListener { goToDashboard() }
 
-        // 🔹 Bottom navbar listeners (including Dashboard)
-        findViewById<ImageView>(R.id.navDashboard)?.setOnClickListener { goToDashboard() }
+        // REMOVE YOUR OLD ADAPTER CODE — IT WAS WRONG
 
-        findViewById<ImageView>(R.id.navManageProperties)?.setOnClickListener {
-            // dedicated Properties list screen
-            startActivity(Intent(this, PropertyListActivity::class.java))
-            finish()
-        }
-
-        findViewById<ImageView>(R.id.navManageTenants)?.setOnClickListener {
-            // open the PM main screen (Tenants available from there)
-            startActivity(Intent(this, MainPmActivity::class.java))
-            finish()
-        }
-
-        findViewById<ImageView>(R.id.navAssignLeases)?.setOnClickListener {
-            startActivity(Intent(this, AssignLeaseActivity::class.java))
-            finish()
-        }
-
-        findViewById<ImageView>(R.id.navAssignMaintenance)?.setOnClickListener {
-            startActivity(Intent(this, CaretakerTrackMaintenanceActivity::class.java))
-            finish()
-        }
-
-        findViewById<ImageView>(R.id.navRegisterTenant)?.setOnClickListener {
-            startActivity(Intent(this, RegisterTenantActivity::class.java))
-            finish()
-        }
-
-        findViewById<ImageView>(R.id.navGenerateReport)?.setOnClickListener {
-            Toast.makeText(this, "Coming Soon", Toast.LENGTH_SHORT).show()
-        }
-
-        // 🔹 Form views
+        // init UI
         etTitle = findViewById(R.id.etTitle)
         etDescription = findViewById(R.id.etDescription)
         etAddress = findViewById(R.id.etAddress)
@@ -103,17 +99,36 @@ class AddEditPropertyActivity : AppCompatActivity() {
         spStatus = findViewById(R.id.spStatus)
         btnSave = findViewById(R.id.btnSave)
         btnPickImage = findViewById(R.id.btnPickImage)
-        ivPreview = findViewById(R.id.ivPreview)
 
-        jwt = getSharedPreferences("app", MODE_PRIVATE).getString("jwt", "") ?: ""
+        rvSelectedImages = findViewById(R.id.rvSelectedImages)
 
-        // If editing, prefill
+        jwt = getSharedPreferences("app", Context.MODE_PRIVATE).getString("jwt", "") ?: ""
+
+        // THIS is the correct adapter
+        imageAdapter = SelectedImageAdapter(
+            ctx = this,
+            selectedUris = selectedImageUris,
+            existingUrls = existingImageUrls,
+            onRemoveLocal = { position -> removeLocalImage(position) },
+            onRemoveExisting = { position -> removeExistingImage(position) }
+        )
+
+        rvSelectedImages.layoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        rvSelectedImages.adapter = imageAdapter
+
+
+        // If editing, prefill values and existing images
         editingProperty = intent.getParcelableExtra("property")
-        editingProperty?.let { fillForm(it) }
+        editingProperty?.let { prefillForm(it) }
 
+        // pick images (multiple)
         btnPickImage.setOnClickListener {
-            val intent = Intent(Intent.ACTION_GET_CONTENT).apply { type = "image/*" }
-            startActivityForResult(intent, 101)
+            val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
+                type = "image/*"
+                putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+            }
+            startActivityForResult(Intent.createChooser(intent, "Select images"), REQUEST_CODE_PICK_IMAGES)
         }
 
         btnSave.setOnClickListener { saveProperty() }
@@ -126,8 +141,7 @@ class AddEditPropertyActivity : AppCompatActivity() {
         finish()
     }
 
-    // 🔹 Prefill when editing
-    private fun fillForm(p: PropertyDto) {
+    private fun prefillForm(p: PropertyDto) {
         etTitle.setText(p.title ?: "")
         etDescription.setText(p.description ?: "")
         etAddress.setText(p.address ?: "")
@@ -140,25 +154,143 @@ class AddEditPropertyActivity : AppCompatActivity() {
         etParkingType.setText(p.parkingType ?: "")
         etParkingSpots.setText(p.numOfParkingSpots?.toString() ?: "")
         cbPetFriendly.isChecked = p.petFriendly ?: false
-        spStatus.setSelection(if ((p.status?.lowercase() ?: "available") == "available") 0 else 1)
+        // set spinner selection by matching status string (simple)
+        val status = p.status ?: "Available"
+        val statusAdapter = spStatus.adapter
+        if (statusAdapter != null) {
+            for (i in 0 until statusAdapter.count) {
+                if (statusAdapter.getItem(i)?.toString()?.equals(status, true) == true) {
+                    spStatus.setSelection(i)
+                    break
+                }
+            }
+        }
+
+        // load existing image URLs for preview
+        p.imageUrlList()?.let { urls ->
+            existingImageUrls.addAll(urls)
+            imageAdapter.notifyDataSetChanged()
+        }
     }
 
-    // 🔹 Handle image picker
+    // Helper extension to read imageUrls if your DTO provides multiple image urls (PropertyReadDto used imageUrls)
+    private fun PropertyDto.imageUrlList(): List<String>? {
+        // The earlier DTO exposed imageUrls list on the server. In this client DTO we constructed imageUrl as a single endpoint.
+        // But your PropertyDto or PropertyReadDto coming from API might include a dedicated list field.
+        // Try to extract possible list if present via reflection / alternate field - fallback to single constructed url.
+        // If your PropertyDto has imageUrls: List<String>, change the DTO to include that and return it here.
+        return try {
+            val field = this::class.java.getDeclaredField("imageUrls")
+            field.isAccessible = true
+            val value = field.get(this)
+            if (value is List<*>) {
+                value.filterIsInstance<String>()
+            } else null
+        } catch (ex: Exception) {
+            // fallback: single constructed URL when propertyId present (old behaviour)
+            if (this.propertyId != 0) {
+                listOf("https://eliterentalsapi-czckh7fadmgbgtgf.southafricanorth-01.azurewebsites.net/api/Property/${this.propertyId}/image")
+            } else null
+        }
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 101 && resultCode == RESULT_OK) {
-            val uri: Uri? = data?.data
-            uri?.let {
-                val path = FileUtils.getPath(this, it)
-                if (path != null) {
-                    selectedImageFile = File(path)
-                    ivPreview.setImageURI(uri)
+        if (requestCode == REQUEST_CODE_PICK_IMAGES && resultCode == Activity.RESULT_OK) {
+            if (data == null) return
+            // multiple selection
+            val clip = data.clipData
+            if (clip != null) {
+                for (i in 0 until clip.itemCount) {
+                    val uri = clip.getItemAt(i).uri
+                    addSelectedUri(uri)
                 }
+            } else {
+                data.data?.let { addSelectedUri(it) }
             }
         }
     }
 
-    // 🔹 Save or update property
+    private fun addSelectedUri(uri: Uri) {
+        // convert to File (try FileUtils first; if not available, copy to cache)
+        lifecycleScope.launch {
+            val file = withContext(Dispatchers.IO) {
+                try {
+                    FileUtils.getPath(this@AddEditPropertyActivity, uri)?.let { File(it) }
+                } catch (ex: Throwable) {
+                    null
+                } ?: copyUriToTempFile(uri)
+            }
+            if (file != null) {
+                selectedImageFiles.add(file)
+            }
+            selectedImageUris.add(uri)
+            imageAdapter.notifyDataSetChanged()
+        }
+    }
+
+    private fun removeLocalImage(position: Int) {
+        // position corresponds to local images first + existing urls after (adapter separates)
+        // Our adapter exposes callback only for local images (we pass the correct index)
+        if (position in selectedImageFiles.indices) {
+            selectedImageFiles.removeAt(position)
+        }
+        if (position in selectedImageUris.indices) {
+            selectedImageUris.removeAt(position)
+        }
+        imageAdapter.notifyDataSetChanged()
+    }
+
+    private fun removeExistingImage(position: Int) {
+        // NOTE: server currently doesn't support deleting individual images.
+        // This will only remove from UI; to remove server-side you need a dedicated API endpoint.
+        if (position in existingImageUrls.indices) {
+            existingImageUrls.removeAt(position)
+            Toast.makeText(this, "Removed from preview (server deletion not implemented).", Toast.LENGTH_SHORT).show()
+            imageAdapter.notifyDataSetChanged()
+        }
+    }
+
+    // copy URI content to a temp file in cache and return File
+    private fun copyUriToTempFile(uri: Uri): File? {
+        return try {
+            val resolver = contentResolver
+            val name = queryFileName(resolver, uri) ?: "img_${System.currentTimeMillis()}.jpg"
+            val ext = name.substringAfterLast('.', "jpg")
+            val outFile = File(cacheDir, "upload_${UUID.randomUUID()}.$ext")
+            resolver.openInputStream(uri)?.use { input ->
+                FileOutputStream(outFile).use { out ->
+                    copyStream(input, out)
+                }
+            }
+            outFile
+        } catch (ex: Exception) {
+            Log.w(TAG, "copyUriToTempFile failed: ${ex.message}")
+            null
+        }
+    }
+
+    private fun queryFileName(resolver: ContentResolver, uri: Uri): String? {
+        return try {
+            resolver.query(uri, null, null, null, null)?.use { cursor ->
+                val nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                if (nameIndex >= 0 && cursor.moveToFirst()) {
+                    cursor.getString(nameIndex)
+                } else null
+            }
+        } catch (_: Exception) {
+            null
+        }
+    }
+
+    private fun copyStream(input: InputStream, out: FileOutputStream) {
+        val buffer = ByteArray(8 * 1024)
+        var read: Int
+        while (input.read(buffer).also { read = it } != -1) {
+            out.write(buffer, 0, read)
+        }
+    }
+
     private fun saveProperty() {
         val title = etTitle.text.toString().trim()
         val address = etAddress.text.toString().trim()
@@ -172,7 +304,6 @@ class AddEditPropertyActivity : AppCompatActivity() {
         val rent = rentStr.toDoubleOrNull() ?: 0.0
         if (rent <= 0) {
             Toast.makeText(this, getString(R.string.enter_valid_rent), Toast.LENGTH_SHORT).show()
-
             return
         }
 
@@ -189,21 +320,19 @@ class AddEditPropertyActivity : AppCompatActivity() {
             parkingType = etParkingType.text.toString().ifEmpty { "None" },
             numOfParkingSpots = etParkingSpots.text.toString().toIntOrNull() ?: 0,
             petFriendly = cbPetFriendly.isChecked,
-            status = spStatus.selectedItem.toString()
+            status = spStatus.selectedItem?.toString() ?: "Available"
         )
 
         if (editingProperty != null) {
             updateProperty(editingProperty!!.propertyId, property)
-        } else if (selectedImageFile != null) {
-            uploadPropertyWithImage(property, selectedImageFile!!)
         } else {
-            Toast.makeText(this, getString(R.string.select_image), Toast.LENGTH_SHORT).show()
-
+            // create
+            uploadPropertyWithImages(property, selectedImageFiles)
         }
     }
 
-    // 🔹 Upload property with image (POST)
-    private fun uploadPropertyWithImage(property: Property, imageFile: File) {
+    // Upload multiple images as repeated "Images" parts (POST)
+    private fun uploadPropertyWithImages(property: Property, images: List<File>) {
         lifecycleScope.launch {
             try {
                 val builder = MultipartBody.Builder().setType(MultipartBody.FORM)
@@ -221,8 +350,12 @@ class AddEditPropertyActivity : AppCompatActivity() {
                     .addFormDataPart("petFriendly", property.petFriendly.toString())
                     .addFormDataPart("status", property.status)
 
-                val imageRequestBody = imageFile.asRequestBody("image/jpeg".toMediaTypeOrNull())
-                builder.addFormDataPart("image", imageFile.name, imageRequestBody)
+                images.forEachIndexed { idx, file ->
+                    val mime = contentResolver.getType(Uri.fromFile(file)) ?: "image/jpeg"
+                    val reqBody = file.asRequestBody(mime.toMediaTypeOrNull())
+                    // The form field name must match API: "Images" repeated for List<IFormFile>
+                    builder.addFormDataPart("Images", file.name, reqBody)
+                }
 
                 val request = Request.Builder()
                     .url("https://eliterentalsapi-czckh7fadmgbgtgf.southafricanorth-01.azurewebsites.net/api/Property")
@@ -234,21 +367,17 @@ class AddEditPropertyActivity : AppCompatActivity() {
 
                 if (response.isSuccessful) {
                     Toast.makeText(this@AddEditPropertyActivity, getString(R.string.property_saved), Toast.LENGTH_SHORT).show()
-
                     goToDashboard()
                 } else {
                     Toast.makeText(this@AddEditPropertyActivity, getString(R.string.property_error_code, response.code), Toast.LENGTH_LONG).show()
-
                 }
-
-            } catch (e: IOException) {
+            } catch (e: Exception) {
                 Toast.makeText(this@AddEditPropertyActivity, getString(R.string.upload_failed_with_message, e.message), Toast.LENGTH_LONG).show()
-
             }
         }
     }
 
-    // 🔹 Update property (PUT)
+    // Update property (PUT) - can attach new Images. Existing images remain on server unless you implement delete endpoint.
     private fun updateProperty(propertyId: Int, property: Property) {
         lifecycleScope.launch {
             try {
@@ -267,9 +396,11 @@ class AddEditPropertyActivity : AppCompatActivity() {
                     .addFormDataPart("petFriendly", property.petFriendly.toString())
                     .addFormDataPart("status", property.status)
 
-                selectedImageFile?.let {
-                    val imageRequestBody = it.asRequestBody("image/jpeg".toMediaTypeOrNull())
-                    builder.addFormDataPart("image", it.name, imageRequestBody)
+                // Add new images (server appends)
+                selectedImageFiles.forEach { file ->
+                    val mime = contentResolver.getType(Uri.fromFile(file)) ?: "image/jpeg"
+                    val reqBody = file.asRequestBody(mime.toMediaTypeOrNull())
+                    builder.addFormDataPart("Images", file.name, reqBody)
                 }
 
                 val request = Request.Builder()
@@ -282,17 +413,57 @@ class AddEditPropertyActivity : AppCompatActivity() {
 
                 if (response.isSuccessful) {
                     Toast.makeText(this@AddEditPropertyActivity, getString(R.string.property_updated), Toast.LENGTH_SHORT).show()
-
                     goToDashboard()
                 } else {
                     Toast.makeText(this@AddEditPropertyActivity, getString(R.string.property_error_code, response.code), Toast.LENGTH_LONG).show()
-
                 }
-
-            } catch (e: IOException) {
+            } catch (e: Exception) {
                 Toast.makeText(this@AddEditPropertyActivity, getString(R.string.update_failed_with_message, e.message), Toast.LENGTH_LONG).show()
-
             }
         }
     }
+
+    /* --------------------------
+       RecyclerView adapter for image previews
+       - Shows local images (selectedImageUris) with a remove button
+       - Shows existing remote URLs (readonly remove with warning)
+       -------------------------- */
+    private class SelectedImageAdapter(
+        private val ctx: Context,
+        private val selectedUris: List<Uri>,
+        private val existingUrls: List<String>,
+        private val onRemoveLocal: (Int) -> Unit,
+        private val onRemoveExisting: (Int) -> Unit
+    ) : RecyclerView.Adapter<SelectedImageAdapter.ImageVH>() {
+
+        override fun getItemCount(): Int = selectedUris.size + existingUrls.size
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageVH {
+            val v = LayoutInflater.from(parent.context)
+                .inflate(R.layout.item_selected_image, parent, false)
+            return ImageVH(v)
+        }
+
+        override fun onBindViewHolder(holder: ImageVH, position: Int) {
+            if (position < selectedUris.size) {
+                val uri = selectedUris[position]
+                holder.removeBtn.visibility = View.VISIBLE
+                holder.removeBtn.setOnClickListener { onRemoveLocal(position) }
+                Glide.with(ctx).load(uri).centerCrop().into(holder.iv)
+            } else {
+                val idx = position - selectedUris.size
+                val url = existingUrls[idx]
+                holder.removeBtn.visibility = View.VISIBLE
+                holder.removeBtn.setOnClickListener { onRemoveExisting(idx) }
+                Glide.with(ctx).load(url).centerCrop().into(holder.iv)
+            }
+        }
+
+        class ImageVH(view: View) : RecyclerView.ViewHolder(view) {
+            val iv: ImageView = view.findViewById(R.id.imgSelected)
+            val removeBtn: TextView = view.findViewById(R.id.btnRemove)
+        }
+    }
+
+
 }
