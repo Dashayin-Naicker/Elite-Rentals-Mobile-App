@@ -46,7 +46,7 @@ class MainPmActivity : AppCompatActivity() {
             startActivity(Intent(this, AssignLeaseActivity::class.java))
         }
         findViewById<ImageView>(R.id.navAssignMaintenance)?.setOnClickListener {
-            startActivity(Intent(this, CaretakerTrackMaintenanceActivity::class.java))
+            startActivity(Intent(this, PropertyManagerMaintenanceActivity::class.java))
         }
         findViewById<ImageView>(R.id.navRegisterTenant)?.setOnClickListener {
             startActivity(Intent(this, RegisterTenantActivity::class.java))

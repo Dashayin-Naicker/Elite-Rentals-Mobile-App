@@ -259,4 +259,23 @@ interface ApiService {
         @Body body: MessageDto
     ): Call<MessageDto>
 
+    @GET("api/maintenance")
+    suspend fun getAllMaintenanceRequests(
+        @Header("Authorization") auth: String
+    ): Response<List<Maintenance>>
+
+    @GET("api/users/caretakers")
+    suspend fun getCaretakers(
+        @Header("Authorization") auth: String
+    ): Response<List<UserDto>>
+
+    @PUT("api/maintenance/{id}/assign-caretaker")
+    suspend fun assignCaretaker(
+        @Header("Authorization") auth: String,
+        @Path("id") maintenanceId: Int,
+        @Body dto: AssignCaretakerDto
+    ): Response<Unit>
+
+
+
 }

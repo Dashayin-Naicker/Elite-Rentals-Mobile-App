@@ -42,7 +42,7 @@ class DashboardFragment : Fragment() {
         }
 
         cardAssignMaintenance.setOnClickListener {
-            startActivity(Intent(requireContext(), CaretakerTrackMaintenanceActivity::class.java))
+            startActivity(Intent(requireContext(), PropertyManagerMaintenanceActivity::class.java))
         }
 
         cardRegisterTenant.setOnClickListener {
