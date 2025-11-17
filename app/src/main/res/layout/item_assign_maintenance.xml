@@ -1,72 +1,109 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="12dp"
-    android:background="@drawable/card_bg">
+    android:padding="20dp"
+    android:background="@drawable/card_bg"
+    android:elevation="6dp"
+    android:clipToPadding="false">
 
+    <!-- Property Header -->
     <TextView
         android:id="@+id/tvProperty"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Property #"
+        android:text="🏠 Property #"
         android:textStyle="bold"
-        android:textSize="16sp"/>
+        android:textSize="20sp"
+        android:textColor="@color/primaryText"
+        android:fontFamily="sans-serif-medium"
+        android:letterSpacing="0.02"
+        android:paddingBottom="6dp"/>
 
+    <!-- Issue Description -->
     <TextView
         android:id="@+id/tvIssue"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Issue description"
-        android:layout_marginTop="4dp"/>
+        android:text="⚠️ Issue description"
+        android:textSize="16sp"
+        android:textColor="@color/secondaryText"
+        android:lineSpacingExtra="3dp"
+        android:layout_marginTop="8dp"/>
 
+    <!-- Reported By -->
     <TextView
         android:id="@+id/tvReportedBy"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Reported by Tenant #"
-        android:layout_marginTop="4dp"/>
+        android:text="👤 Reported by Tenant #"
+        android:textSize="15sp"
+        android:textColor="@color/secondaryText"
+        android:layout_marginTop="6dp"/>
 
-    <!-- Assign Caretaker Spinner -->
+    <!-- Divider -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/divider"
+        android:layout_marginTop="14dp"
+        android:layout_marginBottom="14dp"/>
+
+    <!-- Assign Caretaker -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginTop="8dp">
+        android:gravity="center_vertical">
 
         <Spinner
             android:id="@+id/spinnerCaretaker"
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:background="@drawable/spinner_bg"
+            android:padding="8dp"/>
 
         <Button
             android:id="@+id/btnAssign"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Assign"/>
+            android:text="➕ Assign"
+            android:backgroundTint="@color/primaryButton"
+            android:textColor="@android:color/white"
+            android:layout_marginStart="10dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:stateListAnimator="@animator/button_elevate"/>
     </LinearLayout>
 
-    <!-- Update Status Spinner -->
+    <!-- Update Status -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginTop="8dp">
+        android:gravity="center_vertical"
+        android:layout_marginTop="12dp">
 
         <Spinner
             android:id="@+id/spinnerStatus"
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:background="@drawable/spinner_bg"
+            android:padding="8dp"/>
 
         <Button
             android:id="@+id/btnUpdateStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Update"/>
+            android:text="🔄 Update"
+            android:backgroundTint="@color/secondaryButton"
+            android:textColor="@android:color/white"
+            android:layout_marginStart="10dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:stateListAnimator="@animator/button_elevate"/>
     </LinearLayout>
-
 </LinearLayout>

@@ -2,4 +2,14 @@
 <resources>
     <!-- Good default for phones (~0.75 of 360dp) -->
     <dimen name="chat_bubble_max_width">280dp</dimen>
+
+        <dimen name="card_radius">12dp</dimen>
+        <dimen name="card_padding">16dp</dimen>
+
+        <dimen name="spinner_radius">8dp</dimen>
+        <dimen name="spinner_padding_h">8dp</dimen>
+        <dimen name="spinner_padding_v">8dp</dimen>
+
+        <dimen name="button_radius">10dp</dimen>
+
 </resources>

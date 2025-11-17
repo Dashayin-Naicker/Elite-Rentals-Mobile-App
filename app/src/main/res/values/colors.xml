@@ -44,6 +44,33 @@
     <color name="badge_info">#0d6efd</color>
     <color name="badge_gray">#6c757d</color>
 
+    <color name="cardSurface">#FFFFFF</color>
+    <color name="divider">#E0E0E0</color>
+    <color name="primaryButton">#1976D2</color>
+    <color name="secondaryButton">#388E3C</color>
+    <color name="spinnerOutline">#BDBDBD</color>
+
+
+        <color name="rippleColor">#1F000000</color>    <!-- 12% black for subtle ripple -->
+
+
+    <!-- Brand -->
+    <color name="brandPrimary">#2979FF</color>
+    <color name="brandPrimaryPressed">#1F5FEA</color>         <!-- darker -->
+    <color name="brandPrimaryDisabled">#99AEDD</color>        <!-- 60% tint -->
+
+    <!-- Secondary accent (harmonized) -->
+    <color name="brandSecondary">#00C853</color>              <!-- green accent -->
+    <color name="brandSecondaryPressed">#00B34B</color>
+    <color name="brandSecondaryDisabled">#99DFAF</color>
+
+    <!-- Divider & tint -->
+    <color name="brandDivider">#332979FF</color>              <!-- 20% brand opacity -->
+    <color name="brandTintLight">#0D2979FF</color>            <!-- 5% brand overlay -->
+
+
+
+
 
 </resources>
 

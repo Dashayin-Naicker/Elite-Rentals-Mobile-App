@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/scroll"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F8F9FA"
+    android:background="@drawable/gradient_background"
     android:fillViewport="true">
 
     <LinearLayout
@@ -12,119 +13,165 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <!-- Header Row -->
+        <!-- Header Row - BLUE THEME -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:paddingBottom="8dp">
+            android:paddingBottom="8dp"
+            android:background="@drawable/header_gradient"
+            android:padding="12dp"
+            android:elevation="8dp"
+            android:outlineProvider="bounds">
 
             <TextView
                 android:id="@+id/tvTitle"
                 android:text="Admin Dashboard"
-                android:textSize="24sp"
+                android:textSize="28sp"
                 android:textStyle="bold"
-                android:textColor="#1A237E"
+                android:textColor="#FFFFFF"
                 android:fontFamily="sans-serif-medium"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"/>
+                android:layout_weight="1"
+                android:shadowColor="#80000000"
+                android:shadowDx="2"
+                android:shadowDy="2"
+                android:shadowRadius="4"/>
 
             <ImageView
                 android:id="@+id/notificationIcon"
-                android:layout_width="28dp"
-                android:layout_height="28dp"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
                 android:src="@drawable/notifications"
                 android:contentDescription="@string/notifications"
-                android:layout_marginEnd="12dp" />
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/circle_pulse"/>
 
             <ImageView
                 android:id="@+id/settingsIcon"
-                android:layout_width="28dp"
-                android:layout_height="28dp"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
                 android:src="@drawable/settings"
-                android:contentDescription="@string/settings" />
+                android:contentDescription="@string/settings"
+                android:background="@drawable/circle_ripple"/>
         </LinearLayout>
 
-        <!-- KPI CARDS -->
+        <!-- KPI CARDS - 2x2 LAYOUT -->
         <LinearLayout
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="20dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:weightSum="4"
-            android:gravity="center"
-            android:padding="4dp">
+            android:orientation="vertical"
+            android:padding="8dp">
 
-            <include
-                layout="@layout/kpi_card"
-                android:id="@+id/cardTotalLeases"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="110dp"
-                android:layout_marginEnd="6dp"/>
+            <!-- First Row: 2 Cards -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="2"
+                android:layout_marginBottom="12dp">
 
-            <include
-                layout="@layout/kpi_card"
-                android:id="@+id/cardTotalMaintenance"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="110dp"
-                android:layout_marginEnd="6dp"/>
+                <include
+                    layout="@layout/kpi_card"
+                    android:id="@+id/cardTotalLeases"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="130dp"
+                    android:layout_marginEnd="8dp"
+                    android:background="@drawable/card_gradient_1"
+                    android:elevation="12dp"
+                    android:rotation="0.5"/>
 
-            <include
-                layout="@layout/kpi_card"
-                android:id="@+id/cardTotalPayments"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="110dp"
-                android:layout_marginEnd="6dp"/>
+                <include
+                    layout="@layout/kpi_card"
+                    android:id="@+id/cardTotalMaintenance"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="130dp"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/card_gradient_2"
+                    android:elevation="12dp"
+                    android:rotation="-0.5"/>
+            </LinearLayout>
 
-            <include
-                layout="@layout/kpi_card"
-                android:id="@+id/cardOccupancy"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="110dp"/>
+            <!-- Second Row: 2 Cards -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="2">
+
+                <include
+                    layout="@layout/kpi_card"
+                    android:id="@+id/cardTotalPayments"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="130dp"
+                    android:layout_marginEnd="8dp"
+                    android:background="@drawable/card_gradient_3"
+                    android:elevation="12dp"
+                    android:rotation="0.3"/>
+
+                <include
+                    layout="@layout/kpi_card"
+                    android:id="@+id/cardOccupancy"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="130dp"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/card_gradient_4"
+                    android:elevation="12dp"
+                    android:rotation="-0.3"/>
+            </LinearLayout>
         </LinearLayout>
-
-        <!-- Export Button -->
+        <!-- Rest of your layout remains exactly the same -->
+        <!-- Export Button - BLUE THEME -->
         <Button
             android:id="@+id/btnExportPdf"
-            android:text="Export PDF Report"
-            android:backgroundTint="#1A237E"
+            android:text="🚀 Export PDF Report ✨"
+            android:background="@drawable/button_gradient"
             android:textColor="#FFFFFF"
             android:fontFamily="sans-serif-medium"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="18dp"
-            android:paddingVertical="12dp"
-            android:elevation="4dp" />
+            android:layout_marginTop="24dp"
+            android:paddingVertical="16dp"
+            android:elevation="16dp"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.02"/>
 
-        <!-- Alerts Header -->
+        <!-- Alerts Header - BLUE THEME -->
         <TextView
             android:id="@+id/tvAlertsHeader"
-            android:text="Alerts"
+            android:text="🔔 Alerts 🚨"
             android:textStyle="bold"
-            android:textColor="#1A237E"
-            android:textSize="18sp"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
             android:fontFamily="sans-serif-medium"
-            android:padding="8dp"
-            android:layout_marginTop="24dp"
+            android:padding="16dp"
+            android:layout_marginTop="28dp"
             android:drawableEnd="@android:drawable/arrow_down_float"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:background="@drawable/section_header_gradient"
+            android:elevation="4dp"
+            android:gravity="center_vertical"/>
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#D1D1D1"/>
+            android:layout_height="2dp"
+            android:background="@drawable/divider_gradient"/>
 
         <LinearLayout
             android:id="@+id/alertsSection"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="6dp">
+            android:paddingTop="8dp"
+            android:background="@drawable/section_background"
+            android:padding="8dp"
+            android:elevation="6dp">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvAlerts"
@@ -132,47 +179,57 @@
                 android:layout_height="wrap_content"/>
         </LinearLayout>
 
-        <!-- Recent Items Header -->
+        <!-- Recent Items Header - BLUE THEME -->
         <TextView
             android:id="@+id/tvRecentHeader"
-            android:text="Recent Items"
+            android:text="📊 Recent Items 🆕"
             android:textStyle="bold"
-            android:textColor="#1A237E"
-            android:textSize="18sp"
-            android:padding="8dp"
-            android:layout_marginTop="24dp"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            android:padding="16dp"
+            android:layout_marginTop="28dp"
             android:drawableEnd="@android:drawable/arrow_down_float"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:background="@drawable/section_header_gradient"
+            android:elevation="4dp"
+            android:gravity="center_vertical"/>
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#D1D1D1"/>
+            android:layout_height="2dp"
+            android:background="@drawable/divider_gradient"/>
 
-        <!-- RECENT ITEMS SECTIONS -->
+        <!-- RECENT ITEMS SECTIONS - BLUE THEME -->
         <LinearLayout
             android:id="@+id/recentSection"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="8dp">
+            android:paddingTop="12dp"
+            android:background="@drawable/section_background"
+            android:padding="12dp"
+            android:elevation="6dp">
 
             <!-- LEASES -->
             <TextView
                 android:id="@+id/tvLeasesHeader"
-                android:text="Leases"
+                android:text="📑 Leases"
                 android:textStyle="bold"
-                android:textColor="#424242"
-                android:padding="8dp"
+                android:textColor="#2979FF"
+                android:padding="12dp"
                 android:drawableEnd="@android:drawable/arrow_down_float"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:background="@drawable/subheader_gradient_blue"
+                android:elevation="2dp"/>
 
             <LinearLayout
                 android:id="@+id/leasesSection"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:background="@drawable/item_background_blue">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvLeases"
@@ -184,18 +241,22 @@
             <!-- MAINTENANCE -->
             <TextView
                 android:id="@+id/tvMaintenanceHeader"
-                android:text="Maintenance"
+                android:text="🔧 Maintenance"
                 android:textStyle="bold"
-                android:textColor="#424242"
-                android:padding="8dp"
+                android:textColor="#2979FF"
+                android:padding="12dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:drawableEnd="@android:drawable/arrow_down_float"/>
+                android:drawableEnd="@android:drawable/arrow_down_float"
+                android:background="@drawable/subheader_gradient_blue_light"
+                android:elevation="2dp"/>
 
             <LinearLayout
                 android:id="@+id/maintenanceSection"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:background="@drawable/item_background_blue_light">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvMaintenance"
@@ -207,18 +268,22 @@
             <!-- PAYMENTS -->
             <TextView
                 android:id="@+id/tvPaymentsHeader"
-                android:text="Payments"
+                android:text="💰 Payments"
                 android:textStyle="bold"
-                android:textColor="#424242"
-                android:padding="8dp"
+                android:textColor="#2979FF"
+                android:padding="12dp"
                 android:drawableEnd="@android:drawable/arrow_down_float"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:background="@drawable/subheader_gradient_blue_dark"
+                android:elevation="2dp"/>
 
             <LinearLayout
                 android:id="@+id/paymentsSection"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:background="@drawable/item_background_dark">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvPayments"
@@ -228,19 +293,25 @@
             </LinearLayout>
         </LinearLayout>
 
-        <!-- Charts -->
+        <!-- Charts - BLUE THEME -->
         <com.github.mikephil.charting.charts.LineChart
             android:id="@+id/chartPaymentTrends"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:layout_marginTop="14dp"
-            android:layout_marginBottom="16dp" />
+            android:layout_height="320dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/chart_background"
+            android:elevation="12dp"
+            android:padding="8dp"/>
 
         <com.github.mikephil.charting.charts.BarChart
             android:id="@+id/chartLeaseExpiry"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"/>
+            android:layout_height="320dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/chart_background"
+            android:elevation="12dp"
+            android:padding="8dp"/>
     </LinearLayout>
 </ScrollView>

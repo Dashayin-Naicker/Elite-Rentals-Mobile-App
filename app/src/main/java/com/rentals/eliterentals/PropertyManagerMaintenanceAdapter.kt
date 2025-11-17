@@ -1,5 +1,6 @@
 package com.rentals.eliterentals
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,10 +30,9 @@ class PropertyManagerMaintenanceAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MaintenanceViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_assign_maintenance, parent, false) // NEW layout
+            .inflate(R.layout.item_assign_maintenance, parent, false)
         return MaintenanceViewHolder(view)
     }
-
 
     override fun getItemCount() = items.size
 
@@ -46,7 +46,6 @@ class PropertyManagerMaintenanceAdapter(
 
         // ---------- Caretaker Spinner ----------
         val caretakersOnly = caretakers.filter { it.role?.equals("Caretaker", ignoreCase = true) == true }
-
         val caretakerNames = if (caretakersOnly.isNotEmpty()) {
             caretakersOnly.map { "${it.firstName ?: ""} ${it.lastName ?: ""}" }
         } else {
@@ -56,7 +55,6 @@ class PropertyManagerMaintenanceAdapter(
         val adapterCaretaker = ArrayAdapter(context, android.R.layout.simple_spinner_item, caretakerNames)
         adapterCaretaker.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         holder.spinnerCaretaker.adapter = adapterCaretaker
-
         holder.spinnerCaretaker.tag = caretakersOnly
 
         item.assignedCaretakerId?.let { assignedId ->
@@ -64,8 +62,6 @@ class PropertyManagerMaintenanceAdapter(
             if (index >= 0) holder.spinnerCaretaker.setSelection(index)
         }
 
-
-        // Assign button click
         holder.btnAssign.setOnClickListener {
             val filteredList = holder.spinnerCaretaker.tag as? List<UserDto> ?: emptyList()
             val selectedIndex = holder.spinnerCaretaker.selectedItemPosition
@@ -77,7 +73,21 @@ class PropertyManagerMaintenanceAdapter(
 
         // ---------- Status Spinner ----------
         val statuses = listOf("Pending", "In Progress", "Resolved")
-        val statusAdapter = ArrayAdapter(context, android.R.layout.simple_spinner_item, statuses)
+        val statusAdapter = object : ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, statuses) {
+            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+                val view = super.getView(position, convertView, parent) as TextView
+                view.text = statuses[position]
+                view.setTextColor(getStatusColor(statuses[position]))
+                return view
+            }
+
+            override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
+                val view = super.getDropDownView(position, convertView, parent) as TextView
+                view.text = statuses[position]
+                view.setTextColor(getStatusColor(statuses[position]))
+                return view
+            }
+        }
         statusAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         holder.spinnerStatus.adapter = statusAdapter
         holder.spinnerStatus.setSelection(statuses.indexOf(item.status))
@@ -88,5 +98,12 @@ class PropertyManagerMaintenanceAdapter(
         }
     }
 
-
+    private fun getStatusColor(status: String): Int {
+        return when (status) {
+            "Resolved" -> Color.parseColor("#4CAF50") // green
+            "In Progress" -> Color.parseColor("#FF9800") // orange
+            "Pending" -> Color.parseColor("#F44336") // red
+            else -> Color.BLACK
+        }
+    }
 }
