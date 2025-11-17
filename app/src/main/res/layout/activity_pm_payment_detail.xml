@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#F8F8F8">
+
+    <!-- Header with back button + title -->
+    <LinearLayout
+        android:id="@+id/layoutHeaderDetail"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="12dp"
+        android:paddingEnd="16dp"
+        android:background="#FFFFFF">
+
+        <ImageView
+            android:id="@+id/btnBackDetail"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@android:drawable/ic_menu_revert"
+            android:contentDescription="Back"
+            android:padding="4dp" />
+
+        <TextView
+            android:id="@+id/txtTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:text="Payment Details"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="#222222" />
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/txtTenant"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Tenant #123"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:textColor="#222222" />
+
+            <TextView
+                android:id="@+id/txtAmount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="R 0.00"
+                android:textSize="16sp"
+                android:textColor="#222222"
+                android:paddingTop="4dp" />
+
+            <TextView
+                android:id="@+id/txtDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="2025-11-13"
+                android:textSize="14sp"
+                android:textColor="#555555"
+                android:paddingTop="4dp" />
+
+            <TextView
+                android:id="@+id/txtCurrentStatus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Paid"
+                android:textSize="14sp"
+                android:textColor="#555555"
+                android:paddingTop="4dp" />
+
+            <TextView
+                android:id="@+id/txtMethod"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Method: EFT"
+                android:textSize="14sp"
+                android:textColor="#555555"
+                android:paddingTop="4dp" />
+
+            <TextView
+                android:id="@+id/txtProofType"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Proof type: Image"
+                android:textSize="14sp"
+                android:textColor="#555555"
+                android:paddingTop="4dp"
+                android:paddingBottom="12dp" />
+
+            <TextView
+                android:id="@+id/txtError"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Error"
+                android:textSize="14sp"
+                android:textColor="#B00020"
+                android:visibility="gone"
+                android:paddingBottom="8dp" />
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:layout_marginBottom="12dp" />
+
+            <Button
+                android:id="@+id/btnViewProof"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="View Proof"
+                android:textAllCaps="false"
+                android:textColor="@android:color/white"
+                android:backgroundTint="#03A9F4"
+                android:layout_marginBottom="12dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btnUpdatePaid"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Confirm (Paid)"
+                    android:textAllCaps="false"
+                    android:textColor="@android:color/white"
+                    android:backgroundTint="#4CAF50" />
+
+                <Button
+                    android:id="@+id/btnUpdatePending"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    android:text="Revoke (Revoked)"
+                    android:textAllCaps="false"
+                    android:textColor="@android:color/white"
+                    android:backgroundTint="#F44336" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

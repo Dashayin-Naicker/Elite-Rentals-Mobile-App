@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
-import android.widget.ImageView
 
 class DashboardFragment : Fragment() {
 
@@ -27,6 +26,9 @@ class DashboardFragment : Fragment() {
         val cardGenerateReport = view.findViewById<CardView>(R.id.cardReports)
         val cardSettings = view.findViewById<CardView>(R.id.cardSettings)
 
+        // 🔹 NEW: payments card
+        val cardViewPayments = view.findViewById<CardView>(R.id.cardViewPayments)
+
         // ✅ Switch tabs inside MainPmActivity (host) instead of trying to start a Fragment as an Activity
         cardManageProperties.setOnClickListener {
             startActivity(MainPmActivity.createIntent(requireContext(), MainPmActivity.Tab.PROPERTIES))
@@ -42,7 +44,7 @@ class DashboardFragment : Fragment() {
         }
 
         cardAssignMaintenance.setOnClickListener {
-            startActivity(Intent(requireContext(), PropertyManagerMaintenanceActivity::class.java))
+            startActivity(Intent(requireContext(), CaretakerTrackMaintenanceActivity::class.java))
         }
 
         cardRegisterTenant.setOnClickListener {
@@ -57,9 +59,9 @@ class DashboardFragment : Fragment() {
             Toast.makeText(requireContext(), "Coming Soon", Toast.LENGTH_SHORT).show()
         }
 
-        val notificationIcon = view.findViewById<ImageView>(R.id.notificationIcon)
-        notificationIcon.setOnClickListener {
-            startActivity(Intent(requireContext(), MessagesActivity::class.java))
+        // ✅ View Payments → open PM payments list
+        cardViewPayments.setOnClickListener {
+            startActivity(Intent(requireContext(), PmPaymentsActivity::class.java))
         }
 
         return view

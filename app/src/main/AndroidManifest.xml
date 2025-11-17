@@ -58,6 +58,14 @@
             <meta-data android:name="android.support.PARENT_ACTIVITY" android:value=".MessagesActivity"/>
         </activity>
 
+        <activity android:name=".PmPaymentsActivity" />
+
+        <activity android:name=".PmPaymentDetailActivity"
+            android:parentActivityName=".PmPaymentsActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".PmPaymentsActivity" />
+        </activity>
 
 
         <!-- Tenant dashboard -->

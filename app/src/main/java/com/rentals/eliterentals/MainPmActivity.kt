@@ -54,6 +54,8 @@ class MainPmActivity : AppCompatActivity() {
         findViewById<ImageView>(R.id.navGenerateReport)?.setOnClickListener {
             Toast.makeText(this, "Coming Soon", Toast.LENGTH_SHORT).show()
         }
+
+
     }
 
     override fun onNewIntent(intent: Intent) {
