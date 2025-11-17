@@ -74,6 +74,10 @@ class AdminDashboardActivity : AppCompatActivity() {
             generateDashboardPdf()
         }
 
+        findViewById<Button>(R.id.btnSystemUsers).setOnClickListener {
+            startActivity(Intent(this@AdminDashboardActivity, SystemUsersActivity::class.java))
+        }
+
         findViewById<ImageView>(R.id.settingsIcon).setOnClickListener {
             startActivity(Intent(this, SettingsActivity::class.java))
         }

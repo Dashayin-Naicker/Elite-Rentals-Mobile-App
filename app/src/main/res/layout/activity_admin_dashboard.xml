@@ -141,6 +141,22 @@
             android:textStyle="bold"
             android:letterSpacing="0.02"/>
 
+        <!-- System Users -->
+        <Button
+            android:id="@+id/btnSystemUsers"
+            android:text="System Users"
+            android:background="@drawable/button_gradient"
+            android:textColor="#FFFFFF"
+            android:fontFamily="sans-serif-medium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:paddingVertical="14dp"
+            android:elevation="12dp"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.02"/>
+
         <!-- Alerts Header - BLUE THEME -->
         <TextView
             android:id="@+id/tvAlertsHeader"

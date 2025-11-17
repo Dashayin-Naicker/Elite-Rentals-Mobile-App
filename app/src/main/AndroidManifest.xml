@@ -87,11 +87,20 @@
         <activity android:name=".AnnouncementsActivity" />
         <activity android:name=".AdminDashboardActivity" />
         <activity android:name=".PropertyManagerMaintenanceActivity" />
+
         <activity android:name=".ViewPhotoActivity"
             android:screenOrientation="sensorPortrait"
             android:exported="true" />
 
+        <activity
+            android:name=".SystemUsersActivity"
+            android:exported="false"
+            android:screenOrientation="sensorPortrait" />
 
+        <activity
+            android:name=".RegisterUserActivity"
+            android:exported="false"
+            android:screenOrientation="sensorPortrait" />
 
 
 
