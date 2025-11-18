@@ -257,6 +257,82 @@
 
         <string name="placeholder_caretaker_name">Sawubona, [Igama Lomlondolozi]</string>
 
+    <string name="total_leases">Izikweletu Eziphelele</string>
+    <string name="open_maintenance">Ukulungiswa Okukhona</string>
+    <string name="overdue_payments">Izinkokhelo Eziphelelwe Isikhathi</string>
+    <string name="properties_occupied">Izakhiwo Ezihlala Abahlali</string>
+
+    <string name="dashboard_title">I-Dashboard Yomphathi</string>
+    <string name="kpi_summary">Isifinyezo se-KPI</string>
+    <string name="alerts">Izexwayiso</string>
+    <string name="no_alerts">Azikho izexwayiso</string>
+    <string name="charts">Amashadi</string>
+    <string name="payments_collected_trend">Umkhuba Wezinkokhelo Eziqoqiwe</string>
+    <string name="expiring_leases_trend">Umkhuba Wezikweletu Ezizophela</string>
+    <string name="generated_by">Kwakhiwe uhlelo lokusebenza lwe-Elite Rentals</string>
+    <string name="pdf_no_viewer">Ayikho i-PDF viewer etholakalayo</string>
+    <string name="system_users">Abasebenzisi Besistimu</string>
+
+    <string name="admin_dashboard">I-Dashboard Yomphathi</string>
+
+    <string name="export_pdf_report">🚀 Thumela Umbiko we-PDF ✨</string>
+
+    <string name="alerts_header">🔔 Izexwayiso 🚨</string>
+    <string name="recent_items_header">📊 Izinto Zakamuva 🆕</string>
+    <string name="leases_header">📑 Izivumelwano Zokuqasha</string>
+    <string name="maintenance_header">🔧 Ukugcinwa</string>
+    <string name="payments_header">💰 Izinkokhelo</string>
+
+
+
+    <string name="pdf_dashboard_report_title">Umbiko weDashboard we-Admin we-Elite Rentals</string>
+    <string name="pdf_date">Usuku: %1$s</string>
+
+    <string name="total_leases_colon">• Izivumelwano Zokuqasha: %1$s</string>
+    <string name="open_maintenance_colon">• Ukugcinwa Okungavuliwe: %1$s</string>
+    <string name="overdue_payments_colon">• Izinkokhelo Ezidlulelwe Isikhathi: %1$s</string>
+    <string name="properties_occupied_colon">• Izakhiwo Ezitholakele: %1$s</string>
+
+
+    <string name="charts_section">Amachati:</string>
+    <string name="payments_trends_note">• Izinkokhelo Eziqoqiwe: Bheka idashboard ukuthola imikhuba ebonakalayo</string>
+    <string name="leases_expiry_note">• Izivumelwano Zokuqasha Ezizophela: Bheka idashboard ukuthola imikhuba ebonakalayo</string>
+    <string name="pdf_saved_path">Umbiko we-PDF ugciniwe ku %1$s</string>
+    <string name="no_pdf_viewer">Akukho mbonisi we-PDF otholakalayo</string>
+
+    <string name="hi_manager">Sawubona, Mphathi!</string>
+    <string name="assign_caretakers">Qoka Abanakekeli</string>
+    <string name="manage_properties">Phatha Izakhiwo</string>
+    <string name="manage_tenants">Phatha Abaqashi</string>
+    <string name="assign_leases">Qoka Izivumelwano</string>
+    <string name="assign_maintenance">Qoka Ukugcinwa</string>
+    <string name="register_tenant">Bhalisa Umqashi</string>
+
+    <string name="generate_report">Dala Umbiko</string>
+    <string name="view_payments">Buka Izinkokhelo</string>
+    <string name="toast_coming_soon">Kuze Kufike</string>
+
+    <string name="manage_properties_desc">Isithonjana Sokuphatha Izakhiwo</string>
+
+    <string name="manage_tenants_desc">Isithonjana Sokuphatha Abahlali</string>
+
+    <string name="assign_leases_desc">Isithonjana Sokunikezela Izivumelwano</string>
+
+    <string name="assign_maintenance_desc">Isithonjana Sokunikezela Ukulungisa</string>
+
+    <string name="register_tenant_desc">Isithonjana Sokubhalisa Umlali</string>
+
+    <string name="settings_desc">Isithonjana Sezilungiselelo</string>
+
+    <string name="generate_report_desc">Isithonjana Sokudala Umbiko</string>
+
+    <string name="view_payments_desc">Isithonjana Sokubuka Izinkokhelo</string>
+    <string name="logo_desc">Uphawu Lohlelo</string>
+    <string name="notifications_desc">Isithonjana Sezaziso</string>
+    <string name="requests_icon_desc">Isithonjana Sezicelo</string>
+    <string name="coming_soon">Kuzofika Maduzane</string>
+
+
 
 
 

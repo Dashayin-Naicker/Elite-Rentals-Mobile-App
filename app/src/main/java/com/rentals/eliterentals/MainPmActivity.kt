@@ -8,7 +8,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 
-class MainPmActivity : AppCompatActivity() {
+class MainPmActivity : BaseActivity() {
 
     // ✅ Enum is defined on the class, not inside Companion
     enum class Tab { DASHBOARD, PROPERTIES, TENANTS }

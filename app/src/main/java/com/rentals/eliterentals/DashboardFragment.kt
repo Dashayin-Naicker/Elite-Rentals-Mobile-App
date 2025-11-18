@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
-
+import android.widget.ImageView
 class DashboardFragment : Fragment() {
 
     override fun onCreateView(
@@ -25,11 +25,9 @@ class DashboardFragment : Fragment() {
         val cardRegisterTenant = view.findViewById<CardView>(R.id.cardRegisterTenant)
         val cardGenerateReport = view.findViewById<CardView>(R.id.cardReports)
         val cardSettings = view.findViewById<CardView>(R.id.cardSettings)
-
-        // 🔹 NEW: payments card
         val cardViewPayments = view.findViewById<CardView>(R.id.cardViewPayments)
 
-        // ✅ Switch tabs inside MainPmActivity (host) instead of trying to start a Fragment as an Activity
+        // 🔹 Click listeners
         cardManageProperties.setOnClickListener {
             startActivity(MainPmActivity.createIntent(requireContext(), MainPmActivity.Tab.PROPERTIES))
         }
@@ -38,7 +36,6 @@ class DashboardFragment : Fragment() {
             startActivity(MainPmActivity.createIntent(requireContext(), MainPmActivity.Tab.TENANTS))
         }
 
-        // Real activities:
         cardViewLeases.setOnClickListener {
             startActivity(Intent(requireContext(), AssignLeaseActivity::class.java))
         }
@@ -56,14 +53,17 @@ class DashboardFragment : Fragment() {
         }
 
         cardGenerateReport.setOnClickListener {
-            Toast.makeText(requireContext(), "Coming Soon", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), getString(R.string.coming_soon), Toast.LENGTH_SHORT).show()
         }
 
-        // ✅ View Payments → open PM payments list
         cardViewPayments.setOnClickListener {
             startActivity(Intent(requireContext(), PmPaymentsActivity::class.java))
         }
 
+        val notificationIcon = view.findViewById<ImageView>(R.id.notificationIcon)
+        notificationIcon.setOnClickListener {
+            startActivity(Intent(requireContext(), MessagesActivity::class.java))
+        }
         return view
     }
 }

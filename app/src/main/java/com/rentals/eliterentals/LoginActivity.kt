@@ -185,8 +185,6 @@ class LoginActivity : BaseActivity() {
                     super.onAuthenticationSucceeded(result)
                     Toast.makeText(this@LoginActivity, getString(R.string.biometric_success), Toast.LENGTH_SHORT).show()
 
-                    val tenantName = biometricPrefs.getString("tenantName", "Tenant") ?: "Tenant"
-
                     val appPrefs = getSharedPreferences("app", MODE_PRIVATE)
                     val lang = appPrefs.getString("language", "en")
                     val theme = appPrefs.getString("theme", "light")
@@ -198,15 +196,17 @@ class LoginActivity : BaseActivity() {
                         .putInt("userId", userId)
                         .putString("jwt", jwt)
                         .putString("role", role)
-                        .putString("tenantName", tenantName)
                         .apply()
 
+                    // Navigate to the correct dashboard based on role
                     val intent = when (role) {
                         "Tenant" -> Intent(this@LoginActivity, TenantDashboardActivity::class.java)
                         "Caretaker" -> Intent(this@LoginActivity, CaretakerTrackMaintenanceActivity::class.java)
                         "PropertyManager" -> Intent(this@LoginActivity, MainPmActivity::class.java)
+                        "Admin" -> Intent(this@LoginActivity, AdminDashboardActivity::class.java)
                         else -> Intent(this@LoginActivity, LoginActivity::class.java)
                     }
+
                     startActivity(intent)
                     finish()
                 }
@@ -230,6 +230,7 @@ class LoginActivity : BaseActivity() {
 
         biometricPrompt.authenticate(promptInfo)
     }
+
 
     // -------------------- Shared Login Success Handler --------------------
     private fun handleLoginSuccess(loginResponse: LoginResponse) {

@@ -68,7 +68,12 @@
     <color name="brandDivider">#332979FF</color>              <!-- 20% brand opacity -->
     <color name="brandTintLight">#0D2979FF</color>            <!-- 5% brand overlay -->
 
+    <color name="backgroundDark">#111317</color>
+    <color name="cardDark">#23262B</color>
+    <color name="textLight">#F4F6F8</color>
+    <color name="iconAccent">#90CAF9</color>
 
+    <color name="navDark">#15181D</color>
 
 
 

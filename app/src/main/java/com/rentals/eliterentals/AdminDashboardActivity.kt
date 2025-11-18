@@ -36,18 +36,15 @@ import java.io.File
 import java.io.FileOutputStream
 
 
-class AdminDashboardActivity : AppCompatActivity() {
+class AdminDashboardActivity : BaseActivity() {
 
     // KPI views
     private lateinit var kpiTotalLeasesTitle: TextView
     private lateinit var kpiTotalLeasesValue: TextView
-
     private lateinit var kpiTotalMaintenanceTitle: TextView
     private lateinit var kpiTotalMaintenanceValue: TextView
-
     private lateinit var kpiTotalPaymentsTitle: TextView
     private lateinit var kpiTotalPaymentsValue: TextView
-
     private lateinit var kpiOccupancyTitle: TextView
     private lateinit var kpiOccupancyValue: TextView
 
@@ -70,23 +67,17 @@ class AdminDashboardActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_admin_dashboard)
 
-        findViewById<Button>(R.id.btnExportPdf).setOnClickListener {
-            generateDashboardPdf()
-        }
-
+        // Buttons
+        findViewById<Button>(R.id.btnExportPdf).setOnClickListener { generateDashboardPdf() }
         findViewById<Button>(R.id.btnSystemUsers).setOnClickListener {
             startActivity(Intent(this@AdminDashboardActivity, SystemUsersActivity::class.java))
         }
-
         findViewById<ImageView>(R.id.settingsIcon).setOnClickListener {
             startActivity(Intent(this, SettingsActivity::class.java))
         }
-
         findViewById<ImageView>(R.id.notificationIcon).setOnClickListener {
             startActivity(Intent(this, MessagesActivity::class.java))
         }
-
-
 
         api = RetrofitClient.instance
 
@@ -107,10 +98,11 @@ class AdminDashboardActivity : AppCompatActivity() {
         kpiOccupancyTitle = card4.findViewById(R.id.kpiTitle)
         kpiOccupancyValue = card4.findViewById(R.id.kpiValue)
 
-        kpiTotalLeasesTitle.text = "Total Leases"
-        kpiTotalMaintenanceTitle.text = "Open Maintenance"
-        kpiTotalPaymentsTitle.text = "Overdue Payments"
-        kpiOccupancyTitle.text = "Properties Occupied"
+        // Set titles via string resources
+        kpiTotalLeasesTitle.text = getString(R.string.total_leases)
+        kpiTotalMaintenanceTitle.text = getString(R.string.open_maintenance)
+        kpiTotalPaymentsTitle.text = getString(R.string.overdue_payments)
+        kpiOccupancyTitle.text = getString(R.string.properties_occupied)
 
         // RecyclerViews
         rvAlerts = findViewById(R.id.rvAlerts)
@@ -133,14 +125,12 @@ class AdminDashboardActivity : AppCompatActivity() {
         rvPayments.adapter = paymentAdapter
         rvAlerts.adapter = alertAdapter
 
-        // --- Collapsible Item Cards ---
+        // Collapsible Items & Sections
         setupCollapsible(R.id.txtLeaseTitle, R.id.leaseDetails)
         setupCollapsible(R.id.txtMaintTitle, R.id.maintDetails)
         setupCollapsible(R.id.txtPaymentTitle, R.id.paymentDetails)
-
-        // --- Collapsible Section Headers ---
         setupCollapsible(R.id.tvAlertsHeader, R.id.alertsSection)
-        setupCollapsible(R.id.tvRecentHeader, R.id.recentSection)
+//        setupCollapsible(R.id.tvRecentHeader, R.id.recentSection)
         setupCollapsible(R.id.tvLeasesHeader, R.id.leasesSection)
         setupCollapsible(R.id.tvMaintenanceHeader, R.id.maintenanceSection)
         setupCollapsible(R.id.tvPaymentsHeader, R.id.paymentsSection)
@@ -151,83 +141,41 @@ class AdminDashboardActivity : AppCompatActivity() {
         loadDashboard()
     }
 
-
     fun generateDashboardPdf() {
-        val pdfDocument = PdfDocument()
-        val pageInfo = PdfDocument.PageInfo.Builder(595, 842, 1).create()
+        val pdfDocument = android.graphics.pdf.PdfDocument()
+        val pageInfo = android.graphics.pdf.PdfDocument.PageInfo.Builder(595, 842, 1).create()
         val page = pdfDocument.startPage(pageInfo)
         val canvas = page.canvas
-
-        val paintTitle = Paint().apply {
-            textSize = 22f
-            color = Color.BLACK
-            isFakeBoldText = true
-        }
-
-        val paintHeader = Paint().apply {
-            textSize = 16f
-            color = Color.DKGRAY
-            isFakeBoldText = true
-        }
-
-        val paintContent = Paint().apply {
+        val paint = Paint().apply {
             textSize = 14f
             color = Color.BLACK
         }
 
-        var y = 50
-
-        fun drawLine(text: String, paint: Paint = paintContent, padding: Int = 24) {
+        var y = 40
+        fun drawLine(text: String) {
             canvas.drawText(text, 40f, y.toFloat(), paint)
-            y += padding
+            y += 24
         }
 
-        fun drawDivider() {
-            val dividerPaint = Paint().apply {
-                color = Color.LTGRAY
-                strokeWidth = 2f
-            }
-            canvas.drawLine(40f, y.toFloat(), 555f, y.toFloat(), dividerPaint)
-            y += 16
+        drawLine(getString(R.string.pdf_dashboard_report_title))
+        drawLine(getString(R.string.pdf_date, SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())))
+        drawLine("")
+        drawLine(getString(R.string.kpi_summary))
+        drawLine(getString(R.string.total_leases_colon, kpiTotalLeasesValue.text))
+        drawLine(getString(R.string.open_maintenance_colon, kpiTotalMaintenanceValue.text))
+        drawLine(getString(R.string.overdue_payments_colon, kpiTotalPaymentsValue.text))
+        drawLine(getString(R.string.properties_occupied_colon, kpiOccupancyValue.text))
+        drawLine("")
+        drawLine(getString(R.string.alerts_header))
+
+        for (alert in alertAdapter.alerts) {
+            drawLine("• $alert")
         }
 
-        // --- Title ---
-        drawLine("Elite Rentals Admin Dashboard", paintTitle, 36)
-        drawLine("Date: ${SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())}", paintContent, 28)
-        drawDivider()
-
-        // --- KPI Section ---
-        drawLine("KPI Summary", paintHeader, 28)
-
-        val kpis = listOf(
-            "Total Leases" to kpiTotalLeasesValue.text,
-            "Open Maintenance" to kpiTotalMaintenanceValue.text,
-            "Overdue Payments" to kpiTotalPaymentsValue.text,
-            "Properties Occupied" to kpiOccupancyValue.text
-        )
-
-        for ((title, value) in kpis) {
-            drawLine("• $title: $value")
-        }
-        drawDivider()
-
-        // --- Alerts Section ---
-        drawLine("Alerts", paintHeader, 28)
-        if (alertAdapter.alerts.isEmpty()) {
-            drawLine("No alerts at this time.")
-        } else {
-            alertAdapter.alerts.forEach { drawLine("• $it") }
-        }
-        drawDivider()
-
-        // --- Charts Section ---
-        drawLine("Charts", paintHeader, 28)
-        drawLine("• Payments Collected: See dashboard for visual trends")
-        drawLine("• Expiring Leases: See dashboard for visual trends")
-        drawDivider()
-
-        // --- Footer ---
-        drawLine("Generated by Elite Rentals Admin App", paintContent, 28)
+        drawLine("")
+        drawLine(getString(R.string.charts_section))
+        drawLine(getString(R.string.payments_trends_note))
+        drawLine(getString(R.string.leases_expiry_note))
 
         pdfDocument.finishPage(page)
 
@@ -235,24 +183,20 @@ class AdminDashboardActivity : AppCompatActivity() {
         pdfDocument.writeTo(FileOutputStream(file))
         pdfDocument.close()
 
-        Toast.makeText(this, "PDF report saved to ${file.absolutePath}", Toast.LENGTH_LONG).show()
+        Toast.makeText(this, getString(R.string.pdf_saved_path, file.absolutePath), Toast.LENGTH_LONG).show()
 
         val uri = FileProvider.getUriForFile(this, "${packageName}.provider", file)
-
         val intent = Intent(Intent.ACTION_VIEW).apply {
             setDataAndType(uri, "application/pdf")
             flags = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_ACTIVITY_NO_HISTORY
         }
 
-        try {
-            startActivity(intent)
-        } catch (e: ActivityNotFoundException) {
-            Toast.makeText(this, "No PDF viewer found", Toast.LENGTH_SHORT).show()
+        try { startActivity(intent) }
+        catch (e: ActivityNotFoundException) {
+            Toast.makeText(this, getString(R.string.no_pdf_viewer), Toast.LENGTH_SHORT).show()
         }
     }
 
-
-    // Unified collapsible helper with animation
     private fun setupCollapsible(headerId: Int, sectionId: Int) {
         val header = findViewById<TextView?>(headerId)
         val section = findViewById<View?>(sectionId)

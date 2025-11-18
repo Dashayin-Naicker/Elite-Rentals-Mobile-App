@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#F8F8F8">
+    android:background="?android:colorBackground">
 
     <!-- Scrollable Content -->
     <androidx.core.widget.NestedScrollView
@@ -30,7 +30,8 @@
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:src="@drawable/home"
-                    android:contentDescription="Logo" />
+
+                    android:contentDescription="@string/logo_desc" />
 
                 <TextView
                     android:id="@+id/tvManagerName"
@@ -38,8 +39,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_marginStart="12dp"
-                    android:text="Hi, Manager!"
-                    android:textColor="#222222"
+                    android:text="@string/hi_manager"
+                    android:textColor="?android:textColorPrimary"
                     android:textSize="22sp"
                     android:textStyle="bold" />
 
@@ -48,24 +49,25 @@
                     android:layout_width="28dp"
                     android:layout_height="28dp"
                     android:src="@drawable/notifications"
-                    android:contentDescription="Notifications" />
+
+                    android:contentDescription="@string/notifications_desc" />
             </LinearLayout>
 
-            <!-- Banner: Open Requests -->
+            <!-- Banner: Assign caretakers -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 app:cardCornerRadius="16dp"
-                app:cardElevation="6dp">
+                app:cardElevation="6dp"
+                app:cardBackgroundColor="@color/brandPrimary">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:padding="20dp"
-                    android:gravity="center_vertical"
-                    android:background="@drawable/bg_rent_due">
+                    android:gravity="center_vertical">
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -77,11 +79,10 @@
                             android:id="@+id/tvOpenRequests"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Assign Caretakers"
-                            android:textSize="22sp"
+                            android:text="@string/assign_caretakers"
+                            android:textSize="20sp"
                             android:textColor="@android:color/white"
                             android:textStyle="bold" />
-
                     </LinearLayout>
 
                     <androidx.cardview.widget.CardView
@@ -89,15 +90,16 @@
                         android:layout_height="48dp"
                         android:layout_marginStart="12dp"
                         app:cardCornerRadius="24dp"
-                        android:backgroundTint="@android:color/white"
-                        app:cardElevation="0dp">
+                        app:cardElevation="0dp"
+                        app:cardBackgroundColor="@android:color/white">
 
                         <ImageView
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:padding="10dp"
                             android:src="@drawable/img"
-                            android:contentDescription="Requests Icon" />
+
+                            android:contentDescription="@string/requests_icon_desc" />
                     </androidx.cardview.widget.CardView>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
@@ -111,7 +113,7 @@
                 android:rowOrderPreserved="false"
                 android:useDefaultMargins="true">
 
-                <!-- Card Template -->
+                <!-- Manage Properties -->
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardManageProperties"
                     android:layout_width="0dp"
@@ -119,7 +121,8 @@
                     android:layout_columnWeight="1"
                     android:layout_margin="8dp"
                     app:cardCornerRadius="12dp"
-                    app:cardElevation="4dp">
+                    app:cardElevation="4dp"
+                    app:cardBackgroundColor="?attr/colorSurface">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -131,17 +134,20 @@
                         <ImageView
                             android:layout_width="40dp"
                             android:layout_height="40dp"
-                            android:src="@drawable/property_manage" />
+                            android:src="@drawable/property_manage"
+
+                            android:contentDescription="@string/manage_properties_desc" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Manage Properties"
-                            android:textColor="#222222"
+                            android:text="@string/manage_properties"
+                            android:textColor="?android:textColorPrimary"
                             android:layout_marginTop="8dp" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
 
+                <!-- Manage Tenants -->
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardManageTenants"
                     android:layout_width="0dp"
@@ -149,7 +155,8 @@
                     android:layout_columnWeight="1"
                     android:layout_margin="8dp"
                     app:cardCornerRadius="12dp"
-                    app:cardElevation="4dp">
+                    app:cardElevation="4dp"
+                    app:cardBackgroundColor="?attr/colorSurface">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -161,17 +168,20 @@
                         <ImageView
                             android:layout_width="40dp"
                             android:layout_height="40dp"
-                            android:src="@drawable/tenant" />
+                            android:src="@drawable/tenant"
+
+                            android:contentDescription="@string/manage_tenants_desc" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Manage Tenants"
-                            android:textColor="#222222"
+                            android:text="@string/manage_tenants"
+                            android:textColor="?android:textColorPrimary"
                             android:layout_marginTop="8dp" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
 
+                <!-- View Leases -->
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardViewLeases"
                     android:layout_width="0dp"
@@ -179,7 +189,8 @@
                     android:layout_columnWeight="1"
                     android:layout_margin="8dp"
                     app:cardCornerRadius="12dp"
-                    app:cardElevation="4dp">
+                    app:cardElevation="4dp"
+                    app:cardBackgroundColor="?attr/colorSurface">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -191,17 +202,20 @@
                         <ImageView
                             android:layout_width="50dp"
                             android:layout_height="50dp"
-                            android:src="@drawable/view_lease" />
+                            android:src="@drawable/view_lease"
+
+                            android:contentDescription="@string/assign_leases_desc" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Assign Leases"
-                            android:textColor="#222222"
+                            android:text="@string/assign_leases"
+                            android:textColor="?android:textColorPrimary"
                             android:layout_marginTop="8dp" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
 
+                <!-- Assign Maintenance -->
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardAssignCaretaker"
                     android:layout_width="0dp"
@@ -209,7 +223,8 @@
                     android:layout_columnWeight="1"
                     android:layout_margin="8dp"
                     app:cardCornerRadius="12dp"
-                    app:cardElevation="4dp">
+                    app:cardElevation="4dp"
+                    app:cardBackgroundColor="?attr/colorSurface">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -221,16 +236,20 @@
                         <ImageView
                             android:layout_width="40dp"
                             android:layout_height="50dp"
-                            android:src="@drawable/maintenance" />
+                            android:src="@drawable/maintenance"
+
+                            android:contentDescription="@string/assign_maintenance_desc" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Assign Maintenance"
-                            android:textColor="#222222"
+                            android:text="@string/assign_maintenance"
+                            android:textColor="?android:textColorPrimary"
                             android:layout_marginTop="8dp" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
+
+                <!-- Register Tenant -->
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardRegisterTenant"
                     android:layout_width="0dp"
@@ -238,7 +257,8 @@
                     android:layout_columnWeight="1"
                     android:layout_margin="8dp"
                     app:cardCornerRadius="12dp"
-                    app:cardElevation="4dp">
+                    app:cardElevation="4dp"
+                    app:cardBackgroundColor="?attr/colorSurface">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -250,16 +270,20 @@
                         <ImageView
                             android:layout_width="40dp"
                             android:layout_height="50dp"
-                            android:src="@drawable/caretaker_assign" />
+                            android:src="@drawable/caretaker_assign"
+
+                            android:contentDescription="@string/register_tenant_desc" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Register Tenant"
-                            android:textColor="#222222"
+                            android:text="@string/register_tenant"
+                            android:textColor="?android:textColorPrimary"
                             android:layout_marginTop="8dp" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
+
+                <!-- Settings -->
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardSettings"
                     android:layout_width="0dp"
@@ -267,7 +291,8 @@
                     android:layout_columnWeight="1"
                     android:layout_margin="8dp"
                     app:cardCornerRadius="12dp"
-                    app:cardElevation="4dp">
+                    app:cardElevation="4dp"
+                    app:cardBackgroundColor="?attr/colorSurface">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -279,16 +304,20 @@
                         <ImageView
                             android:layout_width="40dp"
                             android:layout_height="40dp"
-                            android:src="@drawable/settings" />
+                            android:src="@drawable/settings"
+
+                            android:contentDescription="@string/settings_desc" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Settings"
-                            android:textColor="#222222"
+                            android:text="@string/settings"
+                            android:textColor="?android:textColorPrimary"
                             android:layout_marginTop="8dp" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
+
+                <!-- Generate Report -->
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardReports"
                     android:layout_width="0dp"
@@ -296,7 +325,8 @@
                     android:layout_columnWeight="1"
                     android:layout_margin="8dp"
                     app:cardCornerRadius="12dp"
-                    app:cardElevation="4dp">
+                    app:cardElevation="4dp"
+                    app:cardBackgroundColor="?attr/colorSurface">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -308,16 +338,20 @@
                         <ImageView
                             android:layout_width="40dp"
                             android:layout_height="40dp"
-                            android:src="@drawable/img_1" />
+                            android:src="@drawable/img_1"
+
+                            android:contentDescription="@string/generate_report_desc" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Generate Report"
-                            android:textColor="#222222"
+                            android:text="@string/generate_report"
+                            android:textColor="?android:textColorPrimary"
                             android:layout_marginTop="8dp" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
+
+                <!-- View Payments -->
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardViewPayments"
                     android:layout_width="0dp"
@@ -325,7 +359,8 @@
                     android:layout_columnWeight="1"
                     android:layout_margin="8dp"
                     app:cardCornerRadius="12dp"
-                    app:cardElevation="4dp">
+                    app:cardElevation="4dp"
+                    app:cardBackgroundColor="?attr/colorSurface">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -337,13 +372,15 @@
                         <ImageView
                             android:layout_width="40dp"
                             android:layout_height="40dp"
-                            android:src="@drawable/invoice2" />
+                            android:src="@drawable/invoice2"
+
+                            android:contentDescription="@string/view_payments_desc" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="View Payments"
-                            android:textColor="#222222"
+                            android:text="@string/view_payments"
+                            android:textColor="?android:textColorPrimary"
                             android:layout_marginTop="8dp" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
@@ -352,6 +389,6 @@
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
-    <!-- Bottom Navigation -->
+    <!-- Bottom Navigation (add if needed, match tenantdashboard pattern using ?attr/colorSurface and ?android:textColorPrimary) -->
 
 </LinearLayout>
