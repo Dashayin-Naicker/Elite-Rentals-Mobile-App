@@ -7,51 +7,93 @@
     android:layout_height="match_parent"
     android:background="@drawable/gradient_background">
 
-    <!-- Top bar with back icon (optional) -->
+    <!-- HEADER BAR -->
     <LinearLayout
+        android:id="@+id/topBar"
         android:layout_width="match_parent"
-        android:layout_height="56dp"
+        android:layout_height="60dp"
         android:orientation="horizontal"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:paddingHorizontal="12dp"
+        android:background="@drawable/card_gradient_1">
 
         <ImageView
             android:id="@+id/ic_back"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:padding="8dp"
             android:src="@drawable/ic_back"
             android:contentDescription="Back"
-            android:visibility="gone"
             app:tint="@android:color/white" />
 
         <TextView
-            android:id="@+id/tv_title"
-            android:layout_width="match_parent"
+            android:id="@+id/tvTopTitle"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="System Users"
-            android:textSize="20sp"
+            android:textColor="@android:color/white"
+            android:textSize="22sp"
             android:textStyle="bold"
-            android:paddingStart="8dp"
-            android:textColor="@android:color/white" />
+            android:paddingStart="12dp" />
     </LinearLayout>
 
-    <!-- Add New User button (top) -->
-    <Button
-        android:id="@+id/btnAddNewUser"
+    <!-- ELEVATED CARD for Button -->
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Add new user"
-        android:layout_marginTop="12dp"
-        android:background="@drawable/button_gradient"
-        android:textColor="#FFFFFF"
-        android:padding="12dp"
-        android:textStyle="bold" />
+        android:elevation="6dp"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@android:color/transparent"
+        app:cardBackgroundColor="@android:color/transparent"
+        app:cardUseCompatPadding="true"
+        app:cardCornerRadius="16dp">
 
-    <!-- RecyclerView for list of users -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvSystemUsers"
+        <Button
+            android:id="@+id/btnAddNewUser"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Add New User"
+            android:textAllCaps="false"
+            android:background="@drawable/button_gradient"
+            android:textColor="#FFFFFF"
+            android:padding="14dp"
+            android:textSize="16sp"
+            android:textStyle="bold"/>
+    </androidx.cardview.widget.CardView>
+
+    <!-- WHITE ROUNDED CONTENT CARD -->
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_marginTop="12dp" />
+        android:layout_marginTop="20dp"
+        android:elevation="8dp"
+        app:cardCornerRadius="20dp"
+        app:cardUseCompatPadding="true"
+        app:cardBackgroundColor="@android:color/white">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="12dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="All System Users"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#444444"
+                android:paddingBottom="8dp"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvSystemUsers"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingTop="4dp"/>
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
 
 </LinearLayout>

@@ -3,6 +3,7 @@ package com.rentals.eliterentals
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
@@ -18,12 +19,15 @@ class SystemUsersActivity : AppCompatActivity() {
     private lateinit var adapter: SystemUsersAdapter
     private lateinit var btnAddNewUser: Button
 
+    private lateinit var icBack: ImageView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_system_users)
 
         rv = findViewById(R.id.rvSystemUsers)
         btnAddNewUser = findViewById(R.id.btnAddNewUser)
+        icBack = findViewById(R.id.ic_back)
 
         adapter = SystemUsersAdapter(mutableListOf(), onApprove = { user ->
             approveUser(user)
@@ -33,6 +37,8 @@ class SystemUsersActivity : AppCompatActivity() {
 
         rv.layoutManager = LinearLayoutManager(this)
         rv.adapter = adapter
+
+        icBack.setOnClickListener { finish() }
 
         btnAddNewUser.setOnClickListener {
             // Launch RegisterUserActivity to add any role

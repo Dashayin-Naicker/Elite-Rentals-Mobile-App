@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:background="#F9F9F9"
-    tools:context=".RegisterUserActivity">
+    android:padding="16dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient_background">
 
-    <!-- Top Bar -->
+    <!-- TOP BAR -->
     <LinearLayout
         android:id="@+id/topBar"
         android:layout_width="match_parent"
-        android:layout_height="56dp"
+        android:layout_height="60dp"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:padding="8dp"
+        android:paddingHorizontal="12dp"
         android:background="@drawable/card_gradient_1">
 
         <ImageView
             android:id="@+id/ic_back"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:padding="8dp"
             android:src="@drawable/ic_back"
             android:contentDescription="Back"
             app:tint="@android:color/white" />
@@ -31,66 +31,96 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Register User"
-            android:textColor="#FFFFFF"
-            android:textSize="18sp"
+            android:textColor="@android:color/white"
+            android:textSize="22sp"
             android:textStyle="bold"
-            android:layout_marginStart="12dp" />
+            android:paddingStart="12dp" />
     </LinearLayout>
 
-    <!-- Content -->
-    <LinearLayout
+    <!-- CONTENT CARD -->
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:layout_margin="16dp"
+        app:cardElevation="8dp"
+        app:cardCornerRadius="20dp"
+        app:cardUseCompatPadding="true">
 
-        <EditText
-            android:id="@+id/etName"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="First name"
-            android:inputType="textPersonName" />
+            android:orientation="vertical"
+            android:padding="20dp">
 
-        <EditText
-            android:id="@+id/etLastName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Last name"
-            android:layout_marginTop="8dp"
-            android:inputType="textPersonName" />
+            <!-- FIRST NAME -->
+            <EditText
+                android:id="@+id/etName"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="First name"
+                android:padding="12dp"
+                android:background="@drawable/edittext_rounded"
+                android:textSize="15sp"
+                android:inputType="textPersonName" />
 
-        <EditText
-            android:id="@+id/etEmail"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Email"
-            android:layout_marginTop="8dp"
-            android:inputType="textEmailAddress" />
+            <!-- LAST NAME -->
+            <EditText
+                android:id="@+id/etLastName"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="12dp"
+                android:hint="Last name"
+                android:padding="12dp"
+                android:background="@drawable/edittext_rounded"
+                android:textSize="15sp"
+                android:inputType="textPersonName" />
 
-        <EditText
-            android:id="@+id/etPassword"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Password"
-            android:layout_marginTop="8dp"
-            android:inputType="textPassword" />
+            <!-- EMAIL -->
+            <EditText
+                android:id="@+id/etEmail"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="12dp"
+                android:hint="Email"
+                android:padding="12dp"
+                android:background="@drawable/edittext_rounded"
+                android:textSize="15sp"
+                android:inputType="textEmailAddress" />
 
-        <!-- Role selector -->
-        <Spinner
-            android:id="@+id/spinnerRole"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp" />
+            <!-- PASSWORD -->
+            <EditText
+                android:id="@+id/etPassword"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="12dp"
+                android:hint="Password"
+                android:padding="12dp"
+                android:background="@drawable/edittext_rounded"
+                android:textSize="15sp"
+                android:inputType="textPassword" />
 
-        <Button
-            android:id="@+id/btnRegister"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Register"
-            android:layout_marginTop="16dp"
-            android:background="@drawable/button_gradient"
-            android:textColor="#FFFFFF"
-            android:padding="12dp"
-            android:textStyle="bold" />
-    </LinearLayout>
+            <!-- ROLE SPINNER -->
+            <Spinner
+                android:id="@+id/spinnerRole"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/edittext_rounded"
+                android:paddingHorizontal="8dp" />
+
+            <!-- REGISTER BUTTON -->
+            <Button
+                android:id="@+id/btnRegister"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Register"
+                android:layout_marginTop="22dp"
+                android:background="@drawable/button_gradient"
+                android:textColor="#FFFFFF"
+                android:padding="14dp"
+                android:textStyle="bold"
+                android:textSize="16sp" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
 </LinearLayout>
