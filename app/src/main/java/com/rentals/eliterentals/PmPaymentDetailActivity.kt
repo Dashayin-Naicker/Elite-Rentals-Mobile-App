@@ -87,27 +87,19 @@ class PmPaymentDetailActivity : AppCompatActivity() {
         val amount = intent.getDoubleExtra(EXTRA_AMOUNT, 0.0)
         val date = intent.getStringExtra(EXTRA_DATE) ?: ""
         originalStatus = intent.getStringExtra(EXTRA_STATUS) ?: "Pending"
-        val method = intent.getStringExtra(EXTRA_METHOD) ?: "Unknown"
         proofType = intent.getStringExtra(EXTRA_PROOF_TYPE)
 
-        txtTenant.text = "Tenant #$tenantId"
-        txtAmount.text = "R %.2f".format(amount)
-        txtDate.text = date
-        txtCurrentStatus.text = originalStatus
-        txtMethod.text = "Method: $method"
-        txtProofType.text = "Proof type: ${proofType ?: "Unknown"}"
+        // Display fields EXACTLY as API provides
+        txtTenant.text = "Tenant ID: $tenantId"
+        txtAmount.text = "Amount: R %.2f".format(amount)
+        txtDate.text = "Date: $date"
+        txtCurrentStatus.text = "Status: $originalStatus"
+        txtProofType.text = "Proof Type: ${proofType ?: "None"}"
+        txtMethod.visibility = View.GONE
 
-        btnViewProof.setOnClickListener {
-            viewProof()
-        }
-
-        btnUpdatePaid.setOnClickListener {
-            updateStatus("Paid")
-        }
-
-        btnUpdatePending.setOnClickListener {
-            updateStatus("Revoked")
-        }
+        btnViewProof.setOnClickListener { viewProof() }
+        btnUpdatePaid.setOnClickListener { updateStatus("Paid") }
+        btnUpdatePending.setOnClickListener { updateStatus("Rejected") }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -147,7 +139,6 @@ class PmPaymentDetailActivity : AppCompatActivity() {
                         }
                     }
                     response.code() == 404 -> {
-                        // Match website behaviour: no proof uploaded
                         showError("No proof of payment uploaded for this payment.")
                     }
                     else -> {
@@ -163,57 +154,49 @@ class PmPaymentDetailActivity : AppCompatActivity() {
         }
     }
 
+    private fun detectFileExtension(bytes: ByteArray): String {
+        return when {
+            bytes.size > 4 && bytes[0] == 0x25.toByte() && bytes[1] == 0x50.toByte() &&
+                    bytes[2] == 0x44.toByte() && bytes[3] == 0x46.toByte() -> "pdf" // %PDF
+            bytes.size > 3 && bytes[0] == 0xFF.toByte() && bytes[1] == 0xD8.toByte() &&
+                    bytes[2] == 0xFF.toByte() -> "jpg" // JPEG
+            bytes.size > 4 && bytes[0] == 0x89.toByte() && bytes[1] == 0x50.toByte() &&
+                    bytes[2] == 0x4E.toByte() && bytes[3] == 0x47.toByte() -> "png" // PNG
+            else -> "bin"
+        }
+    }
 
     private fun openProofFile(body: ResponseBody) {
-        val contentType = body.contentType()?.toString() ?: ""
-        val ext = when {
-            contentType.contains("pdf", ignoreCase = true) -> "pdf"
-            contentType.contains("png", ignoreCase = true) -> "png"
-            contentType.contains("jpeg", ignoreCase = true) ||
-                    contentType.contains("jpg", ignoreCase = true) -> "jpg"
-            else -> {
-                // try to infer from proofType
-                val pt = proofType?.lowercase()
-                when {
-                    pt?.contains("pdf") == true || pt?.contains("doc") == true -> "pdf"
-                    pt?.contains("image") == true -> "jpg"
-                    else -> "bin"
-                }
-            }
-        }
+        val bytes = body.bytes()
+        val ext = detectFileExtension(bytes)
 
         val file = File(cacheDir, "payment_proof_${paymentId}.$ext")
-        file.outputStream().use { output ->
-            body.byteStream().use { input ->
-                input.copyTo(output)
-            }
-        }
+        file.writeBytes(bytes)
 
-        val uri: Uri = FileProvider.getUriForFile(
+        val uri = FileProvider.getUriForFile(
             this,
-            "$packageName.provider",
+            "${applicationContext.packageName}.provider",
             file
         )
 
-
-        if (ext == "png" || ext == "jpg") {
-            // Use existing photo viewer
-            val intent = Intent(this, ViewPhotoActivity::class.java).apply {
-                putExtra("imageUrl", uri.toString())
+        when (ext) {
+            "jpg", "png" -> {
+                val intent = Intent(this, ViewPhotoActivity::class.java)
+                intent.putExtra("imageUrl", uri.toString())
+                startActivity(intent)
             }
-            startActivity(intent)
-        } else if (ext == "pdf") {
-            val viewIntent = Intent(Intent.ACTION_VIEW).apply {
-                setDataAndType(uri, "application/pdf")
-                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            "pdf" -> {
+                val intent = Intent(Intent.ACTION_VIEW).apply {
+                    setDataAndType(uri, "application/pdf")
+                    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                }
+                try {
+                    startActivity(Intent.createChooser(intent, "Open Payment Proof"))
+                } catch (e: ActivityNotFoundException) {
+                    Toast.makeText(this, "No app found to open PDF", Toast.LENGTH_LONG).show()
+                }
             }
-            try {
-                startActivity(Intent.createChooser(viewIntent, "Open payment proof"))
-            } catch (e: ActivityNotFoundException) {
-                Toast.makeText(this, "No app found to open PDF", Toast.LENGTH_LONG).show()
-            }
-        } else {
-            Toast.makeText(this, "Unsupported proof type", Toast.LENGTH_LONG).show()
+            else -> Toast.makeText(this, "Unsupported proof type", Toast.LENGTH_LONG).show()
         }
     }
 
@@ -239,7 +222,7 @@ class PmPaymentDetailActivity : AppCompatActivity() {
 
                 if (response.isSuccessful) {
                     Toast.makeText(this@PmPaymentDetailActivity, "Status updated.", Toast.LENGTH_SHORT).show()
-                    txtCurrentStatus.text = newStatus
+                    txtCurrentStatus.text = "Status: $newStatus"
                 } else {
                     showError("Failed to update status (${response.code()}).")
                 }

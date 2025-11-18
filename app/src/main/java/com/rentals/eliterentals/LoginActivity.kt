@@ -32,6 +32,7 @@ class LoginActivity : BaseActivity() {
 
     companion object {
         private const val RC_SIGN_IN = 1001
+        private const val TAG = "LoginActivity"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,10 +51,15 @@ class LoginActivity : BaseActivity() {
         btnGoogle = findViewById(R.id.btnGoogle)
         btnFingerprint = findViewById(R.id.btnFingerprint)
 
+        // -------- GoogleSignInOptions ----------
+        // Make sure R.string.server_client_id contains your WEB client ID:
+        // "xxxxx.apps.googleusercontent.com"
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.server_client_id))
+            .requestIdToken(getString(R.string.server_client_id)) // Web client ID (OAuth 2.0)
             .requestEmail()
+            .requestProfile()
             .build()
+
         googleSignInClient = GoogleSignIn.getClient(this, gso)
 
         btnLogin.setOnClickListener { doNormalLogin() }
@@ -94,35 +100,52 @@ class LoginActivity : BaseActivity() {
 
     // -------------------- Google SSO --------------------
     private fun doGoogleLogin() {
-        val signInIntent = googleSignInClient.signInIntent
-        startActivityForResult(signInIntent, RC_SIGN_IN)
+        // Force sign out and revoke access to avoid silent sign in / cached account selection.
+        // This ensures the account picker appears.
+        googleSignInClient.signOut().addOnCompleteListener {
+            googleSignInClient.revokeAccess().addOnCompleteListener {
+                try {
+                    val signInIntent = googleSignInClient.signInIntent
+                    startActivityForResult(signInIntent, RC_SIGN_IN)
+                } catch (e: Exception) {
+                    Log.e(TAG, "Failed to start sign-in intent", e)
+                    Toast.makeText(this, getString(R.string.login_sso_failed), Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == RC_SIGN_IN) {
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
             try {
                 val account = task.getResult(ApiException::class.java)
-                val idToken = account.idToken
+                val idToken = account?.idToken
                 if (!idToken.isNullOrEmpty()) {
-                    sendIdTokenToApi(idToken)
+                    // pass useful profile fields to backend as well
+                    val email = account.email ?: ""
+                    val firstName = account.givenName ?: ""
+                    val lastName = account.familyName ?: ""
+                    sendIdTokenToApi(idToken, email, firstName, lastName)
                 } else {
                     Toast.makeText(this, getString(R.string.login_no_id_token), Toast.LENGTH_SHORT).show()
                 }
             } catch (e: ApiException) {
-                Log.e("GoogleLogin", "Google sign in failed", e)
+                Log.e(TAG, "Google sign in failed: ${e.statusCode}", e)
+                Toast.makeText(this, getString(R.string.login_sso_failed), Toast.LENGTH_SHORT).show()
             }
         }
     }
 
-    private fun sendIdTokenToApi(idToken: String) {
+    private fun sendIdTokenToApi(idToken: String, email: String = "", firstName: String = "", lastName: String = "") {
         val ssoPayload = SsoLoginRequest(
             provider = "Google",
             token = idToken,
-            email = "",
-            firstName = "",
-            lastName = "",
+            email = email,
+            firstName = firstName,
+            lastName = lastName,
             role = "Tenant"
         )
 
